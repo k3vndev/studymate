@@ -20,25 +20,17 @@ export const promptAIModel = async (
 
   const previousMessages = prevMessages.slice(-MATE_MESSAGES_MEMORY)
 
-  const trainingMessages: ChatCompletionMessageParam[] = [{ role: 'system', content: MATE_TRAIN_MESSAGE }]
+  const systemMessages: ChatCompletionMessageParam[] = [{ role: 'system', content: MATE_TRAIN_MESSAGE }]
 
   if (userData) {
-    trainingMessages.push({ role: 'system', content: JSON.stringify({ user_data: userData }) })
+    systemMessages.push({ role: 'system', content: JSON.stringify({ user_data: userData }) })
   }
 
-  const completion = await openai.beta.chat.completions.parse({
+  const stream = await openai.chat.completions.create({
     model: 'gpt-4o-mini',
-    messages: [
-      ...trainingMessages,
-
-      ...previousMessages,
-      ...newMessages
-    ],
-    response_format: zodResponseFormat(MateResponseSchema, 'messages_and_studyplan')
+    messages: [...systemMessages, ...newMessages],
+    stream: true
   })
 
-  const { parsed } = completion.choices[0].message
-  if (parsed === null) throw new Error()
-
-  return parsed.responses
+  return stream
 }

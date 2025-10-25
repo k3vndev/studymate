@@ -7,7 +7,7 @@ import { useContext } from 'react'
 
 export const MessagesList = () => {
   const messages = useChatStore(s => s.messages) as ChatMessageType[]
-  const { isWaitingResponse, isOnChatError, listRef } = useContext(ChatContext)
+  const { isWaitingResponse, isOnChatError, listRef, isStreamingResponse } = useContext(ChatContext)
 
   return (
     <ul
@@ -17,8 +17,8 @@ export const MessagesList = () => {
       `}
       ref={listRef}
     >
-      {messages.map((message, i) => (
-        <ChatMessage {...message} key={i} />
+      {messages.map((msg, i) => (
+        <ChatMessage {...msg} key={i} />
       ))}
       {isWaitingResponse && <ChatMessage role='bubbles' content='' />}
       {isOnChatError && <ChatMessage role='error' content={CHAT_ERROR_MESSAGE} />}

@@ -1,7 +1,7 @@
-import { CardStudyplan } from '@components/CardStudyplan'
 import { dispatchEvent } from '@/lib/utils/dispatchEvent'
 import { repeat } from '@/lib/utils/repeat'
 import { useUserStore } from '@/store/useUserStore'
+import { CardStudyplan } from '@components/CardStudyplan'
 import { EVENTS, FONTS } from '@consts'
 import { ErrorIcon, ReloadIcon } from '@icons'
 import type { ChatMessage as ChatMessageType, ChatStudyplan } from '@types'
@@ -75,10 +75,24 @@ export const ChatError = ({ children }: ChildrenProps) => {
 }
 
 const UserOverlay = ({ children }: ChildrenProps) => (
-  <OverlayBase className='bg-blue-20 text-white rounded-se-none self-end'>{children}</OverlayBase>
+  <OverlayBase
+    className={`
+      bg-blue-20 text-white rounded-se-none self-end 
+      md:max-w-96 xs:max-w-64 max-w-56
+    `}
+  >
+    {children}
+  </OverlayBase>
 )
 const AssistantOverlay = ({ children }: ChildrenProps) => (
-  <OverlayBase className='bg-gray-40 text-gray-10 rounded-ss-none self-start'>{children}</OverlayBase>
+  <OverlayBase
+    className={`
+      bg-gray-30/25 text-gray-10 rounded-ss-none self-start
+      xs:max-w-[calc(100%-10rem)] max-w-[calc(100%-4rem)]
+    `}
+  >
+    {children}
+  </OverlayBase>
 )
 
 interface OverlayBaseProps {
@@ -89,7 +103,7 @@ interface OverlayBaseProps {
 const OverlayBase = ({ className = '', children }: OverlayBaseProps) => (
   <li
     className={`
-      ${className} px-6 list-none py-3 md:max-w-96 xs:max-w-64 max-w-56 
+      ${className} px-6 list-none py-3 text-pretty
       rounded-3xl ${FONTS.INTER} font-light w-fit
     `}
   >

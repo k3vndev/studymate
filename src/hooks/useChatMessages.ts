@@ -9,19 +9,20 @@ import { useEffect, useRef, useState } from 'react'
 
 export const useChatMessages = () => {
   const messages = useChatStore(s => s.messages)
-  const pushMessages = useChatStore(s => s.pushMessages)
   const setMessages = useChatStore(s => s.setMessages)
   const setHighlihtedMessage = useChatStore(s => s.setHighlihtedMessage)
   const userInput = useChatStore(s => s.userInput)
   const setUserInput = useChatStore(s => s.setUserInput)
+
   const addStudyplans = useStudyplansStore(s => s.addStudyplans)
   const { userStudyplan } = useUserStudyplan()
 
-  const [isWaitingResponse, setIsWaitingRespose] = useState(false)
+  const [isWaitingResponse, setIsWaitingResponse] = useState(false)
   const [isOnChatError, setIsOnChatError] = useState(false)
   const [isOnLoadingError, setIsOnLoadingError] = useState(false)
 
   const tryAgainCallback = useRef<() => void>(() => {})
+  const [isStreamingResponse, setIsStreamingResponse] = useState(false)
 
   const loadPreviousMessages = () => {
     if (messages) return
@@ -62,34 +63,57 @@ export const useChatMessages = () => {
   const parsePreviousMessages = (messages: ChatMessage[]) =>
     messages.filter(({ role }) => role !== 'error') as PromptRequestSchema['messages']['previous']
 
-  const messageMate = (message: string) => {
+  const messageMate = async (userMessage: string) => {
     if (messages === null) return
 
-    setIsWaitingRespose(true)
+    setIsWaitingResponse(true)
     setIsOnChatError(false)
 
-    dataFetch<ChatMessage[]>({
-      url: '/api/chat',
-      options: {
-        headers: CONTENT_JSON,
-        method: 'POST',
-        body: JSON.stringify({
-          messages: {
-            new: message,
-            previous: parsePreviousMessages(messages)
-          },
-          user_data: { current_studyplan: userStudyplan }
-        } as PromptRequestSchema)
-      },
-      onSuccess: messages => pushMessages(...messages),
-      onFinish: () => setIsWaitingRespose(false),
-      redirectOn401: true,
+    const newMessages: ChatMessage[] = [...messages, { role: 'user', content: userMessage }]
+    setMessages(newMessages)
 
-      onError: () => {
-        setIsOnChatError(true)
-        tryAgainCallback.current = () => messageMate(message)
-      }
+    const promptData: PromptRequestSchema = {
+      messages: {
+        new: userMessage,
+        previous: parsePreviousMessages(messages)
+      },
+      user_data: { current_studyplan: userStudyplan }
+    }
+
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(promptData)
     })
+
+    if (!res.body || !res.ok) throw new Error()
+
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+
+    let done = false
+    let fullMessage = ''
+
+    setIsWaitingResponse(false)
+    setIsStreamingResponse(true)
+
+    while (!done) {
+      const { value, done: readerDone } = await reader.read()
+      done = readerDone
+
+      if (value) {
+        const chunk = decoder.decode(value)
+        fullMessage += chunk
+
+        const currentMessage: ChatMessage = {
+          role: 'assistant',
+          content: fullMessage
+        }
+        setMessages([...newMessages, currentMessage])
+      }
+    }
+
+    setIsStreamingResponse(false)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -106,7 +130,6 @@ export const useChatMessages = () => {
     const trimmedMessage = userInput.trim()
     if (trimmedMessage === '') return
 
-    pushMessages({ role: 'user', content: trimmedMessage })
     messageMate(trimmedMessage)
     setUserInput('')
     setHighlihtedMessage(null)
@@ -125,6 +148,8 @@ export const useChatMessages = () => {
     isOnChatError,
     isOnLoadingError,
     loadPreviousMessages,
+    isStreamingResponse,
+    setIsStreamingResponse,
     inputProps: {
       onChange: handleChange,
       onKeyDown: handleKeyDown,

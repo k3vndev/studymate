@@ -8,7 +8,7 @@ import { PromptRequestSchema } from '@schemas/PromptRequest'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { ChatMessage, PromptRequestSchema as PromptRequestSchemaType } from '@types'
 import { cookies } from 'next/headers'
-import type { NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import type { ChatCompletionMessageParam } from 'openai/src/resources/index.js'
 import { response } from '../utils/response'
 
@@ -63,16 +63,27 @@ export const POST = async (req: NextRequest) => {
 
   try {
     // Send prompt to the AI Model
-    const assistantResponses = await promptAIModel(
+    const stream = await promptAIModel(
       { userData, prevMessages: chatMessages },
       { role: 'user', content: userMessage }
     )
-    const assistantMessages = dataParser.fromModelResponseToClientMessages(assistantResponses)
+
+    const readable = new ReadableStream({
+      async start(controller) {
+        for await (const event of stream) {
+          const chunk = event.choices?.[0]?.delta?.content
+          if (chunk) {
+            controller.enqueue(new TextEncoder().encode(chunk))
+          }
+        }
+        controller.close()
+      }
+    })
 
     // Save messages to database
-    saveNewChatMessagesToDatabase({ supabase, assistantMessages, userMessage, userId })
+    // saveNewChatMessagesToDatabase({ supabase, assistantMessages, userMessage, userId })
 
-    return response(true, 201, { data: assistantMessages })
+    return new NextResponse(readable)
   } catch {
     return response(false, 500)
   }
