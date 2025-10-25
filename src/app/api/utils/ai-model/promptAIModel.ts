@@ -1,5 +1,5 @@
+import { MATE_TRAIN_MESSAGE } from '@/app/api/utils/ai-model/mateTrainMessage'
 import { MateResponseSchema } from '@/lib/schemas/MateResponse'
-import { MATE_TRAIN_MESSAGE } from '@api/utils/mateTrainMessage'
 import { MATE_MESSAGES_MEMORY } from '@consts'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@types'
 import OpenAI from 'openai'

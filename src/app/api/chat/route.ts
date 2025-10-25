@@ -1,15 +1,15 @@
+import { promptAIModel } from '@/app/api/utils/ai-model/promptAIModel'
 import { dataParser } from '@/app/api/utils/dataParser'
+import { saveNewChatMessagesToDatabase } from '@/app/api/utils/saveNewChatMessagesToDabatase'
 import { getPrevChatMessages } from '@api/utils/getPrevChatMessages'
 import { getUserId } from '@api/utils/getUserId'
-import { promptAIModel } from '@api/utils/promptAIModel'
-import { saveNewChatMessagesToDatabase } from '@/app/api/utils/saveNewChatMessagesToDabatase'
+import { USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { ChatMessage, PromptRequestSchema as PromptRequestSchemaType } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 import type { ChatCompletionMessageParam } from 'openai/src/resources/index.js'
-import { USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { response } from '../utils/response'
 
 // Get all previous chat messages
