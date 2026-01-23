@@ -1,8 +1,8 @@
-import { Paragraph } from '@components/Paragraph'
 import { ChatContext } from '@/lib/context/ChatContext'
 import { dispatchEvent } from '@/lib/utils/dispatchEvent'
 import { useChatStore } from '@/store/useChatStore'
 import { GradientBorder } from '@components/GradientBorder'
+import { Paragraph } from '@components/Paragraph'
 import { EVENTS, USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { ChevronIcon } from '@icons'
 import { useContext, useEffect, useRef, useState } from 'react'
@@ -65,7 +65,7 @@ export const Input = ({ className = '' }: Props) => {
     }
   }
 
-  const messageTrimLength = inputRef.current?.value.trim().length
+  const messageTrimLength = newInputProps.value.trim().length
 
   return (
     <GradientBorder
@@ -93,7 +93,7 @@ export const Input = ({ className = '' }: Props) => {
           autoFocus
         />
         <button
-          className='bg-gray-20 rounded-full size-9 min-w-9 flex justify-center items-center group button z-10'
+          className='bg-gray-10/50 rounded-full size-9 min-w-9 flex justify-center items-center group button z-10'
           disabled={isWaitingResponse || !messageTrimLength}
         >
           <ChevronIcon className='text-gray-50 stroke-[2.5px] transition group-active:-translate-y-1' />

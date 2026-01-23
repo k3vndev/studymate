@@ -86,7 +86,11 @@ export const useChatMessages = () => {
       body: JSON.stringify(promptData)
     })
 
-    if (!res.body || !res.ok) throw new Error()
+    if (!res.body || !res.ok) {
+      setIsOnChatError(true)
+      setIsWaitingResponse(false)
+      return
+    }
 
     const reader = res.body.getReader()
     const decoder = new TextDecoder()
@@ -127,10 +131,19 @@ export const useChatMessages = () => {
   const handleSubmit = (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault()
 
+    // Avoid sending empty messages
     const trimmedMessage = userInput.trim()
     if (trimmedMessage === '') return
 
+    // Save try again callback
+    tryAgainCallback.current = () => {
+      messageMate(trimmedMessage)
+    }
+
+    // Send message to Mate
     messageMate(trimmedMessage)
+
+    // Clear input and highlighted message
     setUserInput('')
     setHighlihtedMessage(null)
   }

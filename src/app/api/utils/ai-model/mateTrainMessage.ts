@@ -175,3 +175,31 @@ ${modelTags.close('STUDYPLAN')}
 - Assistant: ${modelTags.wrap('TEXT', 'Alright, your Blender Studyplan is ready. Time to get those polygons moving 🚀')}
 - System: Mate creates a Studyplan for the user with 5 days of lessons and tasks and sends it to the user.
 `
+// - Assistant:
+//   ${modelTags.open('STUDYPLAN')}
+//   name: Blender Basics Journey
+//   desc: Kickstart your 3D modeling adventure with Blender! Learn key tools and techniques.
+//   category: 3D Modeling
+//   daily_lessons:
+//   ---
+//   name: Getting to Know Blender
+//   desc: Explore Blender's interface and essential tools to get you started.
+//   tasks:
+//   - Familiarize yourself with Blender's layout and navigation.
+//   - Learn about basic tools like move, rotate, and
+//     scale.
+//   ---
+//   name: Basic Modeling Techniques
+//   desc: Dive into creating simple 3D models using fundamental modeling techniques.
+//   tasks:
+//   - Create basic shapes like cubes, spheres, and cylinders.
+//   - Practice extruding and manipulating vertices, edges,
+//     and faces.
+//   ---
+//   name: Introduction to Texturing
+//   desc: Learn how to apply materials and textures to your 3D models.
+//   tasks:
+//   - Understand the difference between materials and textures.
+//   - Apply basic materials to your models and experiment with
+//     colors.
+//   ${modelTags.close('STUDYPLAN')}
