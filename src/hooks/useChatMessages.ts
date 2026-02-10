@@ -1,3 +1,4 @@
+import { StreamChat } from '@/lib/utils/StreamChat'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
@@ -101,24 +102,36 @@ export const useChatMessages = () => {
     setIsWaitingResponse(false)
     setIsStreamingResponse(true)
 
+    const streamChat = new StreamChat()
+
+    streamChat.onWriteText = (textChunk: string) => {
+      fullMessage += textChunk
+
+      const currentMessage = createAssistantMessage(fullMessage)
+      setMessages([...newMessages, currentMessage])
+    }
+
+    streamChat.onFinishWritingText = () => {
+      newMessages.push(createAssistantMessage(fullMessage))
+      fullMessage = ''
+    }
+
     while (!done) {
       const { value, done: readerDone } = await reader.read()
       done = readerDone
+      if (!value) continue
 
-      if (value) {
-        const chunk = decoder.decode(value)
-        fullMessage += chunk
-
-        const currentMessage: ChatMessage = {
-          role: 'assistant',
-          content: fullMessage
-        }
-        setMessages([...newMessages, currentMessage])
-      }
+      const chunk = decoder.decode(value)
+      streamChat.decodeNewChunk(chunk)
     }
 
     setIsStreamingResponse(false)
   }
+
+  const createAssistantMessage = (content: string): ChatMessage => ({
+    role: 'assistant',
+    content
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target

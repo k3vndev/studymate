@@ -8,7 +8,7 @@ import type {
   MateResponseSchema,
   PromptRequestSchema
 } from '@types'
-import type { ChatCompletionMessage } from 'openai/resources/index.mjs'
+import { modelTags } from './ai-model/modelTags'
 
 export const dataParser = {
   fromDBResponseToUserStudyplan: (response: DBUserStudyplanAndCurrentDayResponse[]) => {
@@ -37,11 +37,18 @@ export const dataParser = {
     }),
 
   fromClientMessagesToModelPrompt: (messages: PromptRequestSchema['messages']['previous']) =>
-    messages.map(({ role, content }) =>
-      role !== 'studyplan'
-        ? { role, content }
-        : { role: 'system', content: `Mate sent the following studyplan: " ${JSON.stringify(content)} "` }
-    ) as ChatCompletionMessage[],
+    messages.map(({ role, content }) => {
+      if (role === 'assistant') {
+        return { role, content: modelTags.wrap('TEXT', content) }
+      }
+      if (role === 'studyplan') {
+        return {
+          role: 'system',
+          content: `Mate sent the following studyplan: " ${JSON.stringify(content)} "`
+        }
+      }
+      return { role, content }
+    }),
 
   fromNumberToCurrentStudyplanDay: (day: number): DBCurrentStudyplanDay => {
     const today = new Date()
