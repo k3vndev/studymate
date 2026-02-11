@@ -41,9 +41,14 @@ export const POST = async (req: NextRequest) => {
   try {
     // Extract user message
     const reqBody = await req.json()
-    const { messages, user_data } = await PromptRequestSchema.parseAsync(reqBody)
+    const { messages: previousChatMessages, user_data } = await PromptRequestSchema.parseAsync(reqBody)
 
-    const { new: newMessage, previous: previousChatMessages } = messages
+    const newChatMessage = previousChatMessages.pop()
+    if (newChatMessage?.role !== 'user') {
+      return response(false, 400, { msg: 'New message is not a user message' })
+    }
+
+    const { content: newMessage } = newChatMessage
 
     // Check if user message is too long
     if (newMessage.length > USER_MAX_MESSAGE_LENGTH) {
@@ -101,7 +106,7 @@ export const PATCH = async (req: NextRequest) => {
 
   try {
     const reqBody = await req.json()
-    const parsedMessages = await PromptRequestSchema.shape.messages.shape.previous.parseAsync(reqBody)
+    const parsedMessages = await PromptRequestSchema.shape.messages.parseAsync(reqBody)
     chatMessages = parsedMessages
   } catch {
     return response(false, 400, { msg: 'Messages are missing or invalid' })

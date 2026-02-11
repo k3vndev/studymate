@@ -15,6 +15,16 @@ export type ChatMessage =
       role: 'studyplan'
       content: ChatStudyplan
     }
+  | {
+      role: 'generating_studyplan'
+      content: GeneratingStudyplanContent
+    }
+
+export interface GeneratingStudyplanContent {
+  name?: string
+  desc?: string
+  daily_lessons_count?: number
+}
 
 export interface AlertData {
   header: string

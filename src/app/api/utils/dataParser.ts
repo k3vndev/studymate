@@ -10,6 +10,7 @@ import type {
   StudyplanSaved,
   StudyplanUnSaved
 } from '@types'
+import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { modelTags } from './ai-model/modelTags'
 
 export const dataParser = {
@@ -66,7 +67,9 @@ export const dataParser = {
       return { role: 'studyplan', content }
     }),
 
-  fromClientMessagesToModelPrompt: (messages: PromptRequestSchema['messages']['previous']) =>
+  fromClientMessagesToModelPrompt: (
+    messages: PromptRequestSchema['messages']['previous']
+  ): ChatCompletionMessageParam[] =>
     messages.map(({ role, content }) => {
       if (role === 'studyplan') {
         return {

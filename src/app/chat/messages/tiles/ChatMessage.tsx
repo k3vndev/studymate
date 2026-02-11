@@ -1,6 +1,7 @@
-import type { ChatMessage as ChatMessageType } from '@types'
+import type { ChatMessage as ChatMessageType, ChatStudyplan } from '@types'
 import { ChatBubbles } from './ChatBubbles'
 import { ChatError } from './ChatError'
+import { GeneratingStudyplanLoader } from './GeneratingStudyplanLoader'
 import { OverlayBase } from './OverlayBase'
 import { StudyplanMessage } from './StudyplanMessage'
 
@@ -12,7 +13,14 @@ interface Props {
 
 export const ChatMessage = ({ role, content, isStreaming = false }: Props) => {
   if (typeof content !== 'string') {
-    return <StudyplanMessage studyplan={content} />
+    if (role === 'generating_studyplan') {
+      return <GeneratingStudyplanLoader content={content} />
+    }
+    if (role === 'studyplan') {
+      return <StudyplanMessage studyplan={content as ChatStudyplan} />
+    }
+
+    return null
   }
 
   if (role === 'user') {

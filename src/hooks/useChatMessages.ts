@@ -62,7 +62,9 @@ export const useChatMessages = () => {
   useEvent(EVENTS.ON_CHAT_TRY_AGAIN, tryAgainCallback.current, [isOnChatError])
 
   const parsePreviousMessages = (messages: ChatMessage[]) =>
-    messages.filter(({ role }) => role !== 'error') as PromptRequestSchema['messages']['previous']
+    messages.filter(
+      ({ role }) => role !== 'error' && role !== 'generating_studyplan'
+    ) as PromptRequestSchema['messages']
 
   const messageMate = async (userMessage: string) => {
     if (messages === null) return
@@ -70,18 +72,17 @@ export const useChatMessages = () => {
     setIsWaitingResponse(true)
     setIsOnChatError(false)
 
-    // Add user message to chat history immediately
+    // Add user message to chat history immediately. Filter out generating_studyplan messages
     const messagesHistory: ChatMessage[] = [...messages, { role: 'user', content: userMessage }]
-    setMessages(messagesHistory)
 
-    // Prepare the prompt for the AI model
+    // Prepare the prompt for the AI model. New message is sent separately
     const promptData: PromptRequestSchema = {
-      messages: {
-        new: userMessage,
-        previous: parsePreviousMessages(messages)
-      },
+      messages: parsePreviousMessages(messagesHistory),
       user_data: { current_studyplan: userStudyplan }
     }
+
+    // Update UI
+    setMessages(messagesHistory)
 
     // Send the prompt to the backend
     const res = await fetch('/api/chat', {

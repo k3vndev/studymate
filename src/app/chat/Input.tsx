@@ -18,7 +18,9 @@ export const Input = ({ className = '' }: Props) => {
   const setUserInput = useChatStore(s => s.setUserInput)
   const [characterCount, setCharacterCount] = useState(0)
 
-  const { handleSubmit, inputProps, isWaitingResponse, setInputElementHeight } = useContext(ChatContext)
+  const { handleSubmit, inputProps, isWaitingResponse, setInputElementHeight, isStreamingResponse } =
+    useContext(ChatContext)
+
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   // Reset highlighted message and focus on input when it changes
@@ -93,8 +95,8 @@ export const Input = ({ className = '' }: Props) => {
           autoFocus
         />
         <button
-          className='bg-gray-10/50 rounded-full size-9 min-w-9 flex justify-center items-center group button z-10'
-          disabled={isWaitingResponse || !messageTrimLength}
+          className='bg-gray-10 rounded-full size-9 min-w-9 flex justify-center items-center group button z-10 disabled:bg-gray-10/15'
+          disabled={isWaitingResponse || isStreamingResponse || !messageTrimLength}
         >
           <ChevronIcon className='text-gray-50 stroke-[2.5px] transition group-active:-translate-y-1' />
         </button>
