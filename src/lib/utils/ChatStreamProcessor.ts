@@ -1,77 +1,111 @@
 import { modelTags } from '@/app/api/utils/ai-model/modelTags'
 
+/**
+ * Processes a stream of text coming from the AI model, separating markdown content from Studyplan content using custom tags.
+ * In order for this to work, `processNewChunk` must be called for every new chunk of text received from the stream, and the corresponding callbacks must be set to handle markdown and Studyplan content separately.
+ * This does not interact with the stream directly, it only processes the text chunks given to it.
+ */
 export class ChatStreamProcessor {
-  private mode: 'MARKDOWN' | 'STUDYPLAN' | 'TRANSITION' = 'MARKDOWN'
+  private mode: 'MARKDOWN' | 'STUDYPLAN' = 'MARKDOWN'
   private buffer = ''
 
   private readonly STUDYPLAN_OPEN = modelTags.open('STUDYPLAN')
   private readonly STUDYPLAN_CLOSE = modelTags.close('STUDYPLAN')
 
-  /* 
-    TRANSITION mode behavior:
-    
-    When the processor detects an OPEN or CLOSE tag, it switches to TRANSITION mode. In this mode, the processor will not stream any content until the next chunk is processed and the buffer is flushed. This way, the content before and after the tags will be flushed separately and the bug where content is sent again when the closing tag is found will be fixed.
-  */
-
   processNewChunk(chunk: string) {
     for (const char of chunk) {
-      this.buffer += char
+      const bufferNextIndex = this.buffer.length
+      let textToWrite = char
 
-      // --- MARKDOWN MODE ---
-      if (this.mode === 'MARKDOWN') {
-        if (this.buffer.endsWith(this.STUDYPLAN_OPEN)) {
-          // Flush markdown before tag
-          const flushed = this.buffer.slice(0, -this.STUDYPLAN_OPEN.length)
-          if (flushed) {
-            // NOTE: This generates a bug where the content is sent again when the STUDYPLAN_CLOSE tag is found, because the buffer is flushed again
-            // This should be automatically fixed once the new mode TRANSITION is fully implemented
-            this.onWriteMarkdown?.(flushed)
-          }
+      let openingStudyplanTag = false
+      let closingStudyplanTag = false
 
-          this.buffer = ''
-          this.mode = 'STUDYPLAN'
-          continue
-        }
+      const isInPotentialTag = [
+        this.STUDYPLAN_OPEN[bufferNextIndex],
+        this.STUDYPLAN_CLOSE[bufferNextIndex]
+      ].includes(char)
 
-        // Stream markdown normally
-        this.onWriteMarkdown?.(char)
+      if (isInPotentialTag) {
+        // Write to buffer
+        this.buffer += char
+
+        openingStudyplanTag = this.buffer === this.STUDYPLAN_OPEN
+        closingStudyplanTag = this.buffer === this.STUDYPLAN_CLOSE
+
+        // Continue to next cycle early if the buffer is still a potential tag,
+        if (!openingStudyplanTag && !closingStudyplanTag) continue
+
+        // Clear buffer if it has matched an open or close tag, the tag will be adressed in the following code
         this.buffer = ''
       }
 
-      // --- STUDYPLAN MODE ---
-      else {
-        if (this.buffer.endsWith(this.STUDYPLAN_CLOSE)) {
-          // Flush studyplan before closing tag
-          const flushed = this.buffer.slice(0, -this.STUDYPLAN_CLOSE.length)
-          if (flushed) {
-            this.onWriteStudyplan?.(flushed)
-          }
+      // Flush buffer if is not a potential tag anymore
+      else if (this.buffer) {
+        textToWrite = this.buffer
+        this.buffer = ''
+      }
 
-          this.buffer = ''
-          this.mode = 'MARKDOWN'
-          this.onFinishWritingText?.()
+      // --- MARKDOWN MODE ---
+      if (this.mode === 'MARKDOWN') {
+        if (openingStudyplanTag) {
+          this.onStartWritingStudyplan?.()
+          this.mode = 'STUDYPLAN'
+          openingStudyplanTag = false
           continue
         }
 
-        // Stream raw studyplan content (no tags)
-        this.onWriteStudyplan?.(char)
-        this.buffer = ''
+        if (closingStudyplanTag) {
+          // This shouldn't happen. It means we're trying to close a never opened Studyplan
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Closing tag found while not in STUDYPLAN mode')
+          }
+          closingStudyplanTag = false
+        }
+
+        // Stream markdown normally
+        this.onWriteMarkdown?.(textToWrite)
+      }
+
+      // --- STUDYPLAN MODE ---
+      else if (this.mode === 'STUDYPLAN') {
+        if (closingStudyplanTag) {
+          this.onFinishWritingStudyplan?.()
+          this.mode = 'MARKDOWN'
+          closingStudyplanTag = false
+          continue
+        }
+
+        if (openingStudyplanTag) {
+          // This shouldn't happen. It means we're trying to open a new Studyplan while already in STUDYPLAN mode
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Opening tag found while already in STUDYPLAN mode')
+          }
+          openingStudyplanTag = false
+        }
+
+        // Stream raw studyplan content
+        this.onWriteStudyplan?.(textToWrite)
       }
     }
   }
 
   /**
-   * Streams normal assistant text (markdown allowed)
+   * Called for every new chunk of text in MARKDOWN mode. Excludes all tags in normal behavior.
    */
   onWriteMarkdown: ((textChunk: string) => void) | null = null
 
   /**
-   * Streams STUDYPLAN content only (tags excluded)
+   * Called when the stream starts writing a Studyplan
+   */
+  onStartWritingStudyplan: (() => void) | null = null
+
+  /**
+   * Called for every new chunk of text in STUDYPLAN mode. Excludes all tags in normal behavior.
    */
   onWriteStudyplan: ((textChunk: string) => void) | null = null
 
   /**
-   * Called when a STUDYPLAN block fully ends
+   * Called when the stream finishes writing a studyplan and stream ends or transitions to MARKDOWN.
    */
-  onFinishWritingText: (() => void) | null = null
+  onFinishWritingStudyplan: (() => void) | null = null
 }

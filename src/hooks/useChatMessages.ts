@@ -70,9 +70,11 @@ export const useChatMessages = () => {
     setIsWaitingResponse(true)
     setIsOnChatError(false)
 
-    const newMessages: ChatMessage[] = [...messages, { role: 'user', content: userMessage }]
-    setMessages(newMessages)
+    // Add user message to chat history immediately
+    const messagesHistory: ChatMessage[] = [...messages, { role: 'user', content: userMessage }]
+    setMessages(messagesHistory)
 
+    // Prepare the prompt for the AI model
     const promptData: PromptRequestSchema = {
       messages: {
         new: userMessage,
@@ -81,6 +83,7 @@ export const useChatMessages = () => {
       user_data: { current_studyplan: userStudyplan }
     }
 
+    // Send the prompt to the backend
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -93,37 +96,48 @@ export const useChatMessages = () => {
       return
     }
 
+    // Process the streaming response
     const reader = res.body.getReader()
     const decoder = new TextDecoder()
 
-    let done = false
     let fullMessage = ''
 
     setIsWaitingResponse(false)
     setIsStreamingResponse(true)
 
-    const streamProcessor = new ChatStreamProcessor()
-
-    streamProcessor.onWriteMarkdown = textChunk => {
-      fullMessage += textChunk
-
-      const currentMessage = createAssistantMessage(fullMessage)
-      setMessages([...newMessages, currentMessage])
-    }
-
-    streamProcessor.onFinishWritingText = () => {
-      newMessages.push(createAssistantMessage(fullMessage))
+    const onStreamEnd = () => {
+      messagesHistory.push(createAssistantMessage(fullMessage))
       fullMessage = ''
     }
 
-    while (!done) {
-      const { value, done: readerDone } = await reader.read()
-      done = readerDone
-      if (!value) continue
+    const streamProcessor = new ChatStreamProcessor()
 
-      const chunk = decoder.decode(value)
-      console.log(chunk)
-      streamProcessor.processNewChunk(chunk)
+    const writeMessage = (textChunk: string) => {
+      fullMessage += textChunk
+
+      const currentMessage = createAssistantMessage(fullMessage)
+      setMessages([...messagesHistory, currentMessage])
+    }
+
+    streamProcessor.onWriteMarkdown = writeMessage
+    streamProcessor.onWriteStudyplan = writeMessage
+
+    streamProcessor.onStartWritingStudyplan = onStreamEnd
+    streamProcessor.onFinishWritingStudyplan = onStreamEnd
+
+    // Handle Studyplan content when the processor detects it in the stream
+    while (true) {
+      const { value, done } = await reader.read()
+
+      if (done) {
+        onStreamEnd()
+        break
+      }
+
+      if (value) {
+        const chunk = decoder.decode(value)
+        streamProcessor.processNewChunk(chunk)
+      }
     }
 
     setIsStreamingResponse(false)

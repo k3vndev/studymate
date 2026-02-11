@@ -6,11 +6,41 @@ import type {
   DBCurrentStudyplanDay,
   DBUserStudyplanAndCurrentDayResponse,
   MateResponseSchema,
-  PromptRequestSchema
+  PromptRequestSchema,
+  StudyplanSaved,
+  StudyplanUnSaved
 } from '@types'
 import { modelTags } from './ai-model/modelTags'
 
 export const dataParser = {
+  fromStudyplanToModelPrompt: (studyplan: StudyplanUnSaved | StudyplanSaved): string => {
+    const { name, category, desc, daily_lessons } = studyplan
+
+    const dailyLessons: string[] = []
+    let currentDay = 0
+
+    for (const { name, desc, tasks } of daily_lessons) {
+      const dailyLessonArr = [
+        `# ${++currentDay}`,
+        `name: ${name}`,
+        `desc: ${desc}`,
+        'tasks:',
+        tasks.map(t => `- ${t.goal}`).join('\n')
+      ]
+      dailyLessons.push(dailyLessonArr.join('\n'))
+    }
+
+    const baseDataStr = [
+      `name: ${name}`,
+      `desc: ${desc}`,
+      `category: ${category}`,
+      'daily_lessons:',
+      dailyLessons.join('\n')
+    ]
+
+    return [modelTags.open('STUDYPLAN'), baseDataStr.join('\n'), modelTags.close('STUDYPLAN')].join('\n')
+  },
+
   fromDBResponseToUserStudyplan: (response: DBUserStudyplanAndCurrentDayResponse[]) => {
     const {
       studyplan: fetchedStudyplan,
@@ -40,8 +70,8 @@ export const dataParser = {
     messages.map(({ role, content }) => {
       if (role === 'studyplan') {
         return {
-          role: 'system',
-          content: `Mate sent the following studyplan: " ${JSON.stringify(content)} "`
+          role: 'assistant',
+          content: dataParser.fromStudyplanToModelPrompt(content)
         }
       }
       return { role, content }

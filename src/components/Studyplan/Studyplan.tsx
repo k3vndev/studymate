@@ -1,19 +1,20 @@
+import { dataParser } from '@/app/api/utils/dataParser'
 import { TodaysLesson } from '@/app/studyplan/TodaysLesson'
-import { useUserStudyplan } from '@hooks/useUserStudyplan'
+import { useStudyplan } from '@/hooks/useStudyplan'
+import { useUserData } from '@/hooks/useUserData'
 import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { useUserStore } from '@/store/useUserStore'
-import type { StudyplanUnSaved } from '@types'
-import { useEffect } from 'react'
 import { Badge } from '@components/Badge'
 import { Header } from '@components/Header'
 import { Paragraph } from '@components/Paragraph'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
+import type { StudyplanUnSaved } from '@types'
+import { useEffect } from 'react'
 import { ButtonsSection } from './ButtonsSection'
 import { Category } from './Category'
 import { DailyLessons } from './DailyLessons'
 import { OptionsButton } from './OptionsButton'
-import { useUserData } from '@/hooks/useUserData'
-import { useStudyplan } from '@/hooks/useStudyplan'
 
 export interface Props {
   studyplan: StudyplanUnSaved & {
@@ -28,6 +29,8 @@ export interface Props {
 export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
   const { context, userStudyplan } = useStudyplan({ studyplan, usersCurrent })
   const { name, desc, category } = context.studyplan
+
+  console.log(dataParser.fromStudyplanToModelPrompt(studyplan))
 
   return (
     <StudyplanContext.Provider value={context}>
