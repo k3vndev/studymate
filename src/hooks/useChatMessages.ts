@@ -19,11 +19,11 @@ export const useChatMessages = () => {
   const { userStudyplan } = useUserStudyplan()
 
   const [isWaitingResponse, setIsWaitingResponse] = useState(false)
+  const [isStreamingResponse, setIsStreamingResponse] = useState(false)
   const [isOnChatError, setIsOnChatError] = useState(false)
   const [isOnLoadingError, setIsOnLoadingError] = useState(false)
 
   const tryAgainCallback = useRef<() => void>(() => {})
-  const [isStreamingResponse, setIsStreamingResponse] = useState(false)
 
   const loadPreviousMessages = () => {
     if (messages) return
@@ -103,11 +103,11 @@ export const useChatMessages = () => {
     let fullMessage = ''
 
     setIsWaitingResponse(false)
-    setIsStreamingResponse(true)
 
-    const onStreamEnd = () => {
+    const onMessageEnd = () => {
       messagesHistory.push(createAssistantMessage(fullMessage))
       fullMessage = ''
+      setIsStreamingResponse(false)
     }
 
     const streamProcessor = new ChatStreamProcessor()
@@ -122,25 +122,22 @@ export const useChatMessages = () => {
     streamProcessor.onWriteMarkdown = writeMessage
     streamProcessor.onWriteStudyplan = writeMessage
 
-    streamProcessor.onStartWritingStudyplan = onStreamEnd
-    streamProcessor.onFinishWritingStudyplan = onStreamEnd
+    streamProcessor.onStartWritingStudyplan = onMessageEnd
+    streamProcessor.onFinishWritingStudyplan = onMessageEnd
 
     // Handle Studyplan content when the processor detects it in the stream
     while (true) {
       const { value, done } = await reader.read()
-
-      if (done) {
-        onStreamEnd()
-        break
-      }
+      if (done) break
 
       if (value) {
         const chunk = decoder.decode(value)
         streamProcessor.processNewChunk(chunk)
+        setIsStreamingResponse(true)
       }
     }
 
-    setIsStreamingResponse(false)
+    onMessageEnd()
   }
 
   const createAssistantMessage = (content: string): ChatMessage => ({

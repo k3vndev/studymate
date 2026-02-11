@@ -30,8 +30,6 @@ export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
   const { context, userStudyplan } = useStudyplan({ studyplan, usersCurrent })
   const { name, desc, category } = context.studyplan
 
-  console.log(dataParser.fromStudyplanToModelPrompt(studyplan))
-
   return (
     <StudyplanContext.Provider value={context}>
       <section className='flex flex-col gap-9'>

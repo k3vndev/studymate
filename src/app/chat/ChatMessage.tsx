@@ -5,13 +5,15 @@ import { CardStudyplan } from '@components/CardStudyplan'
 import { EVENTS, FONTS } from '@consts'
 import { ErrorIcon, ReloadIcon } from '@icons'
 import type { ChatMessage as ChatMessageType, ChatStudyplan } from '@types'
+import { twMerge } from 'tailwind-merge'
 
 interface Props {
   role: ChatMessageType['role'] | 'bubbles'
   content: ChatMessageType['content']
+  isStreaming?: boolean
 }
 
-export const ChatMessage = ({ role, content }: Props) => {
+export const ChatMessage = ({ role, content, isStreaming = false }: Props) => {
   if (typeof content !== 'string') {
     return <StudyplanMessage studyplan={content} />
   }
@@ -20,7 +22,7 @@ export const ChatMessage = ({ role, content }: Props) => {
     return <UserOverlay>{content}</UserOverlay>
   }
   if (role === 'assistant') {
-    return <AssistantOverlay>{content}</AssistantOverlay>
+    return <AssistantOverlay isStreaming={isStreaming}>{content}</AssistantOverlay>
   }
   if (role === 'bubbles')
     return (
@@ -77,18 +79,19 @@ export const ChatError = ({ children }: ChildrenProps) => {
 const UserOverlay = ({ children }: ChildrenProps) => (
   <OverlayBase
     className={`
-      bg-blue-20 text-white rounded-se-none self-end 
+      from-blue-30 to-blue-20 text-white rounded-se-none self-end 
       md:max-w-96 xs:max-w-64 max-w-56
     `}
   >
     {children}
   </OverlayBase>
 )
-const AssistantOverlay = ({ children }: ChildrenProps) => (
+const AssistantOverlay = ({ children, isStreaming }: ChildrenProps & { isStreaming?: boolean }) => (
   <OverlayBase
     className={`
-      bg-gray-30/25 text-gray-10 rounded-ss-none self-start
+      from-gray-30/5 to-gray-30/25 text-gray-10 rounded-ss-none self-start
       xs:max-w-[calc(100%-10rem)] max-w-[calc(100%-4rem)]
+      ${isStreaming ? 'after:size-3 after:[content:""] after:bg-white after:inline-block after:ml-1.5 after:rounded-sm after:animate-pulse after:rotate-45' : ''}
     `}
   >
     {children}
@@ -102,10 +105,10 @@ interface OverlayBaseProps {
 
 const OverlayBase = ({ className = '', children }: OverlayBaseProps) => (
   <li
-    className={`
-      ${className} px-6 list-none py-3 text-pretty
-      rounded-3xl ${FONTS.INTER} font-light w-fit
-    `}
+    className={twMerge(`
+      bg-gradient-to-br from-[-200%] px-6 list-none py-3 text-pretty
+      rounded-3xl font-light w-fit ${FONTS.INTER} ${className}
+    `)}
   >
     {children}
   </li>

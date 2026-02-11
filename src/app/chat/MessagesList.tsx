@@ -17,9 +17,10 @@ export const MessagesList = () => {
       `}
       ref={listRef}
     >
-      {messages.map((msg, i) => (
-        <ChatMessage {...msg} key={i} />
-      ))}
+      {messages.map((msg, i) => {
+        const streaming = isStreamingResponse && msg.role === 'assistant' && i === messages.length - 1
+        return <ChatMessage isStreaming={streaming} {...msg} key={i} />
+      })}
       {isWaitingResponse && <ChatMessage role='bubbles' content='' />}
       {isOnChatError && <ChatMessage role='error' content={CHAT_ERROR_MESSAGE} />}
     </ul>
