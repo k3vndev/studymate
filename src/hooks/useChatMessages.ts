@@ -1,4 +1,4 @@
-import { StreamChat } from '@/lib/utils/StreamChat'
+import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
@@ -102,16 +102,16 @@ export const useChatMessages = () => {
     setIsWaitingResponse(false)
     setIsStreamingResponse(true)
 
-    const streamChat = new StreamChat()
+    const streamProcessor = new ChatStreamProcessor()
 
-    streamChat.onWriteText = (textChunk: string) => {
+    streamProcessor.onWriteMarkdown = textChunk => {
       fullMessage += textChunk
 
       const currentMessage = createAssistantMessage(fullMessage)
       setMessages([...newMessages, currentMessage])
     }
 
-    streamChat.onFinishWritingText = () => {
+    streamProcessor.onFinishWritingText = () => {
       newMessages.push(createAssistantMessage(fullMessage))
       fullMessage = ''
     }
@@ -122,7 +122,8 @@ export const useChatMessages = () => {
       if (!value) continue
 
       const chunk = decoder.decode(value)
-      streamChat.decodeNewChunk(chunk)
+      console.log(chunk)
+      streamProcessor.processNewChunk(chunk)
     }
 
     setIsStreamingResponse(false)

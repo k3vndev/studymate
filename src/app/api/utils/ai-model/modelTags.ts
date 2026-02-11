@@ -3,7 +3,7 @@ const TAGS = {
   END: '>§¤>'
 }
 
-export const MODEL_TAGS = ['TEXT', 'CODE', 'STUDYPLAN'] as const
+export const MODEL_TAGS = ['STUDYPLAN'] as const
 export type ModelTag = (typeof MODEL_TAGS)[number]
 
 const open = (name: ModelTag) => `${TAGS.START}${name}${TAGS.END}`

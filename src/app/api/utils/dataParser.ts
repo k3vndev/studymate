@@ -38,9 +38,6 @@ export const dataParser = {
 
   fromClientMessagesToModelPrompt: (messages: PromptRequestSchema['messages']['previous']) =>
     messages.map(({ role, content }) => {
-      if (role === 'assistant') {
-        return { role, content: modelTags.wrap('TEXT', content) }
-      }
       if (role === 'studyplan') {
         return {
           role: 'system',
