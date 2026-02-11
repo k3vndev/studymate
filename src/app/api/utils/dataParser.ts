@@ -21,7 +21,7 @@ export const dataParser = {
 
     for (const { name, desc, tasks } of daily_lessons) {
       const dailyLessonArr = [
-        `# ${++currentDay}`,
+        `### ${++currentDay}`,
         `name: ${name}`,
         `desc: ${desc}`,
         'tasks:',

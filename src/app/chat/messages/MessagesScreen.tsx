@@ -1,7 +1,7 @@
-import { Input } from './Input'
-import { MateHeader } from './MateHeader'
+import { Input } from '../Input'
+import { MateHeader } from '../MateHeader'
+import { ScrollDownButton } from '../ScrollDownButton'
 import { MessagesList } from './MessagesList'
-import { ScrollDownButton } from './ScrollDownButton'
 
 export const MessagesScreen = () => (
   <>

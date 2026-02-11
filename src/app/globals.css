@@ -6,6 +6,10 @@
   --studyplan-tile-height: 15rem;
 }
 
+* {
+  color-scheme: dark;  
+}
+
 .button {
   @apply hover:brightness-125 transition-all active:scale-95 active:brightness-95 disabled:opacity-75 disabled:scale-100 disabled:brightness-75 disabled:pointer-events-none select-none cursor-pointer;
 }
@@ -32,4 +36,45 @@
 nextjs-portal {
   position: absolute;
   opacity: 0;
+}
+
+.markdown-message {
+  @apply flex flex-col gap-3.5;
+
+  li {
+    @apply ml-5;
+  }
+
+  ol li {
+    @apply list-decimal;
+  }
+
+  ul li {
+    @apply list-disc;
+  }
+ 
+  ol, ul {
+    @apply flex flex-col gap-2;
+  }
+
+  strong {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-xl;
+
+    &::after {
+      content: ' ';
+      @apply block w-full h-0.5 bg-gradient-to-r from-white/10 to-white/5 rounded-full mt-2;
+    }
+  }
+
+  h2 {
+    @apply text-lg font-bold;
+  }
+
+  h3, h4, h5, h6 {
+    @apply text-base font-bold;
+  }
 }

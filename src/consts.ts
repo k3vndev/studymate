@@ -73,7 +73,7 @@ export const MATE_MESSAGES = {
 }
 export const MATE_PROMPT_VALUES = {
   MESSAGE: {
-    MAX: 350
+    MAX: 300
   },
   STUDYPLAN: {
     NAME: { MIN: 10, MAX: 30 },

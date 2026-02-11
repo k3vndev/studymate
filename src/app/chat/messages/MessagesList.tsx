@@ -1,4 +1,4 @@
-import { ChatMessage } from '@/app/chat/ChatMessage'
+import { ChatMessage } from '@/app/chat/messages/tiles/ChatMessage'
 import { ChatContext } from '@/lib/context/ChatContext'
 import { useChatStore } from '@/store/useChatStore'
 import { CHAT_ERROR_MESSAGE } from '@consts'
