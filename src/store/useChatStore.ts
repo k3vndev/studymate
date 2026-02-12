@@ -22,7 +22,33 @@ interface ChatsStore {
 }
 
 export const useChatStore = create<ChatsStore>(set => ({
-  messages: null,
+  messages: [
+    // Mock conversation
+    {
+      role: 'assistant',
+      content: 'Hello! I am your study assistant. How can I help you today?'
+    },
+    {
+      role: 'user',
+      content:
+        'Hi! Can you help me create a study plan for the next month? I want to learn more about machine learning and data science.'
+    },
+    {
+      role: 'assistant',
+      content:
+        'Of course! I can help you create a personalized study plan for machine learning and data science. To get started, could you please tell me a bit more about your current knowledge level in these subjects and how much time you can dedicate to studying each week?'
+    },
+    {
+      role: 'user',
+      content:
+        "I'm a beginner in both machine learning and data science, but I'm eager to learn. I can dedicate around 10 hours per week to studying."
+    },
+    {
+      role: 'assistant',
+      content:
+        'Great! Based on your current knowledge level and the time you can dedicate, I would recommend the following study plan for the next month:'
+    }
+  ],
   setMessages: state =>
     set(s =>
       setState(s, 'messages', state, value => {

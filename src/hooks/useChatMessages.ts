@@ -1,4 +1,5 @@
 import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
+import { StudyplanGenerationProcessor } from '@/lib/utils/StudyplanGenerationProcessor'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
@@ -99,34 +100,83 @@ export const useChatMessages = () => {
 
     // Process the streaming response
     const reader = res.body.getReader()
-    const decoder = new TextDecoder()
+    await handleMessageStream(reader, messagesHistory)
+  }
 
-    let fullMessage = ''
-
+  const handleMessageStream = async (
+    reader: ReadableStreamDefaultReader<Uint8Array<ArrayBuffer>>,
+    messagesHistory: ChatMessage[]
+  ) => {
     setIsWaitingResponse(false)
 
+    const decoder = new TextDecoder()
+    let fullMessage = ''
+    const streamProcessor = new ChatStreamProcessor()
+    const studyplanProcessor = new StudyplanGenerationProcessor()
+
+    // -- Stream processor callbacks --
+
     const onMessageEnd = () => {
+      if (fullMessage.trim() === '') return
+
       messagesHistory.push(createAssistantMessage(fullMessage))
+      setMessages(messagesHistory)
+
       fullMessage = ''
       setIsStreamingResponse(false)
     }
 
-    const streamProcessor = new ChatStreamProcessor()
-
-    const writeMessage = (textChunk: string) => {
+    // Update the message in the chat as new chunks of text are received from the stream
+    streamProcessor.onWriteMarkdown = (textChunk: string) => {
       fullMessage += textChunk
 
       const currentMessage = createAssistantMessage(fullMessage)
       setMessages([...messagesHistory, currentMessage])
     }
 
-    streamProcessor.onWriteMarkdown = writeMessage
-    streamProcessor.onWriteStudyplan = writeMessage
+    // Create a new message to show studyplan content as it's being generated
+    streamProcessor.onStartWritingStudyplan = () => {
+      onMessageEnd()
+      setMessages([...messagesHistory, { role: 'generating_studyplan', content: {} }])
+    }
 
-    streamProcessor.onStartWritingStudyplan = onMessageEnd
-    streamProcessor.onFinishWritingStudyplan = onMessageEnd
+    streamProcessor.onWriteStudyplan = textChunk => {
+      studyplanProcessor.processNewChunk(textChunk)
+    }
 
-    // Handle Studyplan content when the processor detects it in the stream
+    studyplanProcessor.onStudyplanContentUpdate = content => {
+      // Update the message content with the current state of the generated Studyplan content
+      setMessages(prev => {
+        if (!prev || prev.length === 0) return prev
+
+        const prevClone = structuredClone(prev)
+        const lastMessage = prevClone[prevClone.length - 1]
+
+        if (lastMessage.role !== 'generating_studyplan') return prev
+
+        lastMessage.content = content
+        return prevClone
+      })
+    }
+
+    streamProcessor.onFinishWritingStudyplan = () => {
+      const fullStudyplan = studyplanProcessor.getFullStudyplan()
+
+      if (fullStudyplan) {
+        const chatStudyplan: ChatStudyplan = {
+          ...fullStudyplan,
+          original_id: null,
+          chat_message_id: null
+        }
+
+        // Update the message content with the final generated Studyplan content
+        messagesHistory.push({ role: 'studyplan', content: chatStudyplan })
+        setMessages(messagesHistory)
+      }
+    }
+
+    // -- Main loop to read the stream --
+
     while (true) {
       const { value, done } = await reader.read()
       if (done) break
@@ -137,7 +187,6 @@ export const useChatMessages = () => {
         setIsStreamingResponse(true)
       }
     }
-
     onMessageEnd()
   }
 

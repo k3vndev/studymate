@@ -23,6 +23,7 @@ export type ChatMessage =
 export interface GeneratingStudyplanContent {
   name?: string
   desc?: string
+  category?: Category
   daily_lessons_count?: number
 }
 

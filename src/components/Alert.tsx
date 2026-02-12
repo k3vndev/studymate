@@ -13,7 +13,7 @@ import { useState } from 'react'
 export const Alert = () => {
   const [data, setData] = useState<AlertData | null>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const justLoaded = useJustLoaded(1000, [isVisible])
+  const justLoaded = useJustLoaded(1200, [isVisible])
 
   useEvent(EVENTS.ON_SHOW_ALERT, ({ detail }: CustomEvent) => {
     setData(detail as AlertData)
@@ -52,8 +52,9 @@ export const Alert = () => {
     >
       <div
         className={`
-          ${opacity} ${scale} bg-gray-40 border border-gray-30 rounded-xl xs:px-10 px-6 xs:py-6 py-7 flex 
-          flex-col gap-6 shadow-card w-min max-w-full transition duration-200
+          ${opacity} ${scale} bg-gray-50/85 border border-gray-30 rounded-xl xs:px-10 px-6 xs:py-6 py-7 flex 
+          flex-col gap-6 shadow-card shadow-black/50 w-min max-w-full transition duration-200
+          backdrop-blur-sm
         `}
         onPointerDown={e => e.stopPropagation()}
       >

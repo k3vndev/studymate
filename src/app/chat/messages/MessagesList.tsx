@@ -13,7 +13,7 @@ export const MessagesList = () => {
     <ul
       className={`
         w-full max-h-full flex flex-col gap-4 pb-16 pt-32 
-        overflow-hidden animate-fade-in-fast mb-12
+        overflow-hidden animate-fade-in-fast mb-12 min-h-0
       `}
       ref={listRef}
     >
