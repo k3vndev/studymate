@@ -6,15 +6,13 @@ import type {
   DBCurrentStudyplanDay,
   DBUserStudyplanAndCurrentDayResponse,
   MateResponseSchema,
-  PromptRequestSchema,
-  StudyplanSaved,
-  StudyplanUnSaved
+  PromptRequestSchema
 } from '@types'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { modelTags } from './ai-model/modelTags'
 
 export const dataParser = {
-  fromStudyplanToModelPrompt: (studyplan: StudyplanUnSaved | StudyplanSaved): string => {
+  fromStudyplanToModelPrompt: (studyplan: ChatStudyplan): string => {
     const { name, category, desc, daily_lessons } = studyplan
 
     const dailyLessons: string[] = []
@@ -68,14 +66,13 @@ export const dataParser = {
     }),
 
   fromClientMessagesToModelPrompt: (
-    messages: PromptRequestSchema['messages']['previous']
+    messages: PromptRequestSchema['messages']
   ): ChatCompletionMessageParam[] =>
     messages.map(({ role, content }) => {
       if (role === 'studyplan') {
-        return {
-          role: 'assistant',
-          content: dataParser.fromStudyplanToModelPrompt(content)
-        }
+        // Parse Studyplan object to the format the model understands and generates
+        const parsedStudyplan = dataParser.fromStudyplanToModelPrompt(content)
+        return { role: 'assistant', content: parsedStudyplan }
       }
       return { role, content }
     }),

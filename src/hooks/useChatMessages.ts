@@ -103,10 +103,7 @@ export const useChatMessages = () => {
     await handleMessageStream(reader, messagesHistory)
   }
 
-  const handleMessageStream = async (
-    reader: ReadableStreamDefaultReader<Uint8Array<ArrayBuffer>>,
-    messagesHistory: ChatMessage[]
-  ) => {
+  const handleMessageStream = async (reader: ReadableStreamDefaultReader, messagesHistory: ChatMessage[]) => {
     setIsWaitingResponse(false)
 
     const decoder = new TextDecoder()

@@ -38,6 +38,7 @@ nextjs-portal {
   opacity: 0;
 }
 
+/* Markdown messages styling */
 .markdown-message {
   @apply flex flex-col gap-3.5;
 
@@ -77,4 +78,10 @@ nextjs-portal {
   h3, h4, h5, h6 {
     @apply text-base font-bold;
   }
+}
+
+/* Adds a tiny square at the end while the message is generating */
+.assistant-message-streaming > *:last-child::after {
+  content: "";
+  @apply size-3 bg-white inline-block ml-1.5 rounded-sm animate-pulse rotate-45;
 }

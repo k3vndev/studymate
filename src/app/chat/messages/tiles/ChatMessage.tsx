@@ -60,7 +60,7 @@ const AssistantOverlay = ({ children, isStreaming }: ChildrenProps & { isStreami
     className={`
       from-gray-30/5 to-gray-30/25 text-white/90 rounded-ss-[3px] self-start
       xs:max-w-[calc(100%-10rem)] max-w-[calc(100%-4rem)]
-      ${isStreaming ? 'after:size-3 after:[content:""] after:bg-white after:inline-block after:ml-1.5 after:rounded-sm after:animate-pulse after:rotate-45' : ''}
+      ${isStreaming ? 'assistant-message-streaming' : ''}
     `}
   >
     {children}
