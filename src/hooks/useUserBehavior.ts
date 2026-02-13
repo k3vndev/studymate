@@ -21,7 +21,7 @@ export const useUserBehavior = () => {
    * const onUser = useUserBehavior()
    * onUser({
    *   gone: () => {
-   *     console.log('User has left the page')
+   *     // Logic when user has left the page or after waitTime has passed
    *   }
    * })
    */

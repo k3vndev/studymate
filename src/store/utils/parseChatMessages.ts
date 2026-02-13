@@ -7,5 +7,5 @@ export const parseChatMessages = (chatMessages: ChatMessage[]): ChatMessage[] =>
       const chat_message_id = `chat-${index.toString().padStart(5, '0')}`
       return { content: { ...content, chat_message_id }, role }
     }
-    return { role, content }
+    return { role, content } as ChatMessage
   })

@@ -1,3 +1,4 @@
+import type React from 'react'
 import { createContext } from 'react'
 
 interface ChatContext {
@@ -12,6 +13,8 @@ interface ChatContext {
     onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void
     value: string
   }
+  isStreamingResponse: boolean
+  setIsStreamingResponse: React.Dispatch<React.SetStateAction<boolean>>
   listRef: React.MutableRefObject<any>
   scrollRef: React.MutableRefObject<any>
   scrollIsOnBottom: boolean
@@ -30,6 +33,8 @@ export const ChatContext = createContext<ChatContext>({
     onKeyDown: () => {},
     value: ''
   },
+  isStreamingResponse: false,
+  setIsStreamingResponse: () => {},
   listRef: { current: null },
   scrollRef: { current: null },
   scrollIsOnBottom: true,

@@ -73,7 +73,8 @@ export const MATE_MESSAGES = {
 }
 export const MATE_PROMPT_VALUES = {
   MESSAGE: {
-    MAX: 350
+    MAX: 1000,
+    MAX_INFORCED: 1500
   },
   STUDYPLAN: {
     NAME: { MIN: 10, MAX: 30 },
@@ -82,11 +83,11 @@ export const MATE_PROMPT_VALUES = {
       GOAL: { MIN: 25, MAX: 60 },
       COUNT: { DEFAULT: 3, MAX: 7 }
     },
-    MAX_DAYS: 10
+    MAX_DAYS: 15
   }
 }
 export const MATE_MESSAGES_MEMORY = 10
-export const USER_MAX_MESSAGE_LENGTH = 600
+export const USER_MAX_MESSAGE_LENGTH = 750
 
 export const MATE_IMAGES_ALT = {
   GREETING: 'Your virtual assistant, Mate, waving its hand at you',

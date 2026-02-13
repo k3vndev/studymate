@@ -15,6 +15,18 @@ export type ChatMessage =
       role: 'studyplan'
       content: ChatStudyplan
     }
+  | {
+      role: 'generating_studyplan'
+      content: GeneratingStudyplanContent
+    }
+
+export interface GeneratingStudyplanContent {
+  name?: string
+  desc?: string
+  category?: Category
+  lessons_count?: number
+  current_lesson?: string
+}
 
 export interface AlertData {
   header: string
@@ -114,4 +126,9 @@ export interface DBChatMessages {
 export interface ReusableComponent {
   className?: string
   style?: React.CSSProperties
+}
+
+export interface StreamResponseMessage {
+  type: 'studyplan' | 'message'
+  content: string
 }

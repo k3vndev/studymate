@@ -19,11 +19,6 @@ export const CarouselButtons = ({ ulRef, showItemsCount, tileWidth }: Props) => 
   useEffect(() => {
     if (buttonVisible.left && initialScroll.current && tileWidth) {
       initialScroll.current = false
-      console.log('scroll to the first tile', {
-        buttonVisible,
-        tileWidth,
-        ulRef: ulRef.current
-      })
     }
   }, [buttonVisible, tileWidth, ulRef.current])
 

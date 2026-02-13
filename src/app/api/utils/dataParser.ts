@@ -8,9 +8,38 @@ import type {
   MateResponseSchema,
   PromptRequestSchema
 } from '@types'
-import type { ChatCompletionMessage } from 'openai/resources/index.mjs'
+import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
+import { modelTags } from './ai-model/modelTags'
 
 export const dataParser = {
+  fromStudyplanToModelPrompt: (studyplan: ChatStudyplan): string => {
+    const { name, category, desc, daily_lessons } = studyplan
+
+    const dailyLessons: string[] = []
+    let currentDay = 0
+
+    for (const { name, desc, tasks } of daily_lessons) {
+      const dailyLessonArr = [
+        `### ${++currentDay}`,
+        `name: ${name}`,
+        `desc: ${desc}`,
+        'tasks:',
+        tasks.map(t => `- ${t.goal}`).join('\n')
+      ]
+      dailyLessons.push(dailyLessonArr.join('\n'))
+    }
+
+    const baseDataStr = [
+      `name: ${name}`,
+      `desc: ${desc}`,
+      `category: ${category}`,
+      'daily_lessons:',
+      dailyLessons.join('\n')
+    ]
+
+    return [modelTags.open('STUDYPLAN'), baseDataStr.join('\n'), modelTags.close('STUDYPLAN')].join('\n')
+  },
+
   fromDBResponseToUserStudyplan: (response: DBUserStudyplanAndCurrentDayResponse[]) => {
     const {
       studyplan: fetchedStudyplan,
@@ -36,12 +65,17 @@ export const dataParser = {
       return { role: 'studyplan', content }
     }),
 
-  fromClientMessagesToModelPrompt: (messages: PromptRequestSchema['messages']['previous']) =>
-    messages.map(({ role, content }) =>
-      role !== 'studyplan'
-        ? { role, content }
-        : { role: 'system', content: `Mate sent the following studyplan: " ${JSON.stringify(content)} "` }
-    ) as ChatCompletionMessage[],
+  fromClientMessagesToModelPrompt: (
+    messages: PromptRequestSchema['messages']
+  ): ChatCompletionMessageParam[] =>
+    messages.map(({ role, content }) => {
+      if (role === 'studyplan') {
+        // Parse Studyplan object to the format the model understands and generates
+        const parsedStudyplan = dataParser.fromStudyplanToModelPrompt(content)
+        return { role: 'assistant', content: parsedStudyplan }
+      }
+      return { role, content }
+    }),
 
   fromNumberToCurrentStudyplanDay: (day: number): DBCurrentStudyplanDay => {
     const today = new Date()

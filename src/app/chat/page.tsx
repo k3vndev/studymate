@@ -9,10 +9,10 @@ import { useChatCustomScroll } from '@hooks/useChatCustomScroll'
 import { useChatMessages } from '@hooks/useChatMessages'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { ReloadIcon } from '@icons'
-import { MessagesScreen } from './MessagesScreen'
-import { NoMessagesScreen } from './NoMessagesScreen'
-import { ScrollHelper } from './ScrollHelper'
 import { useState } from 'react'
+import { ScrollHelper } from './ScrollHelper'
+import { MessagesScreen } from './messages/MessagesScreen'
+import { NoMessagesScreen } from './messages/NoMessagesScreen'
 
 export default function ChatPage() {
   const [inputElementHeight, setInputElementHeight] = useState(0)

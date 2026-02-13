@@ -1,19 +1,14 @@
 import { TodaysLesson } from '@/app/studyplan/TodaysLesson'
-import { useUserStudyplan } from '@hooks/useUserStudyplan'
+import { useStudyplan } from '@/hooks/useStudyplan'
 import { StudyplanContext } from '@/lib/context/StudyplanContext'
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { useUserStore } from '@/store/useUserStore'
-import type { StudyplanUnSaved } from '@types'
-import { useEffect } from 'react'
 import { Badge } from '@components/Badge'
 import { Header } from '@components/Header'
 import { Paragraph } from '@components/Paragraph'
+import type { StudyplanUnSaved } from '@types'
 import { ButtonsSection } from './ButtonsSection'
 import { Category } from './Category'
 import { DailyLessons } from './DailyLessons'
 import { OptionsButton } from './OptionsButton'
-import { useUserData } from '@/hooks/useUserData'
-import { useStudyplan } from '@/hooks/useStudyplan'
 
 export interface Props {
   studyplan: StudyplanUnSaved & {

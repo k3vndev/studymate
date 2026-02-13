@@ -1,17 +1,18 @@
-import { parseChatMessages } from '@/lib/utils/parseChatMessages'
+import { parseChatMessages } from '@/store/utils/parseChatMessages'
+import { type ValueOrCallback, setState } from '@/store/utils/setState'
 import type { ChatMessage, ChatStudyplan } from '@types'
 import { create } from 'zustand'
 
 interface ChatsStore {
   messages: ChatMessage[] | null
-  setMessages: (chatMessages: ChatMessage[] | null) => void
+  setMessages: (chatMessages: ValueOrCallback<ChatsStore['messages']>) => void
   pushMessages: (...chatMessages: ChatMessage[]) => void
 
   userInput: string
-  setUserInput: (value: string) => void
+  setUserInput: (value: ValueOrCallback<string>) => void
 
   highlightedMessage: string | null
-  setHighlihtedMessage: (value: string | null) => void
+  setHighlihtedMessage: (value: ValueOrCallback<ChatsStore['highlightedMessage']>) => void
 
   setStudyplanOriginalId: (
     messageId: string,
@@ -22,11 +23,13 @@ interface ChatsStore {
 
 export const useChatStore = create<ChatsStore>(set => ({
   messages: null,
-  setMessages: chatMessages =>
-    set(() => {
-      const messages = chatMessages ? parseChatMessages(chatMessages) : null
-      return { messages }
-    }),
+  setMessages: state =>
+    set(s =>
+      setState(s, 'messages', state, value => {
+        const messages = value ? parseChatMessages(value) : null
+        return messages
+      })
+    ),
 
   pushMessages: (...newMessages) =>
     set(({ messages }) => {
@@ -36,10 +39,10 @@ export const useChatStore = create<ChatsStore>(set => ({
     }),
 
   userInput: '',
-  setUserInput: value => set(() => ({ userInput: value })),
+  setUserInput: state => set(s => setState(s, 'userInput', state, value => value)),
 
   highlightedMessage: null,
-  setHighlihtedMessage: value => set(() => ({ highlightedMessage: value })),
+  setHighlihtedMessage: state => set(s => setState(s, 'highlightedMessage', state, value => value)),
 
   setStudyplanOriginalId: (chatMessageId, newOriginalId, callback = () => {}) =>
     set(({ messages }) => {

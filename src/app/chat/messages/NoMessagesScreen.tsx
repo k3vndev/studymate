@@ -3,7 +3,7 @@ import { CardMate } from '@components/CardMate'
 import { ChipButton } from '@components/ChipButton'
 import { MATE_MESSAGES } from '@consts'
 import { MagicWandIcon } from '@icons'
-import { Input } from './Input'
+import { Input } from '../Input'
 
 export const NoMessagesScreen = () => {
   const prompt = useUserPrompts()
