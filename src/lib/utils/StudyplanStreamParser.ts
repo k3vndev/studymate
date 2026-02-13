@@ -1,6 +1,9 @@
 import type { GeneratingStudyplanContent, StudyplanUnSaved } from '@types'
 
-export class StudyplanGenerationProcessor {
+/**
+ * Class responsible for understanding a Studyplan stream and parsing it into a `StudyplanUnsaved` object or show its generating content on the go.
+ */
+export class StudyplanStreamParser {
   private studyplanContent: GeneratingStudyplanContent = {}
   private lineBuffer = ''
 
@@ -49,7 +52,15 @@ export class StudyplanGenerationProcessor {
 
       if (buffer.startsWith(searchPattern)) {
         const content = buffer.slice(searchPattern.length)
+        const prevContent: string = (this.studyplanContent as any)[structureKey]
+
+        if (prevContent && prevContent.length > content.length) {
+          this.onStudyplanError?.(
+            `New content was shorter than previous content at basic key "${structureKey}". This most likely means the same key was setted in multiple lines`
+          )
+        }
         ;(this.studyplanContent as any)[structureKey] = content
+
         this.onStudyplanContentUpdate?.(this.studyplanContent)
         break
       }
@@ -61,8 +72,12 @@ export class StudyplanGenerationProcessor {
     const line = fullLine.trim()
     if (!line) return
 
-    // Search for daily lesson list start pattern 'daily_lessons:'
+    // Search for daily lesson list start pattern
     if (line === 'daily_lessons:') {
+      // Detect invalid studyplan and an throw an error in that case
+      const { name, desc, category } = this.studyplanContent
+      if (!name || !desc || !category) this.onStudyplanError?.("Studyplan wasn't properly initialized")
+
       this.isOnDailyLessonsPhase = true
       return
     }
@@ -78,7 +93,7 @@ export class StudyplanGenerationProcessor {
       // Always increase the daily lesson number to avoid issues with wrong numbering in the text.
       this.currentDailyLessonNumber++
 
-      this.studyplanContent.daily_lessons_count = this.currentDailyLessonNumber + 1 // +1 because the number is 0 indexed
+      this.studyplanContent.lessons_count = this.currentDailyLessonNumber + 1 // +1 because the number is 0 indexed
       this.onStudyplanContentUpdate?.(this.studyplanContent)
       this.dailyLessons.push({ tasks: [] })
       return
@@ -98,8 +113,15 @@ export class StudyplanGenerationProcessor {
     for (const key of keys) {
       const searchPattern = `${key}: `
       if (line.startsWith(searchPattern)) {
+        // Store daily lesson value
         const content = line.slice(searchPattern.length)
         ;(this.dailyLessons[this.currentDailyLessonNumber] as any)[key] = content
+
+        // Set current generating lesson
+        if (key === 'name') {
+          this.studyplanContent.current_lesson = content
+          this.onStudyplanContentUpdate?.(this.studyplanContent)
+        }
         break
       }
     }
@@ -110,6 +132,12 @@ export class StudyplanGenerationProcessor {
    * The Studyplan content here is limited to the base fields (name, desc, category)
    */
   onStudyplanContentUpdate: ((content: GeneratingStudyplanContent) => void) | null = null
+
+  /**
+   * This method is called whenever a format error is detected with the generating studyplan.
+   * Detecting an error does not block the main internal logic.
+   */
+  onStudyplanError: ((errorMessage: string) => void) | null = null
 
   /**
    * Call this method when the Studyplan generation process is finished and you want to get the full generated Studyplan.

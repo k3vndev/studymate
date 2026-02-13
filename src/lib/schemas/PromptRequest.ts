@@ -1,3 +1,4 @@
+import { MATE_PROMPT_VALUES, USER_MAX_MESSAGE_LENGTH } from '@/consts'
 import { StudyplanSchema } from '@schemas/Studyplan'
 import { z } from 'zod'
 
@@ -5,8 +6,12 @@ export const PromptRequestSchema = z.object({
   messages: z.array(
     z.union([
       z.object({
-        role: z.enum(['user', 'assistant']),
-        content: z.string().trim().nonempty()
+        role: z.literal('user'),
+        content: z.string().trim().nonempty().max(USER_MAX_MESSAGE_LENGTH)
+      }),
+      z.object({
+        role: z.literal('assistant'),
+        content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_INFORCED)
       }),
       z.object({
         role: z.enum(['studyplan']),

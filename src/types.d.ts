@@ -24,7 +24,8 @@ export interface GeneratingStudyplanContent {
   name?: string
   desc?: string
   category?: Category
-  daily_lessons_count?: number
+  lessons_count?: number
+  current_lesson?: string
 }
 
 export interface AlertData {
@@ -125,4 +126,9 @@ export interface DBChatMessages {
 export interface ReusableComponent {
   className?: string
   style?: React.CSSProperties
+}
+
+export interface StreamResponseMessage {
+  type: 'studyplan' | 'message'
+  content: string
 }

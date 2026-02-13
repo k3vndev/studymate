@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const GeneratingStudyplanLoader = ({ content, className = '' }: Props) => {
-  const { name, desc, daily_lessons_count } = content
+  const { name, desc, lessons_count, current_lesson } = content
   const intervalRef = useRef<NodeJS.Timeout>()
 
   const [ellipsisDots, setEllipsisDots] = useState('')
@@ -49,9 +49,9 @@ export const GeneratingStudyplanLoader = ({ content, className = '' }: Props) =>
 
           <div className='mt-3 flex items-center flex-wrap gap-2 w-full animate-pulse'>
             <LoadingIcon className='animate-spin' />
-            {daily_lessons_count !== undefined && (
+            {lessons_count !== undefined && (
               <span className='animate-appear'>
-                Generating lesson {daily_lessons_count}
+                Generating lesson {lessons_count}
                 {ellipsisDots}
               </span>
             )}

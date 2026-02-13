@@ -1,5 +1,5 @@
 import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
-import { StudyplanGenerationProcessor } from '@/lib/utils/StudyplanGenerationProcessor'
+import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
@@ -26,7 +26,7 @@ export const useChatMessages = () => {
 
   const tryAgainCallback = useRef<() => void>(() => {})
 
-  const loadPreviousMessages = () => {
+  const loadChatHistory = () => {
     if (messages) return
     setIsOnLoadingError(false)
 
@@ -40,7 +40,7 @@ export const useChatMessages = () => {
       redirectOn401: true
     })
   }
-  useEffect(loadPreviousMessages, [])
+  useEffect(loadChatHistory, [])
 
   const preloadChatStudyplans = (chatMessages: ChatMessage[]) => {
     const chatStudyplans: ChatStudyplan[] = chatMessages
@@ -109,12 +109,14 @@ export const useChatMessages = () => {
     const decoder = new TextDecoder()
     let fullMessage = ''
     const streamProcessor = new ChatStreamProcessor()
-    const studyplanProcessor = new StudyplanGenerationProcessor()
+    const studyplanProcessor = new StudyplanStreamParser()
+
+    const originalMessagesHistory = [...messagesHistory]
 
     // -- Stream processor callbacks --
 
     const onMessageEnd = () => {
-      if (fullMessage.trim() === '') return
+      if (fullMessage.trim() === '' || isOnStudyplanError) return
 
       messagesHistory.push(createAssistantMessage(fullMessage))
       setMessages(messagesHistory)
@@ -125,8 +127,9 @@ export const useChatMessages = () => {
 
     // Update the message in the chat as new chunks of text are received from the stream
     streamProcessor.onWriteMarkdown = (textChunk: string) => {
-      fullMessage += textChunk
+      if (isOnStudyplanError) return
 
+      fullMessage += textChunk
       const currentMessage = createAssistantMessage(fullMessage)
       setMessages([...messagesHistory, currentMessage])
     }
@@ -138,6 +141,7 @@ export const useChatMessages = () => {
     }
 
     streamProcessor.onWriteStudyplan = textChunk => {
+      console.log(textChunk)
       studyplanProcessor.processNewChunk(textChunk)
     }
 
@@ -165,16 +169,35 @@ export const useChatMessages = () => {
           original_id: null,
           chat_message_id: null
         }
-
         // Update the message content with the final generated Studyplan content
         messagesHistory.push({ role: 'studyplan', content: chatStudyplan })
         setMessages(messagesHistory)
+      } else {
+        onStudyplanError()
       }
     }
 
+    const onStudyplanError = () => {
+      // Set error flags
+      isOnStudyplanError = true
+      setIsStreamingResponse(false)
+
+      requestAnimationFrame(() => {
+        // An UI update later to avoid reseting the error itself
+        setIsOnChatError(true)
+        setTimeout(() => window.scrollTo({ top: document.documentElement.clientHeight }), 150)
+      })
+
+      // Reset messages
+      setMessages([...originalMessagesHistory])
+    }
+    studyplanProcessor.onStudyplanError = onStudyplanError
+
     // -- Main loop to read the stream --
 
-    while (true) {
+    let isOnStudyplanError = false
+
+    while (!isOnStudyplanError) {
       const { value, done } = await reader.read()
       if (done) break
 
@@ -232,7 +255,7 @@ export const useChatMessages = () => {
     isWaitingResponse,
     isOnChatError,
     isOnLoadingError,
-    loadPreviousMessages,
+    loadPreviousMessages: loadChatHistory,
     isStreamingResponse,
     setIsStreamingResponse,
     inputProps: {
