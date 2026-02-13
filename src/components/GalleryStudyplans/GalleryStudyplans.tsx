@@ -1,5 +1,7 @@
 'use client'
 
+import { useUserData } from '@/hooks/useUserData'
+import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import type { UserStore } from '@/store/useUserStore'
@@ -7,11 +9,9 @@ import { Header } from '@components/Header'
 import { CONTENT_JSON } from '@consts'
 import type { StudyplanSaved } from '@types'
 import { useContext, useEffect } from 'react'
-import { useUserData } from '@/hooks/useUserData'
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
-import { RowsGalleryStudyplans } from './RowsGalleryStudyplans'
 import { CarouselGalleryStudyplans } from './CarouselGalleryStudyplans'
 import { EmptyGalleryStudyplans } from './EmptyGalleryStudyplans'
+import { RowsGalleryStudyplans } from './RowsGalleryStudyplans'
 
 interface Props {
   title: string
@@ -63,7 +63,7 @@ export const GalleryStudyplans = ({
 
   return (
     <GalleryStudyplansContext.Provider value={{ studyplansList, carousel, gap, emptyMessage, title }}>
-      <section className='flex flex-col' style={{ gap: `${gap}px` }}>
+      <section className='flex flex-col animate-fade-in-fast' style={{ gap: `${gap}px` }}>
         <GalleryHeader />
 
         {isEmpty ? (

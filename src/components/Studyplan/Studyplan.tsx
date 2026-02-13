@@ -26,7 +26,7 @@ export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
 
   return (
     <StudyplanContext.Provider value={context}>
-      <section className='flex flex-col gap-9'>
+      <section className='flex flex-col gap-9 animate-fade-in-very-fast'>
         <div className='flex justify-between items-start'>
           <div className='flex flex-col gap-3 relative'>
             <Badge>STUDYPLAN</Badge>

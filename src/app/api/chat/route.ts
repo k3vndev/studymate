@@ -92,6 +92,7 @@ export const POST = async (req: NextRequest) => {
 
     const streamMessages: StreamResponseMessage[] = []
     const streamProcessor = new ChatStreamProcessor()
+    const studyplanParser = new StudyplanStreamParser()
 
     // -- Write data to stream messages --
 
@@ -108,7 +109,15 @@ export const POST = async (req: NextRequest) => {
       streamMessages[length - 1].content += chunk
     }
     streamProcessor.onWriteMarkdown = chunk => writeToStreamMessages('message', chunk)
-    streamProcessor.onWriteStudyplan = chunk => writeToStreamMessages('studyplan', chunk)
+    streamProcessor.onWriteStudyplan = chunk => {
+      studyplanParser.processNewChunk(chunk)
+      writeToStreamMessages('studyplan', chunk)
+    }
+
+    // Log errors
+    studyplanParser.onStudyplanError = message => {
+      console.warn('Format error in studyplan generation!', { userId, message })
+    }
 
     // -- Read from stream --
 
@@ -134,11 +143,6 @@ export const POST = async (req: NextRequest) => {
           }
 
           // Parse Studyplan
-          const studyplanParser = new StudyplanStreamParser()
-          const lines = content.split('\n')
-          for (const line of lines) {
-            studyplanParser.processNewChunk(line)
-          }
           const studyplan = studyplanParser.getFullStudyplan()
           studyplanIsNotValid = !studyplan
 

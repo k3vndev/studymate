@@ -20,7 +20,7 @@ export const InitialSection = () => {
   }
 
   return (
-    <CardMate message={MATE_MESSAGES.MEET}>
+    <CardMate message={MATE_MESSAGES.MEET} className={{ main: 'animate-fade-in-fast' }}>
       <ChipButton empty onClick={prompts.whatCanYouDo}>
         <MagicWandIcon />
         What can you do?

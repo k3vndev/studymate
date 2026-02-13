@@ -23,7 +23,7 @@ export default function ChatPage() {
   const { isWaitingResponse, isOnChatError, isOnLoadingError } = chatMessagesValues
 
   const customScrollValues = useChatCustomScroll({
-    updateScrollOn: [isWaitingResponse, isOnChatError]
+    updateScrollOn: [isWaitingResponse, isOnChatError, isOnLoadingError]
   })
 
   const classNames = {

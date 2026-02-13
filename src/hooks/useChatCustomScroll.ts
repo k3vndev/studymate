@@ -26,11 +26,11 @@ export const useChatCustomScroll = ({ updateScrollOn }: Params) => {
       const { scrollHeight } = listRef.current
 
       const { bottom } = listRef.current.getBoundingClientRect()
-      const listRefBottom = window.innerHeight - bottom
+      const listRefBottom = (window.innerHeight - bottom) / 2
 
       // Apply scroll height
       listRef.current.style.overflowY = 'hidden'
-      scrollRef.current.style.height = `${scrollHeight + listRefBottom}px`
+      scrollRef.current.style.height = `${scrollHeight - listRefBottom}px`
     }
 
     window.addEventListener('resize', recalculateScrollHeight)
@@ -62,7 +62,7 @@ export const useChatCustomScroll = ({ updateScrollOn }: Params) => {
 
       isOnInitialScroll.current = false
     }
-  }, [chatMessages])
+  }, [chatMessages, ...updateScrollOn])
 
   // Scroll to bottom when the user presses the button
   useEvent(EVENTS.ON_CHAT_SCROLL_DOWN, () => scrollToBottom(), [])

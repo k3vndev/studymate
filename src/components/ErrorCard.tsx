@@ -10,7 +10,7 @@ interface Props {
 export const ErrorCard = ({ children, className = '' }: Props) => (
   <div
     className={twMerge(
-      `${className} absolute top-1/2 -translate-y-1/2 flex flex-col items-center sm:gap-7 gap-5`
+      `absolute top-1/2 -translate-y-1/2 flex flex-col items-center sm:gap-7 gap-5 animate-fade-in-fast ${className}`
     )}
   >
     <Image
@@ -60,7 +60,7 @@ interface ButtonProps {
 export const Button = ({ className = '', children, onClick = () => {} }: ButtonProps) => (
   <button
     className={twMerge(`
-      border border-gray-20 bg-gray-30/25 px-5 py-2 group w-fit
+      border border-gray-20 bg-gray-30/25 px-5 py-2 group w-fit text-nowrap
       text-gray-10 text-xl flex gap-2 rounded-lg button items-center ${className}
     `)}
     {...{ onClick }}

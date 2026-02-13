@@ -1,5 +1,5 @@
-import type { Config } from 'tailwindcss'
 import scrollbarHide from 'tailwind-scrollbar-hide'
+import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
@@ -28,8 +28,8 @@ const config: Config = {
       animation: {
         'spin-pulse': 'spin-pulse 1.5s linear both infinite',
 
-        'fade-in-fast': 'fade-in 100ms ease-in both',
-        'fade-in-very-fast': 'fade-in 50ms ease-in both',
+        'fade-in-fast': 'fade-in 150ms ease-in both',
+        'fade-in-very-fast': 'fade-in 75ms ease-in both',
 
         'bounce-once': 'bounce-once 1s ease-in-out',
 
@@ -45,7 +45,7 @@ const config: Config = {
           '100%': { rotate: '360deg', opacity: '1' }
         },
         'fade-in': {
-          '0%': { opacity: '0' },
+          '0%': { opacity: '0', filter: 'blur(8px)' },
           '100%': { opacity: '1' }
         },
         'bounce-once': {

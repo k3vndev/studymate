@@ -141,7 +141,6 @@ export const useChatMessages = () => {
     }
 
     streamProcessor.onWriteStudyplan = textChunk => {
-      console.log(textChunk)
       studyplanProcessor.processNewChunk(textChunk)
     }
 

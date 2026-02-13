@@ -17,7 +17,7 @@ export default function FocusPage() {
       <Main className='gap-12 max-h-full min-h-full relative'>
         <Loadable isLoading={isLoading}>
           {userStudyplan && currentTaskValues && (
-            <div className='flex flex-col items-center h-full justify-between'>
+            <div className='flex flex-col items-center h-full justify-between animate-fade-in-fast'>
               <InfoHeader {...userStudyplan} />
               <Timer />
               <CurrentTask {...currentTaskValues} />
