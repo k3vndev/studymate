@@ -3,8 +3,8 @@ import './globals.css'
 import { Alert } from '@components/Alert'
 
 export const metadata: Metadata = {
-  title: 'Studymate',
-  description: ''
+  title: 'Studymate — Enhance your learning with AI',
+  description: 'Enhance your learning with AI. Mate, your virtual assistant, will help you create, follow and complete personalized study plans.'
 }
 
 export default function RootLayout({
