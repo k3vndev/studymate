@@ -21,7 +21,7 @@ export const TodaysTasks = ({ desc, tasks }: Props) => {
 
   return (
     <>
-      <div className='flex flex-col gap-4'>
+      <div className='flex flex-col gap-4 animate-fade-in-fast'>
         <Header size={3}>
           Today's tasks
           <CheckListIcon className='size-8' />
@@ -30,7 +30,7 @@ export const TodaysTasks = ({ desc, tasks }: Props) => {
         <Paragraph>{desc}</Paragraph>
       </div>
 
-      <CardMate message={mateMessage}>
+      <CardMate message={mateMessage} className={{ main: 'animate-fade-in-fast' }}>
         {allTasksAreDone ? (
           <ChipButton empty onClick={prompts.whatsNext}>
             <MagicWandIcon /> What's next?
@@ -48,7 +48,7 @@ export const TodaysTasks = ({ desc, tasks }: Props) => {
         )}
       </CardMate>
 
-      <section className='flex flex-col gap-3'>
+      <section className='flex flex-col gap-3 animate-fade-in-fast'>
         {tasks.map(({ goal, done }, i) => (
           <TaskTile {...{ goal, done, index: i }} key={i} />
         ))}

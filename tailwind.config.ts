@@ -45,7 +45,7 @@ const config: Config = {
           '100%': { rotate: '360deg', opacity: '1' }
         },
         'fade-in': {
-          '0%': { opacity: '0', filter: 'blur(8px)' },
+          '0%': { opacity: '0', filter: 'blur(16px)' },
           '100%': { opacity: '1' }
         },
         'bounce-once': {
