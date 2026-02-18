@@ -97,7 +97,7 @@ export const CurrentTask = () => {
 
     ulRef.current?.addEventListener('wheel', handleWheel)
     return () => ulRef.current?.removeEventListener('wheel', handleWheel)
-  }, [ulRef.current, selectedTask])
+  }, [selectedTask])
 
   // Handle task slection based on scroll position
   const handleULScroll = (e: React.UIEvent<HTMLUListElement>) => {
@@ -106,8 +106,10 @@ export const CurrentTask = () => {
     const { scrollTop } = e.currentTarget
     const index = Math.round(scrollTop / ulRef.current.clientHeight)
 
+    if (selectedTask === index) return
+
     setSelectedTask(index)
-    router.replace(`/focus?task=${selectedTask}`)
+    router.replace(`/focus?task=${index}`)
   }
 
   if (displayCompletedMessage) {

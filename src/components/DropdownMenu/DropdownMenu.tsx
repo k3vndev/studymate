@@ -16,6 +16,11 @@ interface Props {
 
 export const DropdownMenu = ({ children, className }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [clientLoaded, setClientLoaded] = useState(false)
+
+  useEffect(() => {
+    setClientLoaded(true)
+  }, [])
 
   const manage = {
     open: () => setIsOpen(true),
@@ -57,23 +62,24 @@ export const DropdownMenu = ({ children, className }: Props) => {
   return (
     <DropdownMenuContext.Provider value={{ isOpen, manage }}>
       <div className={twMerge(`relative ${className?.main}`)}>
-        {createPortal(
-          <article
-            style={{
-              position: 'absolute',
-              top: coords.top,
-              left: coords.left
-            }}
-            className={`
-              bg-gray-70 border border-gray-30 z-40 -translate-x-full
-              rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
-            `}
-            id={IDS.ELEMENT}
-          >
-            {children}
-          </article>,
-          document.body
-        )}
+        {clientLoaded &&
+          createPortal(
+            <article
+              style={{
+                position: 'absolute',
+                top: coords.top,
+                left: coords.left
+              }}
+              className={`
+                bg-gray-70 border border-gray-30 z-40 -translate-x-full
+                rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
+              `}
+              id={IDS.ELEMENT}
+            >
+              {children}
+            </article>,
+            document.body
+          )}
 
         <button
           ref={buttonRef}
