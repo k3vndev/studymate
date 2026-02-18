@@ -116,4 +116,3 @@ StudyMate is still in development and will keep getting updates — all of its c
 ### Special Thanks
 - [Tabler Icons](https://tabler.io/icons) and [Heroicons](https://heroicons.com).
 - Mate.
-- The guy who made the logo, you know who you are.
