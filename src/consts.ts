@@ -78,7 +78,7 @@ export const MATE_PROMPT_VALUES = {
   },
   STUDYPLAN: {
     NAME: { MIN: 10, MAX: 30 },
-    DESC: { MIN: 70, MAX: 150 },
+    DESC: { MIN: 60, MAX: 150 },
     TASKS: {
       GOAL: { MIN: 25, MAX: 60 },
       COUNT: { DEFAULT: 3, MAX: 7 }

@@ -60,21 +60,19 @@ export const POST = async (req: NextRequest) => {
     const reqBody = await req.json()
     const { messages: previousChatMessages, user_data } = await PromptRequestSchema.parseAsync(reqBody)
 
-    const newChatMessage = previousChatMessages.pop()
+    const newMessage = previousChatMessages.pop()
 
-    if (newChatMessage?.role !== 'user') {
+    if (newMessage?.role !== 'user' || typeof newMessage.content !== 'string') {
       return response(false, 400, { msg: 'The latest message did not come form the user' })
     }
 
-    const { content: newMessage } = newChatMessage
-
     // Check if user message is too long
-    if (newMessage.length > USER_MAX_MESSAGE_LENGTH) {
+    if (newMessage.content.length > USER_MAX_MESSAGE_LENGTH) {
       return response(false, 400, { msg: 'User message was too long' })
     }
 
     // Extract new user message and previous messages
-    userMessage = newMessage
+    userMessage = newMessage.content
     chatMessages = dataParser.fromClientMessagesToModelPrompt(previousChatMessages)
 
     // Extract user data
@@ -180,7 +178,7 @@ export const PATCH = async (req: NextRequest) => {
   try {
     const reqBody = await req.json()
     const parsedMessages = await PromptRequestSchema.shape.messages.parseAsync(reqBody)
-    chatMessages = parsedMessages
+    chatMessages = parsedMessages as ChatMessage[]
   } catch {
     return response(false, 400, { msg: 'Messages are missing or invalid' })
   }

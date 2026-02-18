@@ -1,9 +1,9 @@
 import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { showAlert } from '@/lib/utils/showAlert'
-import { DropdownMenu } from '@components/DropdownMenu/DropdownMenu'
-import { Line } from '@components/DropdownMenu/Line'
-import { Option } from '@components/DropdownMenu/Option'
+import { DropdownMenu } from '@@/DropdownMenu/DropdownMenu'
+import { Line } from '@@/DropdownMenu/Line'
+import { Option } from '@@/DropdownMenu/Option'
 import { CloudIcon, ReloadIcon, RocketIcon, TrashIcon } from '@icons'
 import { useContext } from 'react'
 

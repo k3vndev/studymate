@@ -1,5 +1,5 @@
 import { throwConfetti } from '@/lib/utils/throwConfetti'
-import { GradientBorder } from '@components/GradientBorder'
+import { GradientBorder } from '@@/GradientBorder'
 import { FONTS } from '@consts'
 import { useEffect, useRef, useState } from 'react'
 

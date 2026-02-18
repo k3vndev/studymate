@@ -12,7 +12,7 @@ import { CONTENT_JSON } from '@consts'
 import { useSearchStudyplan } from '@hooks/useSearchStudyplan'
 import { useUserData } from '@hooks/useUserData'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { StudyplanSaved } from '@types'
+import type { PublicStudyplan } from '@types'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -46,21 +46,21 @@ export default function PublicStudyplanPage() {
     }
 
     // If the studyplan is null or the id is not the same as the studyplan id, search for the studyplan
-    if (studyplan === null || (studyplan as StudyplanSaved)?.id !== id) {
+    if (studyplan === null || (studyplan as PublicStudyplan)?.id !== id) {
       const foundStudyplan = searchStudyplan(id)
 
       if (foundStudyplan) {
         setStateStudyplan(foundStudyplan)
         return
       }
-    } else if ((studyplan as StudyplanSaved)?.id === id) {
+    } else if ((studyplan as PublicStudyplan)?.id === id) {
       return
     }
 
     // If the studyplan wasn't already loaded, fetch it
     setStateStudyplan(null)
 
-    dataFetch<StudyplanSaved[]>({
+    dataFetch<PublicStudyplan[]>({
       url: '/api/studyplans',
       options: { method: 'POST', headers: CONTENT_JSON, body: JSON.stringify([id]) },
       onSuccess: data => {

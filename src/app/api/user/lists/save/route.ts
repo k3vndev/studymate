@@ -1,13 +1,13 @@
-import type { StudyplanSaved, StudyplanUnSaved } from '@types'
+import { modifyStudyplansLists } from '@/app/api/utils/modifyStudyplansLists'
+import { response } from '@/app/api/utils/response'
+import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { databaseQuery } from '@api/utils/databaseQuery'
+import { getUserId } from '@api/utils/getUserId'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import type { BaseStudyplan, PublicStudyplan } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
-import { response } from '@/app/api/utils/response'
 import { z } from 'zod'
-import { getUserId } from '@api/utils/getUserId'
-import { StudyplanSchema } from '@/lib/schemas/Studyplan'
-import { modifyStudyplansLists } from '@/app/api/utils/modifyStudyplansLists'
 
 // Save or un-save an existing studyplan
 export const PATCH = async (req: NextRequest) => {
@@ -59,7 +59,7 @@ export const PATCH = async (req: NextRequest) => {
 // Publish a studyplan and save it
 export const POST = async (req: NextRequest) => {
   const supabase = createServerComponentClient({ cookies })
-  let studyplanFromReq: StudyplanUnSaved
+  let studyplanFromReq: BaseStudyplan
 
   // Check if user is authenticated
   const userId = await getUserId({ supabase })
@@ -68,14 +68,14 @@ export const POST = async (req: NextRequest) => {
   // Parse the request body
   try {
     const reqBody = await req.json()
-    studyplanFromReq = await StudyplanSchema.parseAsync(reqBody)
+    studyplanFromReq = await BaseStudyplanSchema.parseAsync(reqBody)
   } catch {
     return response(false, 400, { msg: 'Invalid request body' })
   }
 
   // Publish studyplan and save it
   try {
-    const [publishedStudyplan] = await databaseQuery<StudyplanSaved[]>(
+    const [publishedStudyplan] = await databaseQuery<PublicStudyplan[]>(
       supabase.from('studyplans').insert(studyplanFromReq).select()
     )
     const { id } = publishedStudyplan

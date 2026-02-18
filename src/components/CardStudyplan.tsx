@@ -1,18 +1,18 @@
+import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { parseDays } from '@/lib/utils/parseDays'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { useUserStore } from '@/store/useUserStore'
-import { Badge } from '@components/Badge'
-import { ChipButton } from '@components/ChipButton'
-import { GradientBorder } from '@components/GradientBorder'
-import { Header } from '@components/Header'
-import { Paragraph } from '@components/Paragraph'
+import { Badge } from '@@/Badge'
+import { ChipButton } from '@@/ChipButton'
+import { GradientBorder } from '@@/GradientBorder'
+import { Header } from '@@/Header'
+import { Paragraph } from '@@/Paragraph'
 import { ClockIcon, RocketIcon } from '@icons'
-import type { ChatStudyplan, StudyplanUnSaved, UserStudyplan } from '@types'
+import type { BaseStudyplan, ChatStudyplan, UserStudyplan } from '@types'
 import { useRouter } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 
 interface Props {
-  studyplan: StudyplanUnSaved | UserStudyplan | ChatStudyplan
+  studyplan: BaseStudyplan | UserStudyplan | ChatStudyplan
   userCurrent?: boolean
   inChat?: boolean
   className?: string
@@ -20,7 +20,7 @@ interface Props {
 
 export const CardStudyplan = ({ studyplan, userCurrent = false, inChat = false, className = '' }: Props) => {
   const setStudyplan = useStudyplansStore(s => s.setStudyplan)
-  const userStudyplan = useUserStore(s => s.studyplan)
+  const userStudyplan = useUserStudyplan()
 
   const { name, desc, daily_lessons } = studyplan
   const router = useRouter()
@@ -58,7 +58,7 @@ export const CardStudyplan = ({ studyplan, userCurrent = false, inChat = false, 
         <div className='mt-3 flex justify-between items-center flex-wrap gap-x-4 gap-y-3 w-full'>
           <span className='flex text-gray-10 gap-1 items-center text-nowrap'>
             {userCurrent && userStudyplan ? (
-              `Day ${userStudyplan.current_day}`
+              `Day ${userStudyplan.currentDay}`
             ) : (
               <>
                 <ClockIcon className='size-6' />

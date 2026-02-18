@@ -16,9 +16,10 @@ import { TasksNavigation } from './TasksNavigation'
 interface Props {
   todaysTasks: UserStudyplan['daily_lessons'][number]['tasks']
   isOnLastDay: boolean
+  currentDay: number
 }
 
-export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
+export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay, currentDay }: Props) => {
   const [selectedTask, setSelectedTask] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [isShowingCompletedMessage, setIsShowingCompletedMessage] = useState(false)
@@ -27,7 +28,7 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
   const setTaskDone = useUserStore(s => s.setTaskDone)
   const router = useRouter()
 
-  const allTasksAreDone = tasks.every(t => t.done)
+  const allTasksAreDone = tasks.every(t => t.completed_at)
   const searchParams = useSearchParams()
 
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -53,14 +54,14 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
   const completeTask = () => {
     setIsLoading(true)
 
-    dataFetch({
+    dataFetch<string>({
       url: '/api/user/studyplan/tasks',
       options: {
         method: 'POST',
         headers: CONTENT_JSON,
         body: JSON.stringify({ index: selectedTask })
       },
-      onSuccess: () => setTaskDone(selectedTask, true),
+      onSuccess: timestamp => setTaskDone(selectedTask, timestamp, currentDay),
       onFinish: () => setIsLoading(false)
     })
   }
@@ -107,7 +108,7 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
       value={{
         tasks,
         selectedTask,
-        selectedTaskIsDone: tasks[selectedTask].done,
+        selectedTaskIsDone: !!tasks[selectedTask].completed_at,
         allTasksAreDone,
         isOnLastDay,
         swapTask: scrollToTask,
@@ -132,7 +133,7 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
             onScroll={handleULScroll}
           >
             {tasks.map((task, i) => (
-              <TaskTile {...task} key={i} className='snap-start' />
+              <TaskTile goal={task.goal} done={!!task.completed_at} key={i} className='snap-start' />
             ))}
           </ul>
           <Buttons />

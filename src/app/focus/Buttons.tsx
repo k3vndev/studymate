@@ -64,7 +64,7 @@ const ProceedButton = () => {
   }
 
   const handleNextTask = () => {
-    const nextNotDoneTaskIndex = tasks.findIndex(t => !t.done)
+    const nextNotDoneTaskIndex = tasks.findIndex(t => !t.completed_at)
     if (nextNotDoneTaskIndex === -1) return
 
     swapTask(nextNotDoneTaskIndex)

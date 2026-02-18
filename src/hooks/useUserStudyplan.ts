@@ -1,15 +1,17 @@
+import { useUserBehavior } from '@/hooks/useUserBehavior'
+import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { dataFetch } from '@/lib/utils/dataFetch'
+import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
 import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
 import { throwConfetti } from '@/lib/utils/throwConfetti'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
-import { useUserBehavior } from '@/hooks/useUserBehavior'
-import type { ChatMessage, UserStudyplan } from '@types'
+import type { PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 interface Params {
   fetchOnAwake?: boolean
@@ -26,9 +28,10 @@ export const useUserStudyplan = (params?: Params) => {
   const onUser = useUserBehavior()
   const router = useRouter()
 
-  // Initial fetch of user studyplan
+  // Initial fetch of user's Studyplan
   useEffect(() => {
-    if (userStudyplan !== undefined || (params && params.fetchOnAwake === false)) return
+    const fetchOnAwake = params?.fetchOnAwake ?? true
+    if (userStudyplan !== undefined || !fetchOnAwake) return
 
     dataFetch<UserStudyplan | null>({
       url: '/api/user/studyplan',
@@ -37,33 +40,46 @@ export const useUserStudyplan = (params?: Params) => {
     })
   }, [])
 
-  // Redirect the user in case there's no studyplan
+  // Redirect the user in case there's no Studyplan
   useEffect(() => {
     if (userStudyplan === null && params?.redirectTo) {
       router.replace(params.redirectTo)
     }
   }, [userStudyplan])
 
-  const getUtilityValues = () => {
-    if (userStudyplan) {
-      const { daily_lessons, current_day } = userStudyplan
-
-      const todaysTasks = daily_lessons[current_day - 1].tasks
-      const isOnLastDay = daily_lessons.length === current_day
-      const allTasksAreCompleted = daily_lessons.every(d => d.tasks.every(t => t.done))
-
-      return { todaysTasks, isOnLastDay, allTasksAreCompleted }
+  const utilityValues: EvaluateUserStudyplanReturn = useMemo(() => {
+    try {
+      if (userStudyplan) {
+        console.log(userStudyplan)
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        return evaluateUserStudyplan(userStudyplan, timezone)
+      }
+      throw new Error()
+    } catch {
+      return {
+        todaysTasks: [],
+        isOnLastDay: false,
+        currentDay: 0,
+        studyplanIsCompleted: false,
+        areTodaysTasksAllDone: false
+      }
     }
-    return null
-  }
+  }, [userStudyplan])
 
-  const start = () =>
-    dataFetchHandler<UserStudyplan>({
+  const start = () => {
+    // Don't start the Studyplan if its null or not valid
+    const { data, success } = BaseStudyplanSchema.safeParse(stateStudyplan)
+    if (!success || data === null) return
+
+    // If the stateStudyplan is already a PublicStudyplan, we can just use its id to start it. Otherwise, send the whole object to the API to create a new UserStudyplan based on it.
+    const requestBody: StartStudyplanReqBody = (stateStudyplan as PublicStudyplan)?.id ?? data
+
+    return dataFetchHandler<UserStudyplan>({
       url: '/api/user/studyplan',
       options: {
         method: 'POST',
         headers: CONTENT_JSON,
-        body: JSON.stringify(stateStudyplan)
+        body: JSON.stringify(requestBody)
       },
       onSuccess: newStudyplan => {
         // Set the new studyplan as the user's current
@@ -80,6 +96,7 @@ export const useUserStudyplan = (params?: Params) => {
         onUser({ stayed: () => router.replace('/studyplan') })
       }
     })
+  }
 
   const abandon = () =>
     dataFetchHandler({
@@ -117,7 +134,7 @@ export const useUserStudyplan = (params?: Params) => {
   return {
     userStudyplan: userStudyplan ?? null,
     isLoading: userStudyplan === undefined,
-    getUtilityValues,
+    ...utilityValues,
 
     startStudyplan: start,
     abandonStudyplan: abandon,

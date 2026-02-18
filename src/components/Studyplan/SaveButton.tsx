@@ -1,14 +1,14 @@
-import { useContext, useState } from 'react'
-import { BookmarkIcon, LoadingIcon } from '../icons'
+import { CONTENT_JSON } from '@/consts'
+import { useUserBehavior } from '@/hooks/useUserBehavior'
 import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { dataFetch } from '@/lib/utils/dataFetch'
-import { CONTENT_JSON } from '@/consts'
-import { useUserStore } from '@/store/useUserStore'
-import { useChatStore } from '@/store/useChatStore'
 import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
-import { useRouter } from 'next/navigation'
-import { useUserBehavior } from '@/hooks/useUserBehavior'
+import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
+import { useUserStore } from '@/store/useUserStore'
+import { useRouter } from 'next/navigation'
+import { useContext, useState } from 'react'
+import { BookmarkIcon, LoadingIcon } from '../icons'
 
 export const SaveButton = () => {
   const { studyplan, isSaved: studyplanIsSaved, publicId } = useContext(StudyplanContext)
@@ -43,7 +43,7 @@ export const SaveButton = () => {
       onSuccess: savedId => {
         modifyStudyplansList(savedId, 'saved').add(true)
 
-        if (studyplan.chat_message_id) {
+        if ('chat_message_id' in studyplan && studyplan.chat_message_id) {
           setChatStudyplanOriginalId(studyplan.chat_message_id, savedId, newMessages => {
             // Save chat messages to database
             saveChatToDatabase(newMessages)

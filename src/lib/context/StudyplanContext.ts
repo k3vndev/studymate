@@ -1,8 +1,8 @@
-import type { Props } from '@/components/Studyplan/Studyplan'
+import type { StudyplanUnion } from '@types'
 import { createContext } from 'react'
 
 interface StudyplanContext {
-  studyplan: Props['studyplan']
+  studyplan: StudyplanUnion
   isLoadingUserData: boolean
   usersCurrent: boolean
   isCompleted: boolean

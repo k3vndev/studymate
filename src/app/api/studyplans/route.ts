@@ -1,7 +1,7 @@
 import { response } from '@/app/api/utils/response'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { StudyplanSaved } from '@types'
+import type { PublicStudyplan } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
@@ -24,7 +24,7 @@ export const GET = async (req: NextRequest) => {
   const supabase = createServerComponentClient({ cookies })
 
   try {
-    const data = await databaseQuery<StudyplanSaved[]>(
+    const data = await databaseQuery<PublicStudyplan[]>(
       supabase.from('studyplans').select('id, name, desc, category, daily_lessons').limit(limit)
     )
     return response(true, 200, { data })
@@ -47,7 +47,7 @@ export const POST = async (req: NextRequest) => {
   const supabase = createServerComponentClient({ cookies })
 
   try {
-    const data = await databaseQuery<StudyplanSaved[]>(
+    const data = await databaseQuery<PublicStudyplan[]>(
       supabase.from('studyplans').select('id, name, desc, category, daily_lessons').in('id', idsList)
     )
     return response(true, 200, { data })

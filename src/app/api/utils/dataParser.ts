@@ -1,13 +1,4 @@
-import { MATE_PROMPT_VALUES } from '@consts'
-import type {
-  ChatMessage,
-  ChatStudyplan,
-  DBChatMessages,
-  DBCurrentStudyplanDay,
-  DBUserStudyplanAndCurrentDayResponse,
-  MateResponseSchema,
-  PromptRequestSchema
-} from '@types'
+import type { ChatMessage, ChatStudyplan, DBChatMessages, PromptRequestSchema } from '@types'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { modelTags } from './ai-model/modelTags'
 
@@ -24,7 +15,7 @@ export const dataParser = {
         `name: ${name}`,
         `desc: ${desc}`,
         'tasks:',
-        tasks.map(t => `- ${t.goal}`).join('\n')
+        tasks.map(desc => `- ${desc}`).join('\n')
       ]
       dailyLessons.push(dailyLessonArr.join('\n'))
     }
@@ -40,31 +31,6 @@ export const dataParser = {
     return [modelTags.open('STUDYPLAN'), baseDataStr.join('\n'), modelTags.close('STUDYPLAN')].join('\n')
   },
 
-  fromDBResponseToUserStudyplan: (response: DBUserStudyplanAndCurrentDayResponse[]) => {
-    const {
-      studyplan: fetchedStudyplan,
-      current_studyplan_day: { day }
-    } = response[0]
-
-    return { ...fetchedStudyplan, current_day: day }
-  },
-
-  fromModelResponseToClientMessages: (responses: MateResponseSchema['responses']): ChatMessage[] =>
-    responses.map(({ type, data }) => {
-      if (type === 'message') {
-        return { role: 'assistant', content: data }
-      }
-      // Remove extra daily lessons and set the original_id to null
-      const slicedDailyLessons = data.daily_lessons.slice(0, MATE_PROMPT_VALUES.STUDYPLAN.MAX_DAYS)
-      const content: ChatStudyplan = {
-        ...data,
-        daily_lessons: slicedDailyLessons,
-        original_id: null,
-        chat_message_id: null
-      }
-      return { role: 'studyplan', content }
-    }),
-
   fromClientMessagesToModelPrompt: (
     messages: PromptRequestSchema['messages']
   ): ChatCompletionMessageParam[] =>
@@ -76,13 +42,6 @@ export const dataParser = {
       }
       return { role, content }
     }),
-
-  fromNumberToCurrentStudyplanDay: (day: number): DBCurrentStudyplanDay => {
-    const today = new Date()
-    const last_updated = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
-
-    return { day, last_updated }
-  },
 
   fromStudyplansInClientMessages: (messages: ChatMessage[] | DBChatMessages[]) => {
     const parse = (action: typeof JSON.parse | typeof JSON.stringify) =>

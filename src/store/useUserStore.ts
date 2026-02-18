@@ -11,7 +11,7 @@ export interface UserStore {
   isLoadingData: boolean
   setIsLoadingData: (isLoading: boolean) => void
 
-  setTaskDone: (index: number, value: boolean) => void
+  setTaskDone: (index: number, value: string, currentDay: number) => void
 
   studyplansLists: {
     recommended?: string[]
@@ -41,12 +41,12 @@ export const useUserStore = create<UserStore>(set => ({
   isLoadingData: false,
   setIsLoadingData: isLoading => set(() => ({ isLoadingData: isLoading })),
 
-  setTaskDone: (index, value) =>
+  setTaskDone: (index, value, currentDay) =>
     set(({ studyplan }) => {
       const newStudyplan = structuredClone(studyplan)
       if (!newStudyplan) return {}
 
-      newStudyplan.daily_lessons[newStudyplan.current_day - 1].tasks[index].done = value
+      newStudyplan.daily_lessons[currentDay - 1].tasks[index].completed_at = value
       return { studyplan: newStudyplan }
     }),
 

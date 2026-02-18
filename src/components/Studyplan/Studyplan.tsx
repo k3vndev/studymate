@@ -4,19 +4,14 @@ import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { Badge } from '@components/Badge'
 import { Header } from '@components/Header'
 import { Paragraph } from '@components/Paragraph'
-import type { StudyplanUnSaved } from '@types'
+import type { StudyplanUnion } from '@types'
 import { ButtonsSection } from './ButtonsSection'
 import { Category } from './Category'
 import { DailyLessons } from './DailyLessons'
 import { OptionsButton } from './OptionsButton'
 
-export interface Props {
-  studyplan: StudyplanUnSaved & {
-    id?: string | null
-    created_by?: string | null
-    original_id?: string | null
-    chat_message_id?: string | null
-  }
+interface Props {
+  studyplan: StudyplanUnion
   usersCurrent?: boolean
 }
 
@@ -44,7 +39,7 @@ export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
         </div>
       </section>
 
-      {usersCurrent && userStudyplan && <TodaysLesson day={userStudyplan.current_day} />}
+      {usersCurrent && userStudyplan && <TodaysLesson />}
       <DailyLessons />
     </StudyplanContext.Provider>
   )
