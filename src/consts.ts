@@ -71,16 +71,21 @@ export const MATE_MESSAGES = {
       "Hey there! Do you need any help with today's tasks? I'm here to support you and make it easier!"
   }
 }
+
+/**
+ * Values related to the Mate virtual assistant and its prompts, as well as other constants used across the app.
+ * Enforced values are the ones that are actually validated in the backend
+ */
 export const MATE_PROMPT_VALUES = {
   MESSAGE: {
     MAX: 1000,
-    MAX_INFORCED: 1500
+    MAX_ENFORCED: 1500
   },
   STUDYPLAN: {
-    NAME: { MIN: 10, MAX: 30 },
-    DESC: { MIN: 70, MAX: 150 },
+    NAME: { MIN: 10, MIN_ENFORCED: 6, MAX: 30, MAX_ENFORCED: 50 },
+    DESC: { MIN: 60, MIN_ENFORCED: 45, MAX: 150, MAX_ENFORCED: 200 },
     TASKS: {
-      GOAL: { MIN: 25, MAX: 60 },
+      GOAL: { MIN: 25, MIN_ENFORCED: 15, MAX: 60, MAX_ENFORCED: 75 },
       COUNT: { DEFAULT: 3, MAX: 7 }
     },
     MAX_DAYS: 15

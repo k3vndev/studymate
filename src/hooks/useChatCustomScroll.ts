@@ -17,7 +17,7 @@ export const useChatCustomScroll = ({ updateScrollOn }: Params) => {
   const listRef = useRef<HTMLUListElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
-  // update scrollElement's height to increase body scroll
+  // Update scrollElement's height to increase body scroll
   useEffect(() => {
     const recalculateScrollHeight = () => {
       if (!listRef.current || !scrollRef.current) return
@@ -25,12 +25,13 @@ export const useChatCustomScroll = ({ updateScrollOn }: Params) => {
 
       const { scrollHeight } = listRef.current
 
-      const { bottom } = listRef.current.getBoundingClientRect()
-      const listRefBottom = (window.innerHeight - bottom) / 2
-
       // Apply scroll height
-      listRef.current.style.overflowY = 'hidden'
-      scrollRef.current.style.height = `${scrollHeight - listRefBottom}px`
+      listRef.current.style.overflowY = 'clip'
+      const newHeight = `${scrollHeight}px`
+
+      scrollRef.current.style.height = newHeight
+      scrollRef.current.style.minHeight = newHeight
+      scrollRef.current.style.maxHeight = newHeight
     }
 
     window.addEventListener('resize', recalculateScrollHeight)

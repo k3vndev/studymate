@@ -7,7 +7,7 @@ import { useStudyplansStore } from '@/store/useStudyplansStore'
 import type { UserStore } from '@/store/useUserStore'
 import { Header } from '@components/Header'
 import { CONTENT_JSON } from '@consts'
-import type { StudyplanSaved } from '@types'
+import type { PublicStudyplan } from '@types'
 import { useContext, useEffect } from 'react'
 import { CarouselGalleryStudyplans } from './CarouselGalleryStudyplans'
 import { EmptyGalleryStudyplans } from './EmptyGalleryStudyplans'
@@ -48,7 +48,7 @@ export const GalleryStudyplans = ({
   useEffect(() => {
     if (!studyplansList) return
 
-    dataFetch<StudyplanSaved[]>({
+    dataFetch<PublicStudyplan[]>({
       url: '/api/studyplans',
       options: {
         method: 'POST',

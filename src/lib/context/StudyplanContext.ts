@@ -1,13 +1,13 @@
-import type { Props } from '@/components/Studyplan/Studyplan'
+import type { StudyplanUnion } from '@types'
 import { createContext } from 'react'
 
 interface StudyplanContext {
-  studyplan: Props['studyplan']
+  studyplan: StudyplanUnion
   isLoadingUserData: boolean
   usersCurrent: boolean
   isCompleted: boolean
   userHasAnotherStudyplan: boolean
-  justCompleted: boolean
+  readyToComplete: boolean
   isSaved: boolean
   publicId: string | null
 }
@@ -18,7 +18,7 @@ export const StudyplanContext = createContext<StudyplanContext>({
   usersCurrent: false,
   isCompleted: false,
   userHasAnotherStudyplan: false,
-  justCompleted: false,
+  readyToComplete: false,
   isSaved: false,
   publicId: null
 })

@@ -77,7 +77,7 @@ On the bottom of the page you'll find a card with swapable tasks, here you can m
 ### /profile
 Here you can see your info, statistics and achievements. You'll also find lists of your saved and completed Studyplans.
 
-Reach a high streak, collect trophies 🏆 and flex your grind 💪
+Reach a high streak, collect trophies 🏆 and flex your grind
 
 ![The profile page, showing the user's info, achievements and lists of saved and completed Studyplans](/public/screenshots/profile.webp)
 
@@ -101,32 +101,19 @@ Studymate is not a social media, so this is the only interaction you'll have wit
 StudyMate is still in development and will keep getting updates — all of its content will still be free, of course.
 
 📃 Planned features include:
-- User profiles
+- User profiles [✓]
 - Achievements
 - Streak tracking
 - Study statistics
 - Chat messages deletion and editing
-- Mate responses streaming
-- Max days for Studyplans increase
+- Mate responses streaming [✓]
+- Max days for Studyplans increase [✓]
 - Studyplans browsing
 
 ...and more cool stuff along the way.
 
 
-## Can I Use This?
-
-Totally! Just keep in mind that Studymate relies on private Supabase and OpenAI keys, so it's not exactly plug-and-play.
-
-That said, you're more than welcome to dive into the codebase, check out how it's structured, or steal—I mean, *borrow*—components and logic for your own projects 😌
-
-Here's what might be useful:
-- `/components`: UI building blocks  
-- `/lib`: Utility logic  
-- `/hooks`: Custom hooks, some are modular
-
-
-## Special Thanks
-- Random YouTube Lo-fi and videogame music playlists.
-- Mate.
+### Special Thanks
 - [Tabler Icons](https://tabler.io/icons) and [Heroicons](https://heroicons.com).
-- ChatGPT, but you didn't hear it from me 👀
+- Mate.
+- The guy who made the logo, you know who you are.

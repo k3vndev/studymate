@@ -1,4 +1,4 @@
-import type { GeneratingStudyplanContent, StudyplanUnSaved } from '@types'
+import type { BaseStudyplan, GeneratingStudyplanContent } from '@types'
 
 /**
  * Class responsible for understanding a Studyplan stream and parsing it into a `StudyplanUnsaved` object or show its generating content on the go.
@@ -143,7 +143,7 @@ export class StudyplanStreamParser {
    * Call this method when the Studyplan generation process is finished and you want to get the full generated Studyplan.
    * @returns The full generated Studyplan with all its fields, including the daily lessons list, or null if it couldn't be generated yet.
    */
-  getFullStudyplan(): StudyplanUnSaved | null {
+  getFullStudyplan(): BaseStudyplan | null {
     const { studyplanContent, dailyLessons } = this
     if (!studyplanContent.name || !studyplanContent.desc || !studyplanContent.category) {
       // We don't have all the base fields yet, we can't generate the full studyplan
@@ -151,25 +151,21 @@ export class StudyplanStreamParser {
     }
 
     // Parse daily lessons
-    const parsedDailyLessons: StudyplanUnSaved['daily_lessons'] = []
+    const parsedDailyLessons: BaseStudyplan['daily_lessons'] = []
 
-    for (const { name, desc, tasks } of dailyLessons) {
+    for (let i = 0; i < dailyLessons.length; i++) {
+      const { name, desc, tasks } = dailyLessons[i]
+
       if (!name || !desc || !tasks.length) {
-        // Skip this daily lesson, it's not complete yet
+        this.onStudyplanError?.(
+          `Lesson for day ${i + 1} is missing some information. Current info: ${JSON.stringify(dailyLessons[i])}`
+        )
         return null
       }
-
-      parsedDailyLessons.push({
-        name,
-        desc,
-        tasks: tasks.map(task => ({
-          goal: task,
-          done: false
-        }))
-      })
+      parsedDailyLessons.push({ name, desc, tasks })
     }
 
-    const fullStudyplan: StudyplanUnSaved = {
+    const fullStudyplan: BaseStudyplan = {
       ...(studyplanContent as any),
       daily_lessons: parsedDailyLessons
     }

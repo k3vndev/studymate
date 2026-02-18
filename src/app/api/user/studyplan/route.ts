@@ -1,20 +1,12 @@
-import { dateSubstraction } from '@/lib/utils/dateSubstraction'
-import { response } from '@/app/api/utils/response'
+import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { abandonStudyplan } from '@api/utils/abandonStudyplan'
-import { dataParser } from '@api/utils/dataParser'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { getStudyplan } from '@api/utils/getStudyplan'
 import { getUserId } from '@api/utils/getUserId'
 import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
-import { StudyplanSchema } from '@schemas/Studyplan'
+import { response } from '@api/utils/response'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import type {
-  DBCurrentStudyplanDay,
-  DBUserStudyplanAndCurrentDayResponse,
-  StudyplanSaved,
-  StudyplanUnSaved,
-  UserStudyplan
-} from '@types'
+import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 
@@ -26,39 +18,15 @@ export const GET = async () => {
   if (userId === null) return response(false, 401)
 
   try {
-    let data = await databaseQuery<DBUserStudyplanAndCurrentDayResponse[]>(
-      supabase.from('users').select('studyplan, current_studyplan_day')
-    )
+    type QueryResponse = { studyplan: UserStudyplan | null }
+    const [queryResult] = await databaseQuery<QueryResponse[]>(supabase.from('users').select('studyplan'))
 
-    const [{ studyplan, current_studyplan_day }] = data
-
-    if (!studyplan || !current_studyplan_day) {
-      return response(true, 200, { data: null })
+    if (!queryResult) {
+      return response(true, 401, { msg: 'User not found' }) // This case should never happen as we have the userId from the auth, but we need to handle it anyway
     }
 
-    const { day, last_updated } = current_studyplan_day
-
-    const todaysTasksAreDone = studyplan.daily_lessons[day - 1].tasks.every(t => t.done)
-    const isOnLastDay = studyplan.daily_lessons.length === day
-    const tasksWereCompletedBeforeToday = dateSubstraction(last_updated.slice(0, 10)) < 0
-
-    // Increase studyplan current day if its allowed
-    if (todaysTasksAreDone && !isOnLastDay && tasksWereCompletedBeforeToday) {
-      const current_studyplan_day = dataParser.fromNumberToCurrentStudyplanDay(day + 1)
-
-      try {
-        const data = await databaseQuery<DBCurrentStudyplanDay[]>(
-          supabase.from('users').update({ current_studyplan_day }).eq('id', userId).select()
-        )
-        if (!data) return response(false, 500)
-      } catch {
-        return response(false, 500)
-      }
-
-      data = [{ studyplan, current_studyplan_day }]
-    }
-
-    return response(true, 200, { data: dataParser.fromDBResponseToUserStudyplan(data) })
+    const { studyplan } = queryResult
+    return response(true, 200, { data: studyplan })
   } catch {
     return response(false, 500)
   }
@@ -66,60 +34,77 @@ export const GET = async () => {
 
 // Start a studyplan
 export const POST = async (req: NextRequest) => {
-  const reqData = await req.json()
+  const requestBody: StartStudyplanReqBody = await req.json()
   const supabase = createServerComponentClient({ cookies })
-
-  let studyplanFromReq: StudyplanSaved | StudyplanUnSaved
-  let original_id: string
+  let original_id: string | null = null
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
 
-  try {
-    studyplanFromReq = await StudyplanSchema.parseAsync(reqData)
-  } catch {
-    return response(false, 400, { msg: "Sent studyplan doesn't follow the schema" })
+  let studyplan: BaseStudyplan
+
+  if (typeof requestBody === 'string') {
+    original_id = requestBody
+
+    // Studyplan id was sent, try to find it in the database
+    try {
+      const data = await getStudyplan<PublicStudyplan>({ id: original_id, supabase })
+      if (data === null) {
+        return response(false, 404, { msg: 'Studyplan id not found' })
+      }
+
+      // Set studyplan to the one found in the database
+      studyplan = data
+    } catch {
+      return response(false, 500)
+    }
+  } else {
+    // A studyplan object was sent, validate its structure and set it as the studyplan to start
+    try {
+      const validatedStudyplan = await BaseStudyplanSchema.parseAsync(requestBody)
+      studyplan = validatedStudyplan
+    } catch {
+      return response(false, 400, { msg: 'Studyplan missing or with invalid structure' })
+    }
   }
 
-  // Create a new studyplan if no one matches the id
-  try {
-    const existingStudyplan = await getStudyplan({ id: reqData?.id, supabase })
-
-    if (existingStudyplan === null) {
-      const [data] = await databaseQuery<StudyplanSaved[]>(
-        supabase.from('studyplans').insert(studyplanFromReq).select()
+  // Create a new studyplan if we don't have an original id (as it doesn't exist in the database yet)
+  if (!original_id) {
+    try {
+      const [data] = await databaseQuery<PublicStudyplan[]>(
+        supabase.from('studyplans').insert(studyplan).select()
       )
       original_id = data.id
-    } else {
-      const { id, ...studyplan } = existingStudyplan
-
-      studyplanFromReq = studyplan
-      original_id = id
+    } catch {
+      return response(false, 500)
     }
-  } catch {
-    return response(false, 500)
   }
 
-  // Save a copy of the studyplan on the user
+  // Create user's studyplan
   try {
-    const current_studyplan_day = dataParser.fromNumberToCurrentStudyplanDay(1)
+    // Parse daily lessons to match the UserStudyplan structure
+    const daily_lessons = studyplan.daily_lessons.map(lesson => ({
+      ...lesson,
+      tasks: lesson.tasks.map(t => ({ goal: t, completed_at: null }))
+    }))
 
-    // Undone all daily lessons
-    const daily_lessons = studyplanFromReq.daily_lessons.map(d => {
-      return { ...d, tasks: d.tasks.map(t => ({ ...t, done: false })) }
-    })
+    const creatingStudyplan: UserStudyplan = {
+      ...studyplan,
+      original_id,
+      daily_lessons
+    }
 
-    const data = await databaseQuery<DBUserStudyplanAndCurrentDayResponse[]>(
+    type QueryResponse = { studyplan: UserStudyplan[] }
+
+    await databaseQuery<QueryResponse>(
       supabase
         .from('users')
         .update({
-          studyplan: { ...studyplanFromReq, daily_lessons, original_id },
-          current_studyplan_day
+          studyplan: creatingStudyplan
         })
         .eq('id', userId)
-        .select()
     )
-    return response(true, 201, { data: dataParser.fromDBResponseToUserStudyplan(data) })
+    return response(true, 201, { data: creatingStudyplan })
   } catch {
     return response(false, 500)
   }
@@ -161,8 +146,8 @@ export const PUT = async () => {
     originalId = original_id
 
     // Check if all tasks are done
-    if (!daily_lessons.every(d => d.tasks.every(t => t.done))) {
-      return response(false, 403, { msg: 'All tasks must be done' })
+    if (!daily_lessons.every(d => d.tasks.every(t => !!t.completed_at))) {
+      return response(false, 403, { msg: 'All tasks must be completed before finishing the studyplan' })
     }
 
     // Abandon studyplan

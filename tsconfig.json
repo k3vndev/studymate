@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -23,39 +19,17 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "@api/*": [
-        "./src/app/api/*"
-      ],
-      "@hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@schemas/*": [
-        "./src/lib/schemas/*"
-      ],
-      "@icons": [
-        "./src/components/icons.tsx"
-      ],
-      "@consts": [
-        "./src/consts.ts"
-      ],
-      "@types": [
-        "./src/types.d.ts"
-      ],
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@@/*": ["./src/components/*"],
+      "@api/*": ["./src/app/api/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@schemas/*": ["./src/lib/schemas/*"],
+      "@icons": ["./src/components/icons.tsx"],
+      "@consts": ["./src/consts.ts"],
+      "@types": ["./src/types.d.ts"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

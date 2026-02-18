@@ -1,9 +1,9 @@
-import { CardMate } from '@/components/CardMate'
-import { ChipButton } from '@/components/ChipButton'
-import { Header } from '@/components/Header'
-import { Paragraph } from '@/components/Paragraph'
 import { useResponsiveness } from '@/hooks/useResponsiveness'
 import { useUserPrompts } from '@/hooks/useUserPrompts'
+import { CardMate } from '@@/CardMate'
+import { ChipButton } from '@@/ChipButton'
+import { Header } from '@@/Header'
+import { Paragraph } from '@@/Paragraph'
 import { MATE_MESSAGES, SCREENS } from '@consts'
 import { CheckListIcon, MagicWandIcon, MessageIcon } from '@icons'
 import type { UserStudyplan } from '@types'
@@ -13,7 +13,7 @@ type Props = UserStudyplan['daily_lessons'][number]
 
 export const TodaysTasks = ({ desc, tasks }: Props) => {
   const prompts = useUserPrompts({ redirect: true })
-  const allTasksAreDone = tasks.every(t => t.done)
+  const allTasksAreDone = tasks.every(t => t.completed_at)
   const { screenSize } = useResponsiveness()
 
   const mateMessage = allTasksAreDone ? MATE_MESSAGES.TASKS.DONE : MATE_MESSAGES.TASKS.NOT_DONE
@@ -49,8 +49,8 @@ export const TodaysTasks = ({ desc, tasks }: Props) => {
       </CardMate>
 
       <section className='flex flex-col gap-3 animate-fade-in-fast'>
-        {tasks.map(({ goal, done }, i) => (
-          <TaskTile {...{ goal, done, index: i }} key={i} />
+        {tasks.map(({ goal, completed_at }, i) => (
+          <TaskTile {...{ goal, done: !!completed_at, index: i }} key={i} />
         ))}
       </section>
     </>

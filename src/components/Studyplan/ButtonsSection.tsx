@@ -1,15 +1,17 @@
+import { StudyplanContext } from '@/lib/context/StudyplanContext'
+import { throwConfetti } from '@/lib/utils/throwConfetti'
+import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { LoadingIcon } from '@icons'
 import { useContext, useEffect, useRef } from 'react'
+import { CompleteButton } from './CompleteButton'
 import { CompletedBadge } from './CompletedBadge'
-import { FinishButton } from './FinishButton'
-import { StartButton } from './StartButton'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { SaveButton } from './SaveButton'
+import { StartButton } from './StartButton'
 
 export const ButtonsSection = () => {
   const ref = useRef<HTMLDivElement>(null)
 
-  const { usersCurrent, isCompleted, justCompleted, userHasAnotherStudyplan, isLoadingUserData } =
+  const { usersCurrent, isCompleted, readyToComplete, userHasAnotherStudyplan, isLoadingUserData } =
     useContext(StudyplanContext)
 
   // Handle buttons responsiveness
@@ -37,6 +39,17 @@ export const ButtonsSection = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [ref.current])
 
+  // Handle confetti
+  const throwConfettiNextTime = useStudyplansStore(s => s.throwConfettiNextTime)
+  const setThrowConfettiNextTime = useStudyplansStore(s => s.setThrowConfettiNextTime)
+
+  useEffect(() => {
+    if (throwConfettiNextTime && isCompleted) {
+      setThrowConfettiNextTime(false)
+      throwConfetti()
+    }
+  }, [isCompleted])
+
   // Render a loading icon when it's still loading the user data
   if (isLoadingUserData) {
     return <LoadingIcon className='h-full aspect-square text-gray-10/50 animate-spin [scale:1.2]' />
@@ -50,7 +63,7 @@ export const ButtonsSection = () => {
           {isCompleted ? <CompletedBadge /> : !userHasAnotherStudyplan && <StartButton />}
         </>
       ) : (
-        justCompleted && <FinishButton />
+        readyToComplete && <CompleteButton />
       )}
     </div>
   )

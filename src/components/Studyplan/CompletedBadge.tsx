@@ -1,5 +1,5 @@
 import { throwConfetti } from '@/lib/utils/throwConfetti'
-import { GradientBorder } from '@components/GradientBorder'
+import { GradientBorder } from '@@/GradientBorder'
 import { FONTS } from '@consts'
 import { useEffect, useRef, useState } from 'react'
 
@@ -25,16 +25,16 @@ export const CompletedBadge = () => {
 
   return (
     <button
-      className='card disabled:brightness-75 disabled:cursor-default'
+      className='button disabled:brightness-75 disabled:cursor-default'
       onClick={handleClick}
       disabled={isDisabled}
     >
       <GradientBorder
         color='blues'
-        className={{ main: 'py-1 px-4 rounded-lg', gradientWrapper: 'brightness-90' }}
+        className={{ main: 'py-1.5 px-5 rounded-lg', gradientWrapper: 'brightness-90' }}
         constant
       >
-        <span className={`${FONTS.POPPINS} text-2xl font-semibold text-white`}>COMPLETED</span>
+        <span className={`${FONTS.POPPINS} text-xl font-semibold text-white`}>COMPLETED</span>
       </GradientBorder>
     </button>
   )

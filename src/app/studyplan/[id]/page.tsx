@@ -12,7 +12,7 @@ import { CONTENT_JSON } from '@consts'
 import { useSearchStudyplan } from '@hooks/useSearchStudyplan'
 import { useUserData } from '@hooks/useUserData'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { StudyplanSaved } from '@types'
+import type { PublicStudyplan } from '@types'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -45,22 +45,24 @@ export default function PublicStudyplanPage() {
       return
     }
 
+    const studyplanId: string | undefined = (studyplan as PublicStudyplan)?.id
+
     // If the studyplan is null or the id is not the same as the studyplan id, search for the studyplan
-    if (studyplan === null || (studyplan as StudyplanSaved)?.id !== id) {
+    if (studyplan === null || studyplanId !== id) {
       const foundStudyplan = searchStudyplan(id)
 
       if (foundStudyplan) {
         setStateStudyplan(foundStudyplan)
         return
       }
-    } else if ((studyplan as StudyplanSaved)?.id === id) {
+    } else if (studyplanId === id) {
       return
     }
 
     // If the studyplan wasn't already loaded, fetch it
     setStateStudyplan(null)
 
-    dataFetch<StudyplanSaved[]>({
+    dataFetch<PublicStudyplan[]>({
       url: '/api/studyplans',
       options: { method: 'POST', headers: CONTENT_JSON, body: JSON.stringify([id]) },
       onSuccess: data => {
@@ -77,7 +79,7 @@ export default function PublicStudyplanPage() {
   }
 
   useEffect(() => {
-    // Redirect to the tasks page if the id is a typo
+    // Redirect to the tasks page if the id is a potential typo of "tasks" or "lessons"
     const typoRoutes = ['task', 'lesson', 'lessons']
     if (typoRoutes.includes(id as string)) {
       router.replace('/studyplan/tasks')
@@ -104,7 +106,7 @@ export default function PublicStudyplanPage() {
         ) : (
           <ErrorCard className='self-center'>
             <Gigant>Uh oh... 404</Gigant>
-            <Message>That studyplan doesn't exist</Message>
+            <Message>That studyplan does not exist :(</Message>
             <Button onClick={backToDashboard}>
               <ArrowIcon className='rotate-90 group-active:-translate-x-1.5 transition size-6 min-w-6' />
               Go to dashboard

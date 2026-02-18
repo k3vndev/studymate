@@ -1,8 +1,8 @@
-import type { MateResponseSchema as MateResponseSchemaType } from '@/lib/schemas/MateResponse'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@/lib/schemas/PromptRequest'
-import type { StudyplanSchema as StudyplanSchemaType } from '@/lib/schemas/Studyplan'
 import type { CATEGORIES } from '@consts'
 import type { z } from 'zod'
+import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from './lib/schemas/Studyplan'
+import type { StudyplanPublicSchema } from './lib/schemas/StudyplanPublic'
 
 export type Category = (typeof CATEGORIES)[number]
 
@@ -43,16 +43,6 @@ export interface AlertData {
 }
 
 // DB Responses
-export interface DBUserStudyplanAndCurrentDayResponse {
-  studyplan: DBUserStudyplan
-  current_studyplan_day: DBCurrentStudyplanDay
-}
-
-export interface DBCurrentStudyplanDay {
-  day: number
-  last_updated: string
-}
-
 export interface DBStudyplansLists {
   studyplans_lists: {
     recommended: string[]
@@ -67,53 +57,41 @@ export interface DBUserData {
   avatar_url: string
 }
 
-// Schemas
-export type MateResponseSchema = z.infer<typeof MateResponseSchemaType>
+// -- Schemas --
 export type PromptRequestSchema = z.infer<typeof PromptRequestSchemaType>
 
-// Studyplan Shemas
-/**
- * A studyplan that is not saved in the database. Describes the base form of a studyplan.
- *
- * It lacks of id, created_by, and other fields that are only available in database studyplans.
- */
-export type StudyplanUnSaved = z.infer<typeof StudyplanSchemaType>
+// -- Studyplan schemas --
 
 /**
- * A studyplan that is saved in the database. Describes a public studyplan.
- *
- * It has an id, created_by, and other fields that are only available in database studyplans.
+ * Base Studyplan schema.
+ * Like most Studyplans, its tasks are simple strings that simply represent its goals.
  */
-export type StudyplanSaved = {
-  id: string
-  created_by: string
-} & StudyplanUnSaved
+export type BaseStudyplan = z.infer<typeof BaseStudyplanSchema>
 
 /**
- * A studyplan that is selected by the user.
- *
- * It features an original_id field that points to the public studyplan in the database.
+ * Extends the base Studyplan schema by adding an `id` field.
  */
-export type DBUserStudyplan = {
-  original_id: string
-} & StudyplanUnSaved
+export type PublicStudyplan = z.infer<typeof PublicStudyplanSchema>
 
 /**
- * A studyplan that is selected by the user.
- *
- * It features a current_day field and the original_id field that points to the public studyplan in the database.
+ * Differs from the base Studyplan schema in that its tasks are objects that contain a `goal` field and a `completed_at` field.
+ * Also includes an `original_id` field that points to the public studyplan in the database.
  */
-export type UserStudyplan = {
-  current_day: number
-} & DBUserStudyplan
+export type UserStudyplan = z.infer<typeof UserStudyplanSchema>
 
 /**
- * A studyplan that is used in a chat message.
+ * A Studyplan that is used in a chat message.
+ * Includes the base Studyplan fields, as well as an `original_id` field that points to the public studyplan in the database and a `chat_message_id` field that points to the chat message in which it is included.
  */
 export type ChatStudyplan = {
   original_id: string | null
   chat_message_id: string | null
-} & StudyplanUnSaved
+} & BaseStudyplan
+
+/**
+ * A union type of all the Studyplan types used in the app.
+ */
+export type StudyplanUnion = BaseStudyplan | PublicStudyplan | ChatStudyplan | UserStudyplan
 
 /**
  * Describes the chat messages stored in the database.
@@ -131,4 +109,17 @@ export interface ReusableComponent {
 export interface StreamResponseMessage {
   type: 'studyplan' | 'message'
   content: string
+}
+
+// -- Request bodies --
+
+/**
+ * Start an already created Studyplan by passing its id or create a new one by passing a BaseStudyplan object.
+ * The API route will return the UserStudyplan created or selected.
+ */
+export type StartStudyplanReqBody = BaseStudyplan | string
+
+export interface CompleteTaskReqBody {
+  index: number
+  clientTimezone: string
 }

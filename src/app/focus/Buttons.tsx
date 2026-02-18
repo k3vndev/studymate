@@ -64,7 +64,7 @@ const ProceedButton = () => {
   }
 
   const handleNextTask = () => {
-    const nextNotDoneTaskIndex = tasks.findIndex(t => !t.done)
+    const nextNotDoneTaskIndex = tasks.findIndex(t => !t.completed_at)
     if (nextNotDoneTaskIndex === -1) return
 
     swapTask(nextNotDoneTaskIndex)
@@ -93,8 +93,14 @@ const CompleteTaskButton = () => {
   const buttonLabel = screenSize.x >= SCREENS.XS ? "I'm done" : 'Done'
 
   return (
-    <ChipButton onClick={completeTask} disabled={justLoaded || isLoading} isLoading={isLoading}>
-      <CheckIcon className='stroke-[3px]' /> {buttonLabel}
+    <ChipButton
+      className='[&>svg]:stroke-[3px]'
+      onClick={completeTask}
+      disabled={justLoaded || isLoading}
+      isLoading={isLoading}
+    >
+      {<CheckIcon />}
+      <span className='w-full'>{buttonLabel}</span>
     </ChipButton>
   )
 }

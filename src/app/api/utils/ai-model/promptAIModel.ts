@@ -1,4 +1,4 @@
-import { MATE_TRAIN_MESSAGE } from '@/app/api/utils/ai-model/mateTrainMessage'
+import { MATE_TRAIN_PROMPT } from '@api/utils/ai-model/MATE_TRAIN_PROMPT'
 import { MATE_MESSAGES_MEMORY } from '@consts'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@types'
 import OpenAI from 'openai'
@@ -21,7 +21,7 @@ export const promptAIModel = async (
   const systemMessages: ChatCompletionMessageParam[] = [
     {
       role: 'system',
-      content: MATE_TRAIN_MESSAGE
+      content: MATE_TRAIN_PROMPT
     }
   ]
 

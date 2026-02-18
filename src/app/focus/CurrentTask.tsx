@@ -1,33 +1,31 @@
 'use client'
 
+import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { TasksContext } from '@/lib/context/TasksContext'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { useUserStore } from '@/store/useUserStore'
 import { Badge } from '@components/Badge'
 import { CONTENT_JSON } from '@consts'
 import { useVerticalNavigation } from '@hooks/useVerticalNavigation'
-import type { UserStudyplan } from '@types'
+import type { CompleteTaskReqBody, UserStudyplan } from '@types'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Buttons } from './Buttons'
 import { TaskTile } from './TaskTile'
 import { TasksNavigation } from './TasksNavigation'
 
-interface Props {
-  todaysTasks: UserStudyplan['daily_lessons'][number]['tasks']
-  isOnLastDay: boolean
-}
-
-export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
+export const CurrentTask = () => {
   const [selectedTask, setSelectedTask] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
-  const [isShowingCompletedMessage, setIsShowingCompletedMessage] = useState(false)
+  const [displayCompletedMessage, setDisplayCompletedMessage] = useState('')
 
   const ulRef = useRef<HTMLUListElement>(null)
   const setTaskDone = useUserStore(s => s.setTaskDone)
   const router = useRouter()
 
-  const allTasksAreDone = tasks.every(t => t.done)
+  const { isOnLastDay, todaysTasks, currentDay, areTodaysTasksAllDone, studyplanIsCompleted } =
+    useUserStudyplan()
+
   const searchParams = useSearchParams()
 
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -37,14 +35,19 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
   useEffect(() => {
     const taskIndex = Number(searchParams.get('task'))
 
-    if (taskIndex && !Number.isNaN(taskIndex) && taskIndex <= tasks.length) {
+    if (taskIndex && !Number.isNaN(taskIndex) && taskIndex <= todaysTasks.length) {
       scrollToTask(taskIndex - 1, 'instant')
     }
-    setIsShowingCompletedMessage(allTasksAreDone)
-  }, [])
+
+    if (studyplanIsCompleted) {
+      setDisplayCompletedMessage('You have completed your studyplan! - Amazing job! 🥳')
+    } else if (areTodaysTasksAllDone) {
+      setDisplayCompletedMessage('You have completed all your tasks of today! - Good job! 🎉')
+    }
+  }, [areTodaysTasksAllDone])
 
   const scrollToTask = (index: number, behavior: ScrollBehavior = 'smooth') => {
-    if (!ulRef.current || index < 0 || index >= tasks.length) return
+    if (!ulRef.current || index < 0 || index >= todaysTasks.length) return
 
     const { height } = ulRef.current.getBoundingClientRect()
     ulRef.current.scrollTo({ top: height * index - 2, behavior })
@@ -53,21 +56,26 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
   const completeTask = () => {
     setIsLoading(true)
 
-    dataFetch({
+    const requestBody: CompleteTaskReqBody = {
+      index: selectedTask,
+      clientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    }
+
+    dataFetch<string>({
       url: '/api/user/studyplan/tasks',
       options: {
         method: 'POST',
         headers: CONTENT_JSON,
-        body: JSON.stringify({ index: selectedTask })
+        body: JSON.stringify(requestBody)
       },
-      onSuccess: () => setTaskDone(selectedTask, true),
+      onSuccess: timestamp => setTaskDone(selectedTask, timestamp, currentDay),
       onFinish: () => setIsLoading(false)
     })
   }
 
   useVerticalNavigation({
     currentIndex: selectedTask,
-    maxIndex: tasks.length - 1,
+    maxIndex: todaysTasks.length - 1,
     action: newIndex => scrollToTask(newIndex)
   })
 
@@ -89,7 +97,7 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
 
     ulRef.current?.addEventListener('wheel', handleWheel)
     return () => ulRef.current?.removeEventListener('wheel', handleWheel)
-  }, [ulRef.current, selectedTask])
+  }, [selectedTask])
 
   // Handle task slection based on scroll position
   const handleULScroll = (e: React.UIEvent<HTMLUListElement>) => {
@@ -98,17 +106,29 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
     const { scrollTop } = e.currentTarget
     const index = Math.round(scrollTop / ulRef.current.clientHeight)
 
+    if (selectedTask === index) return
+
     setSelectedTask(index)
-    router.replace(`/focus?task=${selectedTask}`)
+    router.replace(`/focus?task=${index}`)
   }
 
-  return !isShowingCompletedMessage ? (
+  if (displayCompletedMessage) {
+    const [firstPart, secondPart] = displayCompletedMessage.split(' - ')
+
+    return (
+      <span className='text-lg text-white/50 text-center mb-1 animate-fade-in-fast text-balance'>
+        {firstPart}, <span className='font-semibold text-white/75'>{secondPart}</span>
+      </span>
+    )
+  }
+
+  return (
     <TasksContext.Provider
       value={{
-        tasks,
+        tasks: todaysTasks,
         selectedTask,
-        selectedTaskIsDone: tasks[selectedTask].done,
-        allTasksAreDone,
+        selectedTaskIsDone: !!todaysTasks[selectedTask].completed_at,
+        allTasksAreDone: areTodaysTasksAllDone,
         isOnLastDay,
         swapTask: scrollToTask,
         completeTask,
@@ -131,8 +151,8 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
             ref={ulRef}
             onScroll={handleULScroll}
           >
-            {tasks.map((task, i) => (
-              <TaskTile {...task} key={i} className='snap-start' />
+            {todaysTasks.map((task, i) => (
+              <TaskTile goal={task.goal} done={!!task.completed_at} key={i} className='snap-start' />
             ))}
           </ul>
           <Buttons />
@@ -140,10 +160,5 @@ export const CurrentTask = ({ todaysTasks: tasks, isOnLastDay }: Props) => {
         <TasksNavigation />
       </article>
     </TasksContext.Provider>
-  ) : (
-    <span className='text-lg text-white/50 text-center mb-1 animate-fade-in-fast text-balance'>
-      You have completed all your tasks of today,{' '}
-      <span className='font-semibold text-white/75'>Good job! 🎉</span>
-    </span>
   )
 }

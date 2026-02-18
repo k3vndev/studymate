@@ -8,9 +8,12 @@ export const StartButton = () => {
   const { startStudyplan } = useUserStudyplan()
 
   const handleStartStudyplan = async () => {
-    setIsLoading(true)
-    await startStudyplan()
-    setIsLoading(false)
+    try {
+      setIsLoading(true)
+      await startStudyplan()
+    } catch {
+      setIsLoading(false)
+    }
   }
 
   return (

@@ -24,7 +24,7 @@ const NavigationPoint = ({ index }: NavigationPointProps) => {
 
   const handleClick = () => swapTask(index)
   const opacity = selectedTask === index ? 'opacity-70' : 'hover:opacity-30 opacity-20'
-  const bgColor = tasks[index].done ? 'bg-blue-20' : 'bg-white/80'
+  const bgColor = tasks[index].completed_at ? 'bg-blue-20' : 'bg-white/80'
 
   return (
     <button

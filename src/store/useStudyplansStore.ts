@@ -1,12 +1,15 @@
-import type { ChatStudyplan, StudyplanSaved, StudyplanUnSaved, UserStudyplan } from '@types'
+import type { BaseStudyplan, ChatStudyplan, PublicStudyplan, UserStudyplan } from '@types'
 import { create } from 'zustand'
 
 export interface StudyplansStore {
-  studyplan: StudyplanSaved | StudyplanUnSaved | UserStudyplan | ChatStudyplan | null
+  studyplan: PublicStudyplan | BaseStudyplan | UserStudyplan | ChatStudyplan | null
   setStudyplan: (value: StudyplansStore['studyplan']) => void
 
-  studyplans: StudyplanSaved[]
-  addStudyplans: (...values: StudyplanSaved[]) => void
+  studyplans: PublicStudyplan[]
+  addStudyplans: (...values: PublicStudyplan[]) => void
+
+  throwConfettiNextTime: boolean
+  setThrowConfettiNextTime: (value: boolean) => void
 }
 
 export const useStudyplansStore = create<StudyplansStore>(set => ({
@@ -25,5 +28,8 @@ export const useStudyplansStore = create<StudyplansStore>(set => ({
         }
       })
       return { studyplans: clonedStudyplans }
-    })
+    }),
+
+  throwConfettiNextTime: false,
+  setThrowConfettiNextTime: value => set(() => ({ throwConfettiNextTime: value }))
 }))

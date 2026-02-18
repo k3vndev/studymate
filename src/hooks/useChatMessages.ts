@@ -6,7 +6,7 @@ import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { CONTENT_JSON, EVENTS, USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { useEvent } from '@hooks/useEvent'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
-import type { ChatMessage, ChatStudyplan, PromptRequestSchema, StudyplanSaved } from '@types'
+import type { ChatMessage, ChatStudyplan, PromptRequestSchema, PublicStudyplan } from '@types'
 import { useEffect, useRef, useState } from 'react'
 
 export const useChatMessages = () => {
@@ -48,7 +48,7 @@ export const useChatMessages = () => {
       .map(m => m.content)
     const studyplansIds = chatStudyplans.filter(s => s.original_id).map(s => s.original_id as string)
 
-    dataFetch<StudyplanSaved[]>({
+    dataFetch<PublicStudyplan[]>({
       url: '/api/studyplans',
       options: {
         headers: CONTENT_JSON,

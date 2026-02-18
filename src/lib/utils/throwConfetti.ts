@@ -1,7 +1,7 @@
 import confetti from 'canvas-confetti'
 
 export const throwConfetti = () => {
-  const main = document.querySelector('#main')
+  const main = document?.querySelector('#main')
   if (main === null || typeof window === 'undefined') return
 
   const { innerWidth } = window

@@ -10,6 +10,12 @@ interface Params {
   modifyId: string
 }
 
+/**
+ * Utility function that allows to easily modify the user's studyplans lists (recommended, completed, saved) by adding or removing a studyplan id from them.
+ * Every user has a `studyplans_lists` field in the database that contains three lists of studyplan ids: `recommended`, `completed`, and `saved`. This function allows to easily modify those lists by adding or removing a studyplan id from them.
+ *
+ * Note: Provide the `supabase` client as a parameter when possible to avoid creating a new client every time this function is called, which can lead to performance issues. The function will create a new client only if one is not provided.
+ */
 export const modifyStudyplansLists = ({
   supabase = createServerComponentClient({ cookies }),
   userId,

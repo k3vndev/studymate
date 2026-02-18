@@ -3,15 +3,12 @@ import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { parseDays } from '@/lib/utils/parseDays'
 import { FONTS } from '@consts'
 import { CheckIcon, ChevronIcon, ClockIcon } from '@icons'
-import type { StudyplanSaved } from '@types'
 import { useContext, useState } from 'react'
 import { Header } from '../Header'
 
 export const DailyLessons = () => {
   const [extendedLesson, setExtendedLesson] = useState(-1)
-  const {
-    studyplan: { daily_lessons }
-  } = useContext(StudyplanContext)
+  const { daily_lessons } = useContext(StudyplanContext).studyplan
 
   useVerticalNavigation({
     currentIndex: extendedLesson,
@@ -29,25 +26,27 @@ export const DailyLessons = () => {
         </span>
       </div>
       <ul className='flex flex-col gap-3'>
-        {daily_lessons.map((dailyLesson, i) => (
-          <DailyLesson key={i} {...{ i, extendedLesson, setExtendedLesson, ...dailyLesson }} />
-        ))}
+        {daily_lessons.map((_, i) => {
+          return <DailyLesson key={i} index={i} {...{ extendedLesson, setExtendedLesson }} />
+        })}
       </ul>
     </section>
   )
 }
 
-type DailyLessonProps = StudyplanSaved['daily_lessons'][number] & {
+interface DailyLessonProps {
   extendedLesson: number
   setExtendedLesson: React.Dispatch<number>
-  i: number
+  index: number
 }
 
-const DailyLesson = ({ name, desc, tasks, extendedLesson, setExtendedLesson, i }: DailyLessonProps) => {
-  const isExtended = i === extendedLesson
+const DailyLesson = ({ extendedLesson, setExtendedLesson, index }: DailyLessonProps) => {
+  const isExtended = index === extendedLesson
+  const { daily_lessons } = useContext(StudyplanContext).studyplan
+  const { name, desc, tasks } = daily_lessons[index]
 
   const handleClick = () => {
-    setExtendedLesson(isExtended ? -1 : i)
+    setExtendedLesson(isExtended ? -1 : index)
   }
 
   const [parentColors, arrowRotation] = isExtended
@@ -70,10 +69,10 @@ const DailyLesson = ({ name, desc, tasks, extendedLesson, setExtendedLesson, i }
           <>
             <span className='text-gray-10 mt-1'>{desc}</span>
             <ul className='flex flex-col gap-1'>
-              {tasks.map(({ goal }, i) => (
+              {tasks.map((task, i) => (
                 <li key={i} className='text-gray-10 text-base flex gap-2 items-center'>
                   <CheckIcon className='size-4' />
-                  {goal}
+                  {typeof task === 'string' ? task : task.goal}
                 </li>
               ))}
             </ul>
@@ -82,7 +81,7 @@ const DailyLesson = ({ name, desc, tasks, extendedLesson, setExtendedLesson, i }
       </div>
       <div className='flex flex-col justify-between items-end'>
         <ChevronIcon className={`size-6 text-gray-10 ${arrowRotation} [transition:transform_.3s_ease]`} />
-        {isExtended && <span className='text-gray-10/35 text-nowrap'>Day {i + 1}</span>}
+        {isExtended && <span className='text-gray-10/35 text-nowrap'>Day {index + 1}</span>}
       </div>
     </li>
   )

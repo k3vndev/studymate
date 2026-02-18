@@ -1,6 +1,6 @@
-import { MATE_PROMPT_VALUES, USER_MAX_MESSAGE_LENGTH } from '@/consts'
-import { StudyplanSchema } from '@schemas/Studyplan'
+import { MATE_PROMPT_VALUES, USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { z } from 'zod'
+import { BaseStudyplanSchema, UserStudyplanSchema } from './Studyplan'
 
 export const PromptRequestSchema = z.object({
   messages: z.array(
@@ -11,11 +11,11 @@ export const PromptRequestSchema = z.object({
       }),
       z.object({
         role: z.literal('assistant'),
-        content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_INFORCED)
+        content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_ENFORCED)
       }),
       z.object({
-        role: z.enum(['studyplan']),
-        content: StudyplanSchema.extend({
+        role: z.literal('studyplan'),
+        content: BaseStudyplanSchema.extend({
           original_id: z.string().uuid().nullable(),
           chat_message_id: z.string().nullable()
         })
@@ -23,9 +23,6 @@ export const PromptRequestSchema = z.object({
     ])
   ),
   user_data: z.object({
-    current_studyplan: StudyplanSchema.extend({
-      original_id: z.string(),
-      current_day: z.number()
-    }).nullable()
+    current_studyplan: UserStudyplanSchema.nullable()
   })
 })
