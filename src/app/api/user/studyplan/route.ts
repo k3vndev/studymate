@@ -95,7 +95,8 @@ export const POST = async (req: NextRequest) => {
     }
 
     type QueryResponse = { studyplan: UserStudyplan[] }
-    const data = await databaseQuery<QueryResponse>(
+
+    await databaseQuery<QueryResponse>(
       supabase
         .from('users')
         .update({

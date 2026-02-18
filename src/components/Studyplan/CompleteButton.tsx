@@ -9,7 +9,9 @@ export const CompleteButton = () => {
 
   const handleClick = async () => {
     setIsLoading(true)
-    await finishStudyplan()
+    try {
+      await finishStudyplan()
+    } catch {}
     setIsLoading(false)
   }
 

@@ -44,10 +44,10 @@ export const Gigant = ({ className = '', children = 'Ooops...' }: MessageProps) 
 export const Message = ({ className = '', children = 'Sorry, there was an error' }: MessageProps) => (
   <span
     className={twMerge(
-      `${FONTS.POPPINS} sm:text-2xl text-xl text-gray-10 text-balance text-center ${className}`
+      `${FONTS.POPPINS} sm:text-2xl text-xl text-gray-10 text-pretty text-center ${className}`
     )}
   >
-    {children} :(
+    {children}
   </span>
 )
 

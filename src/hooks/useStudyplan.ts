@@ -37,7 +37,7 @@ export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
     () => !!completed?.some(id => 'id' in studyplan && id === studyplan.id),
     [completed]
   )
-  const readyToComplete = userStudyplan.areTodaysTasksAllDone && usersCurrent
+  const readyToComplete = userStudyplan.studyplanIsCompleted && usersCurrent
 
   const publicId = useMemo(() => {
     if ('id' in studyplan) return studyplan.id

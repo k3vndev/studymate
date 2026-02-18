@@ -21,8 +21,10 @@ export default function UserStudyplanPage() {
             <Studyplan studyplan={userStudyplan} usersCurrent />
           ) : (
             <ErrorCard className='left-1/2 -translate-x-1/2'>
-              <Gigant>Whoops...</Gigant>
-              <Message>You currently don't have a Studyplan</Message>
+              <Gigant>We hear crickets...</Gigant>
+              <Message>
+                You currently don't have a Studyplan. Create one to start your learning journey!
+              </Message>
               <Button onClick={prompts.createStudyplan}>
                 <MagicWandIcon />
                 Create Studyplan

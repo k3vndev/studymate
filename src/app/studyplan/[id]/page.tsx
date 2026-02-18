@@ -106,7 +106,7 @@ export default function PublicStudyplanPage() {
         ) : (
           <ErrorCard className='self-center'>
             <Gigant>Uh oh... 404</Gigant>
-            <Message>That studyplan doesn't exist</Message>
+            <Message>That studyplan does not exist :(</Message>
             <Button onClick={backToDashboard}>
               <ArrowIcon className='rotate-90 group-active:-translate-x-1.5 transition size-6 min-w-6' />
               Go to dashboard
