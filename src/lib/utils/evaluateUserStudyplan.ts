@@ -91,12 +91,6 @@ export const evaluateUserStudyplan = (
   const isOnLastDay = currentDay === daily_lessons.length
   const areTodaysTasksAllDone = !todaysTasks.some(task => task.completed_at === null)
 
-  console.log('evaluateUserStudyplan', {
-    currentDay,
-    isOnLastDay,
-    areTodaysTasksAllDone
-  })
-
   return {
     todaysTasks,
     areTodaysTasksAllDone,

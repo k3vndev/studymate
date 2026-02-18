@@ -45,7 +45,10 @@ export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
     return null
   }, [studyplan])
 
-  const userHasAnotherStudyplan = !!userStudyplan && !usersCurrent
+  const userHasAnotherStudyplan = useMemo(
+    () => !!userStudyplan.userStudyplan && !usersCurrent,
+    [userStudyplan, usersCurrent]
+  )
 
   const isSaved = useMemo(() => {
     if (!publicId || !lists?.saved) return false

@@ -1,13 +1,13 @@
 'use client'
 
-import { Button, ErrorCard, Gigant, Message } from '@/components/ErrorCard'
-import { Loadable } from '@/components/Loadable'
-import { Main } from '@/components/Main'
-import { Sidebar } from '@/components/Sidebar'
-import { Studyplan } from '@/components/Studyplan/Studyplan'
-import { MagicWandIcon } from '@/components/icons'
-import { useUserPrompts } from '@/hooks/useUserPrompts'
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
+import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { Loadable } from '@@/Loadable'
+import { Main } from '@@/Main'
+import { Sidebar } from '@@/Sidebar'
+import { Studyplan } from '@@/Studyplan/Studyplan'
+import { MagicWandIcon } from '@@/icons'
+import { useUserPrompts } from '@hooks/useUserPrompts'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 
 export default function UserStudyplanPage() {
   const { userStudyplan, isLoading } = useUserStudyplan()
@@ -16,7 +16,7 @@ export default function UserStudyplanPage() {
   return (
     <>
       <Main className='gap-12 h-full relative'>
-        <Loadable isLoading={isLoading}>
+        <Loadable isLoading={isLoading || !userStudyplan}>
           {userStudyplan ? (
             <Studyplan studyplan={userStudyplan} usersCurrent />
           ) : (

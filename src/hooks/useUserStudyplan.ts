@@ -1,4 +1,3 @@
-import { useUserBehavior } from '@/hooks/useUserBehavior'
 import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
@@ -8,7 +7,8 @@ import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
-import type { PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
+import { useUserBehavior } from '@hooks/useUserBehavior'
+import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
@@ -23,6 +23,7 @@ export const useUserStudyplan = (params?: Params) => {
   const setUserStudyplan = useUserStore(s => s.setStudyplan)
   const modifyStudyplansList = useUserStore(s => s.modifyStudyplansList)
   const stateStudyplan = useStudyplansStore(s => s.studyplan)
+  const setStateStudyplan = useStudyplansStore(s => s.setStudyplan)
   const setChatStudyplanOriginalId = useChatStore(s => s.setStudyplanOriginalId)
 
   const onUser = useUserBehavior()
@@ -31,13 +32,14 @@ export const useUserStudyplan = (params?: Params) => {
   // Initial fetch of user's Studyplan
   useEffect(() => {
     const fetchOnAwake = params?.fetchOnAwake ?? true
-    if (userStudyplan !== undefined || !fetchOnAwake) return
 
-    dataFetch<UserStudyplan | null>({
-      url: '/api/user/studyplan',
-      onSuccess: data => setUserStudyplan(data),
-      onError: () => setUserStudyplan(null)
-    })
+    if (userStudyplan === undefined && fetchOnAwake) {
+      dataFetch<UserStudyplan | null>({
+        url: '/api/user/studyplan',
+        onSuccess: data => setUserStudyplan(data),
+        onError: () => setUserStudyplan(null)
+      })
+    }
   }, [])
 
   // Redirect the user in case there's no Studyplan
@@ -50,7 +52,6 @@ export const useUserStudyplan = (params?: Params) => {
   const utilityValues: EvaluateUserStudyplanReturn = useMemo(() => {
     try {
       if (userStudyplan) {
-        console.log(userStudyplan)
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
         return evaluateUserStudyplan(userStudyplan, timezone)
       }
@@ -67,12 +68,18 @@ export const useUserStudyplan = (params?: Params) => {
   }, [userStudyplan])
 
   const start = () => {
-    // Don't start the Studyplan if its null or not valid
-    const { data, success } = BaseStudyplanSchema.safeParse(stateStudyplan)
-    if (!success || data === null) return
+    if (!stateStudyplan) throw new Error('No studyplan in state to start')
 
-    // If the stateStudyplan is already a PublicStudyplan, we can just use its id to start it. Otherwise, send the whole object to the API to create a new UserStudyplan based on it.
-    const requestBody: StartStudyplanReqBody = (stateStudyplan as PublicStudyplan)?.id ?? data
+    // First try to get an id or original_id from the state studyplan
+    let requestBody: StartStudyplanReqBody | undefined =
+      (stateStudyplan as PublicStudyplan)?.id ?? (stateStudyplan as UserStudyplan)?.original_id
+
+    // If we didn't get an id, send the whole studyplan object (if it exists in the state)
+    if (!requestBody) {
+      const { data, success } = BaseStudyplanSchema.safeParse(stateStudyplan)
+      if (!success || data === null) throw new Error('Invalid studyplan')
+      requestBody = data
+    }
 
     return dataFetchHandler<UserStudyplan>({
       url: '/api/user/studyplan',
@@ -87,13 +94,14 @@ export const useUserStudyplan = (params?: Params) => {
 
         if (stateStudyplan && 'chat_message_id' in stateStudyplan && stateStudyplan.chat_message_id) {
           // Set the original_id in the state studyplan
-          setChatStudyplanOriginalId(stateStudyplan.chat_message_id, newStudyplan.original_id, newMessages =>
+          const { chat_message_id, original_id } = stateStudyplan
+          setChatStudyplanOriginalId(chat_message_id, original_id!, newMessages =>
             saveChatToDatabase(newMessages)
           )
         }
 
         // Go to the new studyplan page
-        onUser({ stayed: () => router.replace('/studyplan') })
+        onUser({ stayed: () => router.push('/studyplan') })
       }
     })
   }
@@ -104,7 +112,7 @@ export const useUserStudyplan = (params?: Params) => {
       options: { method: 'DELETE' },
       onSuccess: () =>
         onUser({
-          stayed: () => seeOriginal('replace'),
+          stayedWaitTime: () => seeOriginal({ method: 'replace' }),
           gone: () => setUserStudyplan(null)
         })
     })
@@ -115,7 +123,7 @@ export const useUserStudyplan = (params?: Params) => {
       options: { method: 'PUT' },
       onSuccess: id =>
         onUser({
-          stayed: () => seeOriginal('replace'),
+          stayed: () => seeOriginal({ method: 'replace' }),
           stayedWaitTime: throwConfetti,
           gone: () => {
             setUserStudyplan(null)
@@ -124,9 +132,12 @@ export const useUserStudyplan = (params?: Params) => {
         })
     })
 
-  const seeOriginal = (method: keyof AppRouterInstance = 'push') => {
+  const seeOriginal = (params?: { method?: keyof AppRouterInstance }) => {
+    const { method = 'push' } = params ?? {}
+
     if (userStudyplan) {
       const { original_id } = userStudyplan
+      setStateStudyplan(null)
       router[method](`/studyplan/${original_id}`)
     }
   }
@@ -150,6 +161,15 @@ interface DataFetchHandlerParams<T> {
 }
 
 const dataFetchHandler = <T>({ url, options, onSuccess }: DataFetchHandlerParams<T>) =>
-  new Promise<void>(res => {
-    dataFetch<T>({ url, options, onSuccess, onFinish: res, redirectOn401: true })
+  new Promise<void>((res, rej) => {
+    dataFetch<T>({
+      url,
+      options,
+      onSuccess: data => {
+        onSuccess?.(data)
+        res()
+      },
+      onError: () => rej(),
+      redirectOn401: true
+    })
   })

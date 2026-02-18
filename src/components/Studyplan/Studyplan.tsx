@@ -17,7 +17,7 @@ interface Props {
 
 export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
   const { context, userStudyplan } = useStudyplan({ studyplan, usersCurrent })
-  const { name, desc, category } = context.studyplan
+  const { name, desc, category, daily_lessons } = context.studyplan
 
   return (
     <StudyplanContext.Provider value={context}>
@@ -40,7 +40,7 @@ export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
       </section>
 
       {usersCurrent && userStudyplan && <TodaysLesson />}
-      <DailyLessons />
+      {daily_lessons && <DailyLessons />}
     </StudyplanContext.Provider>
   )
 }

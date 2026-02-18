@@ -1,10 +1,10 @@
+import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { LoadingIcon } from '@icons'
 import { useContext, useEffect, useRef } from 'react'
 import { CompletedBadge } from './CompletedBadge'
 import { FinishButton } from './FinishButton'
-import { StartButton } from './StartButton'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { SaveButton } from './SaveButton'
+import { StartButton } from './StartButton'
 
 export const ButtonsSection = () => {
   const ref = useRef<HTMLDivElement>(null)

@@ -1,10 +1,10 @@
-import { response } from '@/app/api/utils/response'
 import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { abandonStudyplan } from '@api/utils/abandonStudyplan'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { getStudyplan } from '@api/utils/getStudyplan'
 import { getUserId } from '@api/utils/getUserId'
 import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
+import { response } from '@api/utils/response'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
 import { cookies } from 'next/headers'
@@ -83,24 +83,27 @@ export const POST = async (req: NextRequest) => {
   // Create user's studyplan
   try {
     // Parse daily lessons to match the UserStudyplan structure
-    const newDailyLessons = studyplan.daily_lessons.map(d =>
-      d.tasks.map(t => ({ goal: t, completed_at: null }))
-    )
-    const creatingStudyplan = {
+    const daily_lessons = studyplan.daily_lessons.map(lesson => ({
+      ...lesson,
+      tasks: lesson.tasks.map(t => ({ goal: t, completed_at: null }))
+    }))
+
+    const creatingStudyplan: UserStudyplan = {
       ...studyplan,
-      daily_lessons: newDailyLessons
+      original_id,
+      daily_lessons
     }
 
-    const createdStudyplan = await databaseQuery<UserStudyplan[]>(
+    type QueryResponse = { studyplan: UserStudyplan[] }
+    const data = await databaseQuery<QueryResponse>(
       supabase
         .from('users')
         .update({
-          studyplan: { ...creatingStudyplan, original_id: original_id }
+          studyplan: creatingStudyplan
         })
         .eq('id', userId)
-        .select()
     )
-    return response(true, 201, { data: createdStudyplan })
+    return response(true, 201, { data: creatingStudyplan })
   } catch {
     return response(false, 500)
   }

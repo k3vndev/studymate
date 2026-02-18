@@ -11,12 +11,5 @@ export const abandonStudyplan = async ({
   supabase = createServerComponentClient({ cookies }),
   userId
 }: Params) => {
-  try {
-    await databaseQuery(
-      supabase.from('users').update({ studyplan: null, current_studyplan_day: null }).eq('id', userId)
-    )
-    return
-  } catch {
-    throw new Error()
-  }
+  await databaseQuery(supabase.from('users').update({ studyplan: null }).eq('id', userId))
 }

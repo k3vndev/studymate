@@ -1,10 +1,10 @@
 'use client'
 
-import { Background } from '@components/Background/Background'
-import { Glow } from '@components/Background/Glow'
-import { GalleryStudyplans } from '@components/GalleryStudyplans/GalleryStudyplans'
-import { Main } from '@components/Main'
-import { Sidebar } from '@components/Sidebar'
+import { Background } from '@@/Background/Background'
+import { Glow } from '@@/Background/Glow'
+import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
+import { Main } from '@@/Main'
+import { Sidebar } from '@@/Sidebar'
 import { InitialSection } from './InitialSection'
 
 export default function DashboardPage() {
