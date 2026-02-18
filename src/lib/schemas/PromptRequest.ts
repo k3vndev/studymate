@@ -11,7 +11,7 @@ export const PromptRequestSchema = z.object({
       }),
       z.object({
         role: z.literal('assistant'),
-        content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_INFORCED)
+        content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_ENFORCED)
       }),
       z.object({
         role: z.literal('studyplan'),

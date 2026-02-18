@@ -2,13 +2,12 @@ import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
 import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
-import { throwConfetti } from '@/lib/utils/throwConfetti'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
 import { useUserBehavior } from '@hooks/useUserBehavior'
-import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
+import type { PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
@@ -80,6 +79,7 @@ export const useUserStudyplan = (params?: Params) => {
     // If we didn't get an id, send the whole studyplan object (if it exists in the state)
     if (!requestBody) {
       const { data, success } = BaseStudyplanSchema.safeParse(stateStudyplan)
+
       if (!success || data === null) throw new Error('Invalid studyplan')
       requestBody = data
     }
@@ -97,7 +97,9 @@ export const useUserStudyplan = (params?: Params) => {
 
         if (stateStudyplan && 'chat_message_id' in stateStudyplan && stateStudyplan.chat_message_id) {
           // Set the original_id in the state studyplan
-          const { chat_message_id, original_id } = stateStudyplan
+          const { chat_message_id } = stateStudyplan
+          const { original_id } = newStudyplan
+
           setChatStudyplanOriginalId(chat_message_id, original_id!, newMessages =>
             saveChatToDatabase(newMessages)
           )

@@ -33,7 +33,13 @@ export const Alert = () => {
   const { acceptButton, rejectButton, header, message } = data
 
   const handleAccept = async () => {
-    await acceptButton.onClick()
+    try {
+      await acceptButton.onClick()
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error in acceptButton action at Alert component:', error)
+      }
+    }
     visibility.hide()
   }
 

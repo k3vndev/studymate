@@ -1,13 +1,13 @@
 import { CATEGORIES, MATE_PROMPT_VALUES } from '@consts'
 import { z } from 'zod'
 
-const constraints = MATE_PROMPT_VALUES.STUDYPLAN
+const C = MATE_PROMPT_VALUES.STUDYPLAN
 
 // -- Define unitlity schemas for later use --
 
 const BasicDataSchema = z.object({
-  name: z.string().min(constraints.NAME.MIN).max(constraints.NAME.MAX),
-  desc: z.string().min(constraints.DESC.MIN).max(constraints.DESC.MAX),
+  name: z.string().min(C.NAME.MIN_ENFORCED).max(C.NAME.MAX_ENFORCED),
+  desc: z.string().min(C.DESC.MIN_ENFORCED).max(C.DESC.MAX_ENFORCED),
   category: z.enum(CATEGORIES)
 })
 
