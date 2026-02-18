@@ -66,11 +66,6 @@ export const POST = async (req: NextRequest) => {
       return response(false, 400, { msg: 'The latest message did not come form the user' })
     }
 
-    // Check if user message is too long
-    if (newMessage.content.length > USER_MAX_MESSAGE_LENGTH) {
-      return response(false, 400, { msg: 'User message was too long' })
-    }
-
     // Extract new user message and previous messages
     userMessage = newMessage.content
     chatMessages = dataParser.fromClientMessagesToModelPrompt(previousChatMessages)

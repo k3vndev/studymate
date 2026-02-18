@@ -9,7 +9,7 @@ import { InfoHeader } from './InfoHeader'
 import { Timer } from './Timer'
 
 export default function FocusPage() {
-  const { userStudyplan, isOnLastDay, todaysTasks, isLoading, currentDay } = useUserStudyplan()
+  const { userStudyplan, isLoading, currentDay } = useUserStudyplan()
 
   return (
     <>
@@ -19,7 +19,7 @@ export default function FocusPage() {
             <div className='flex flex-col items-center h-full justify-between animate-fade-in-fast'>
               <InfoHeader name={userStudyplan.name} currentDay={currentDay} />
               <Timer />
-              <CurrentTask {...{ isOnLastDay, todaysTasks, currentDay }} />
+              <CurrentTask />
             </div>
           )}
         </Loadable>

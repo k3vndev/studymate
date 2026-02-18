@@ -21,10 +21,13 @@ interface Params {
 export const useUserStudyplan = (params?: Params) => {
   const userStudyplan = useUserStore(s => s.studyplan)
   const setUserStudyplan = useUserStore(s => s.setStudyplan)
+
+  const setChatStudyplanOriginalId = useChatStore(s => s.setStudyplanOriginalId)
+  const setThrowConfettiNextTime = useStudyplansStore(s => s.setThrowConfettiNextTime)
   const modifyStudyplansList = useUserStore(s => s.modifyStudyplansList)
+
   const stateStudyplan = useStudyplansStore(s => s.studyplan)
   const setStateStudyplan = useStudyplansStore(s => s.setStudyplan)
-  const setChatStudyplanOriginalId = useChatStore(s => s.setStudyplanOriginalId)
 
   const onUser = useUserBehavior()
   const router = useRouter()
@@ -121,15 +124,13 @@ export const useUserStudyplan = (params?: Params) => {
     dataFetchHandler<string>({
       url: '/api/user/studyplan',
       options: { method: 'PUT' },
-      onSuccess: id =>
-        onUser({
-          stayed: () => seeOriginal({ method: 'replace' }),
-          stayedWaitTime: throwConfetti,
-          gone: () => {
-            setUserStudyplan(null)
-            modifyStudyplansList(id, 'completed').add()
-          }
-        })
+      onSuccess: id => {
+        seeOriginal({ method: 'replace' })
+        setThrowConfettiNextTime(true)
+
+        modifyStudyplansList(id, 'completed').add()
+        onUser({ gone: () => setUserStudyplan(null) })
+      }
     })
 
   const seeOriginal = (params?: { method?: keyof AppRouterInstance }) => {

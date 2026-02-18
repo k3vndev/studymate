@@ -14,7 +14,7 @@ export const PromptRequestSchema = z.object({
         content: z.string().trim().nonempty().max(MATE_PROMPT_VALUES.MESSAGE.MAX_INFORCED)
       }),
       z.object({
-        role: z.enum(['studyplan']),
+        role: z.literal('studyplan'),
         content: BaseStudyplanSchema.extend({
           original_id: z.string().uuid().nullable(),
           chat_message_id: z.string().nullable()

@@ -7,7 +7,7 @@ interface StudyplanContext {
   usersCurrent: boolean
   isCompleted: boolean
   userHasAnotherStudyplan: boolean
-  justCompleted: boolean
+  readyToComplete: boolean
   isSaved: boolean
   publicId: string | null
 }
@@ -18,7 +18,7 @@ export const StudyplanContext = createContext<StudyplanContext>({
   usersCurrent: false,
   isCompleted: false,
   userHasAnotherStudyplan: false,
-  justCompleted: false,
+  readyToComplete: false,
   isSaved: false,
   publicId: null
 })

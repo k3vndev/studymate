@@ -22,7 +22,7 @@ export const TodaysLesson = () => {
 
   return (
     <section
-      className='flex w-full h-fit flex-col bg-card-background px-7 py-6 rounded-2xl border border-card-border card animate-fade-in-fast'
+      className='flex w-full h-fit flex-col bg-card-background px-7 py-6 rounded-2xl z-10 border border-card-border card animate-fade-in-fast'
       onClick={handleClick}
     >
       <div className='flex w-full justify-between items-center'>

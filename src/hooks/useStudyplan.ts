@@ -37,7 +37,7 @@ export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
     () => !!completed?.some(id => 'id' in studyplan && id === studyplan.id),
     [completed]
   )
-  const justCompleted = userStudyplan.areTodaysTasksAllDone && usersCurrent
+  const readyToComplete = userStudyplan.areTodaysTasksAllDone && usersCurrent
 
   const publicId = useMemo(() => {
     if ('id' in studyplan) return studyplan.id
@@ -62,7 +62,7 @@ export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
       isLoadingUserData,
 
       isCompleted,
-      justCompleted,
+      readyToComplete,
       publicId,
       userHasAnotherStudyplan,
       isSaved

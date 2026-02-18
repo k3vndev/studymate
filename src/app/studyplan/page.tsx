@@ -16,7 +16,7 @@ export default function UserStudyplanPage() {
   return (
     <>
       <Main className='gap-12 h-full relative'>
-        <Loadable isLoading={isLoading || !userStudyplan}>
+        <Loadable isLoading={isLoading}>
           {userStudyplan ? (
             <Studyplan studyplan={userStudyplan} usersCurrent />
           ) : (

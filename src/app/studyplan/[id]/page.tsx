@@ -45,15 +45,17 @@ export default function PublicStudyplanPage() {
       return
     }
 
+    const studyplanId: string | undefined = (studyplan as PublicStudyplan)?.id
+
     // If the studyplan is null or the id is not the same as the studyplan id, search for the studyplan
-    if (studyplan === null || (studyplan as PublicStudyplan)?.id !== id) {
+    if (studyplan === null || studyplanId !== id) {
       const foundStudyplan = searchStudyplan(id)
 
       if (foundStudyplan) {
         setStateStudyplan(foundStudyplan)
         return
       }
-    } else if ((studyplan as PublicStudyplan)?.id === id) {
+    } else if (studyplanId === id) {
       return
     }
 
@@ -77,7 +79,7 @@ export default function PublicStudyplanPage() {
   }
 
   useEffect(() => {
-    // Redirect to the tasks page if the id is a typo
+    // Redirect to the tasks page if the id is a potential typo of "tasks" or "lessons"
     const typoRoutes = ['task', 'lesson', 'lessons']
     if (typoRoutes.includes(id as string)) {
       router.replace('/studyplan/tasks')

@@ -2,7 +2,8 @@ import { useOnClickSelector } from '@/hooks/useOnClickSelector'
 import { DropdownMenuContext } from '@/lib/context/DropdownMenuContext'
 import { useEvent } from '@hooks/useEvent'
 import { ChevronIcon, MoreIcon } from '@icons'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { twMerge } from 'tailwind-merge'
 
 interface Props {
@@ -35,6 +36,20 @@ export const DropdownMenu = ({ children, className }: Props) => {
     if (key === 'Escape') manage.close()
   })
 
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [coords, setCoords] = useState({ top: 0, left: 0 })
+
+  useEffect(() => {
+    if (isOpen && buttonRef.current) {
+      const { bottom, left, width } = buttonRef.current.getBoundingClientRect()
+
+      setCoords({
+        top: bottom + window.scrollY,
+        left: left + width / 2 + window.scrollX
+      })
+    }
+  }, [isOpen])
+
   const style = isOpen
     ? { menu: 'scale-100 pointer-events-auto', rotation: 'rotate-90' }
     : { menu: 'scale-0 pointer-events-none', rotation: 'rotate-0' }
@@ -42,7 +57,26 @@ export const DropdownMenu = ({ children, className }: Props) => {
   return (
     <DropdownMenuContext.Provider value={{ isOpen, manage }}>
       <div className={twMerge(`relative ${className?.main}`)}>
+        {createPortal(
+          <article
+            style={{
+              position: 'absolute',
+              top: coords.top,
+              left: coords.left
+            }}
+            className={`
+              bg-gray-70 border border-gray-30 z-40 -translate-x-full
+              rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
+            `}
+            id={IDS.ELEMENT}
+          >
+            {children}
+          </article>,
+          document.body
+        )}
+
         <button
+          ref={buttonRef}
           onClick={manage.toggle}
           className={twMerge(`
             aspect-square button *:size-8 text-gray-10
@@ -52,16 +86,6 @@ export const DropdownMenu = ({ children, className }: Props) => {
         >
           {isOpen ? <ChevronIcon className='-rotate-90' /> : <MoreIcon />}
         </button>
-
-        <article
-          className={`
-            absolute right-0 -bottom-1 translate-y-full z-40 bg-gray-70 border border-gray-30 
-            rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
-          `}
-          id={IDS.ELEMENT}
-        >
-          {children}
-        </article>
       </div>
     </DropdownMenuContext.Provider>
   )

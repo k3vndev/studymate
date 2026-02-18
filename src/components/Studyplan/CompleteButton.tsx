@@ -3,7 +3,7 @@ import { LoadingIcon, RocketIcon } from '@icons'
 import { useState } from 'react'
 import { GradientBorder } from '../GradientBorder'
 
-export const FinishButton = () => {
+export const CompleteButton = () => {
   const { finishStudyplan } = useUserStudyplan({ fetchOnAwake: false })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -31,7 +31,7 @@ export const FinishButton = () => {
           `}
         >
           {isLoading ? <LoadingIcon className='animate-spin' /> : <RocketIcon />}
-          Finish studyplan
+          Complete studyplan
         </div>
       </GradientBorder>
     </button>

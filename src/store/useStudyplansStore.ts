@@ -7,6 +7,9 @@ export interface StudyplansStore {
 
   studyplans: PublicStudyplan[]
   addStudyplans: (...values: PublicStudyplan[]) => void
+
+  throwConfettiNextTime: boolean
+  setThrowConfettiNextTime: (value: boolean) => void
 }
 
 export const useStudyplansStore = create<StudyplansStore>(set => ({
@@ -25,5 +28,8 @@ export const useStudyplansStore = create<StudyplansStore>(set => ({
         }
       })
       return { studyplans: clonedStudyplans }
-    })
+    }),
+
+  throwConfettiNextTime: false,
+  setThrowConfettiNextTime: value => set(() => ({ throwConfettiNextTime: value }))
 }))

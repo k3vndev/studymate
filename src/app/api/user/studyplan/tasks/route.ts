@@ -22,9 +22,8 @@ export const POST = async (req: NextRequest) => {
     const { index, clientTimezone }: CompleteTaskReqBody = await req.json()
 
     // Validate client timezone and task index before setting them
-    if (!IANAZone.isValidZone(clientTimezone)) {
-      throw new Error()
-    }
+    if (!IANAZone.isValidZone(clientTimezone)) throw new Error()
+
     userTimezone = clientTimezone
     taskIndex = await z.number().nonnegative().parseAsync(index)
   } catch {
@@ -39,7 +38,8 @@ export const POST = async (req: NextRequest) => {
 
   try {
     // Fetch user's Studyplan from database
-    const [studyplan] = await databaseQuery<UserStudyplan[]>(supabase.from('users').select('studyplan'))
+    type QueryResponse = { studyplan: UserStudyplan | null }
+    const [{ studyplan }] = await databaseQuery<QueryResponse[]>(supabase.from('users').select('studyplan'))
     if (studyplan === null) {
       return response(false, 405, { msg: "User doesn't have a studyplan" })
     }
@@ -79,8 +79,8 @@ export const POST = async (req: NextRequest) => {
       // Set task as completed with the current timestamp in the user's timezone
       const today = DateTime.now().setZone(userTimezone)
       taskCompletionTimestamp = today.toUTC().toISO() ?? '' // This should never be null, but it's here just in case
-      taskToComplete.completed_at = taskCompletionTimestamp
-      newStudyplan.daily_lessons[currentStudyplanDay].tasks[taskIndex] = taskToComplete
+      newStudyplan.daily_lessons[currentStudyplanDay - 1].tasks[taskIndex].completed_at =
+        taskCompletionTimestamp
     } catch {
       return response(false, 400, { msg: 'Invalid task index' })
     }
