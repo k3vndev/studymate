@@ -1,11 +1,11 @@
 'use client'
 
-import { Main } from '@components/Main'
-import { Sidebar } from '@components/Sidebar'
-import { GalleryStudyplans } from '@components/GalleryStudyplans/GalleryStudyplans'
-import { UserSection } from './UserSection'
 import { Background } from '@components/Background/Background'
 import { Glow } from '@components/Background/Glow'
+import { GalleryStudyplans } from '@components/GalleryStudyplans/GalleryStudyplans'
+import { Main } from '@components/Main'
+import { Sidebar } from '@components/Sidebar'
+import { UserSection } from './UserSection'
 
 export default function ProfilePage() {
   return (
@@ -29,8 +29,8 @@ export default function ProfilePage() {
       <Sidebar />
 
       <Background className='bg-[#020202]'>
-        <Glow className='bg-[#6313ED]/15' pos='left-top' margin={0} />
-        <Glow className='bg-[#6313ED]/5' pos='right-bottom' margin={0} />
+        <Glow className='bg-[#6313ED]/20' pos='left-top' margin={0} />
+        <Glow className='bg-[#6313ED]/10' pos='right-bottom' margin={0} />
       </Background>
     </>
   )

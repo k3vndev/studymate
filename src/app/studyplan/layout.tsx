@@ -12,7 +12,7 @@ export default function RootLayout({
 
       <Background>
         <Glow margin={20} className='bg-blue-30/5' pos='left-bottom' />
-        <Glow className='bg-blue-30/15' pos='center-top' />
+        <Glow className='bg-blue-30/20' pos='center-top' />
         <Glow margin={20} className='bg-blue-30/5' pos='right-bottom' />
       </Background>
     </>

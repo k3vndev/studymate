@@ -61,6 +61,18 @@ export const CATEGORIES = [
   'Study Techniques'
 ] as const
 
+/* Missing categories (each will need both an icon and an image):
+  - Languages
+  - Business
+  - Marketing
+  - Personal Development
+  - Health & Fitness
+  - Lifestyle
+  - Social Media
+  - Writing
+  - Music Production
+ */
+
 // Virtual assistant
 export const MATE_MESSAGES = {
   MEET: "Hey there! I'm Mate. I'll be helping you out with everything you need.",

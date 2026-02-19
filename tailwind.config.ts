@@ -36,7 +36,9 @@ const config: Config = {
         appear: 'fade-and-scale 250ms ease both',
         disappear: 'fade-and-scale 250ms ease reverse both',
 
-        'weak-pulse': 'weak-pulse 4s ease both infinite'
+        'weak-pulse': 'weak-pulse 4s ease both infinite',
+
+        'glow-scale': 'glow-scale 2s ease-in-out infinite alternate'
       },
       keyframes: {
         'spin-pulse': {
@@ -59,6 +61,10 @@ const config: Config = {
         },
         'weak-pulse': {
           '50%': { opacity: '0.75' }
+        },
+        'glow-scale': {
+          '0%': { scale: '1' },
+          '100%': { scale: '1.05' }
         }
       }
     },
