@@ -1,4 +1,4 @@
-import { Inter, Poppins } from 'next/font/google'
+import { Azeret_Mono, Inter, Poppins } from 'next/font/google'
 
 // Fonts
 const poppins = Poppins({
@@ -11,9 +11,15 @@ const inter = Inter({
   subsets: ['latin']
 })
 
+const azeretMono = Azeret_Mono({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin']
+})
+
 export const FONTS = {
   POPPINS: poppins.className,
-  INTER: inter.className
+  INTER: inter.className,
+  AZERET_MONO: azeretMono.className
 }
 
 export const CONTENT_JSON = {

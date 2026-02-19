@@ -19,7 +19,7 @@ export default function FocusPage() {
 
   return (
     <>
-      <Main className='gap-12 max-h-full min-h-full relative'>
+      <Main className='gap-12 max-h-full min-h-full relative sm:pb-8 pb-4'>
         <Loadable isLoading={isLoading}>
           {userStudyplan ? (
             <div className='flex flex-col items-center h-full justify-between animate-fade-in-fast'>
