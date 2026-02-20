@@ -17,7 +17,10 @@ export const Timer = ({ studyplanId }: Props) => {
         {!isStartingUp && (
           <span
             className={`text-white/85 text-9xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-fade-in-fast [&>span]:${FONTS.AZERET_MONO}}`}
-            style={{ textShadow: '0px 0px 0.25rem rgba(255, 255, 255, 0.5)', animationDuration: '600ms' }}
+            style={{
+              textShadow: '0px 0px 0.25rem rgba(255, 255, 255, 0.5)',
+              animationDuration: '600ms'
+            }}
           >
             <span>{displayTimer.h}</span>:<span>{displayTimer.m}</span>:<span>{displayTimer.s}</span>
           </span>
@@ -31,7 +34,10 @@ export const Timer = ({ studyplanId }: Props) => {
         {isStartingUp && (
           <div
             className={`flex flex-col items-center gap-1 z-50 text-nowrap animate-bounce-once ${FONTS.POPPINS}`}
-            style={{ animationDelay: '150ms' }}
+            style={{
+              animationDelay: '400ms',
+              animationDuration: '800ms'
+            }}
           >
             <span className='text-xl font-semibold animate-pulse '>Starting to focus...</span>
             <span className='text-3xl'>Don't leave this screen yet!</span>
