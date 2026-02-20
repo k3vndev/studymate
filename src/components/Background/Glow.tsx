@@ -1,5 +1,7 @@
+'use client'
+
 import type { ReusableComponent } from '@types'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -20,11 +22,12 @@ type Props = {
 
 export const Glow = ({ className = '', style, margin = 5, size = 60, pos }: Props) => {
   const SIZE_FACTOR = 0.7
+  const [randomAnimationTime, setRandomAnimationTime] = useState('')
 
-  const randomAnimationTime = useMemo(() => {
+  useEffect(() => {
     const min = 1.5
     const max = 3
-    return `${Math.random() * (max - min) + min}s`
+    setRandomAnimationTime(`${Math.random() * (max - min) + min}s`)
   }, [])
 
   const positionStyle = useMemo((): React.CSSProperties => {

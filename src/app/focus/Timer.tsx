@@ -1,65 +1,36 @@
-import { useStatisticsStore } from '@/store/useStatisticsStore'
+import { useFocusTimer } from '@/hooks/useFocusTimer'
 import { FONTS } from '@consts'
-import { useEffect, useMemo, useRef, useState } from 'react'
 
 export const Timer = () => {
-  const intervalRef = useRef<NodeJS.Timeout>()
-  const minutesFocusedToday = useStatisticsStore(s => s.minutesFocusedToday)
-  const setMinutesFocusedToday = useStatisticsStore(s => s.setMinutesFocusedToday)
-
-  const [secondsCounter, setSecondsCounter] = useState(0)
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setSecondsCounter(s => {
-        if (s >= 59) {
-          setMinutesFocusedToday(m => m + 1)
-          return 0
-        }
-        return s + 1
-      })
-    }, 1000)
-
-    return () => {
-      // Clear the interval when the component unmounts to prevent memory leaks
-      intervalRef.current && clearInterval(intervalRef.current)
-    }
-  }, [])
-
-  const displayTimer = useMemo(() => {
-    const hours = Math.floor(minutesFocusedToday / 60)
-    const minutes = minutesFocusedToday % 60
-    const seconds = secondsCounter
-
-    const formattedHours = hours.toString().padStart(2, '0')
-    const formattedMinutes = minutes.toString().padStart(2, '0')
-    const formattedSeconds = seconds.toString().padStart(2, '0')
-
-    return {
-      h: formattedHours,
-      m: formattedMinutes,
-      s: formattedSeconds
-    }
-  }, [minutesFocusedToday, secondsCounter])
+  const { displayTimer, isStartingUp, decorativeCircleStyle } = useFocusTimer()
 
   return (
     <div className='relative size-full'>
       <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-        <div className='size-64 flex justify-center items-center relative'>
+        {/* Text timer */}
+        {!isStartingUp && (
           <span
-            className={`text-white/90 text-9xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 [&>span]:${FONTS.AZERET_MONO}`}
-            style={{ textShadow: '0px 0px 0.25rem rgba(255, 255, 255, 0.5)' }}
+            className={`text-white/85 text-9xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-fade-in-fast [&>span]:${FONTS.AZERET_MONO}}`}
+            style={{ textShadow: '0px 0px 0.25rem rgba(255, 255, 255, 0.5)', animationDuration: '600ms' }}
           >
             <span>{displayTimer.h}</span>:<span>{displayTimer.m}</span>:<span>{displayTimer.s}</span>
           </span>
+        )}
 
+        {/* Decorative Circle */}
+        <div
+          className='absolute size-64 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle shadow-blue-10/15 animate-pulse transition'
+          style={decorativeCircleStyle}
+        />
+        {isStartingUp && (
           <div
-            className={`
-              absolute left-0 top-0 w-full aspect-square rounded-full 
-              shadow-circle shadow-blue-10/10 animate-pulse
-            `}
-          />
-        </div>
+            className={`flex flex-col items-center gap-1 z-50 text-nowrap animate-bounce-once ${FONTS.POPPINS}`}
+            style={{ animationDelay: '200ms', animationIterationCount: '2' }}
+          >
+            <span className='text-xl font-semibold animate-pulse '>Starting to focus...</span>
+            <span className='text-3xl'>Don't leave this screen yet!</span>
+          </div>
+        )}
       </span>
     </div>
   )

@@ -146,3 +146,8 @@ export const SCREENS = {
   TWO_XL: 1536,
   THREE_XL: 1750
 } as const
+
+// Timer related constants
+
+/** Minimum duration of a study session in seconds */
+export const MIN_SESSION_DURATION = 30
