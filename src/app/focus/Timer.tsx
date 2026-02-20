@@ -1,8 +1,12 @@
 import { useFocusTimer } from '@/hooks/useFocusTimer'
 import { FONTS } from '@consts'
 
-export const Timer = () => {
-  const { displayTimer, isStartingUp, decorativeCircleStyle } = useFocusTimer()
+interface Props {
+  studyplanId: string
+}
+
+export const Timer = ({ studyplanId }: Props) => {
+  const { displayTimer, isStartingUp, decorativeCircleStyle } = useFocusTimer({ studyplanId })
 
   return (
     <div className='relative size-full'>
@@ -25,7 +29,7 @@ export const Timer = () => {
         {isStartingUp && (
           <div
             className={`flex flex-col items-center gap-1 z-50 text-nowrap animate-bounce-once ${FONTS.POPPINS}`}
-            style={{ animationDelay: '200ms', animationIterationCount: '2' }}
+            style={{ animationDelay: '150ms' }}
           >
             <span className='text-xl font-semibold animate-pulse '>Starting to focus...</span>
             <span className='text-3xl'>Don't leave this screen yet!</span>

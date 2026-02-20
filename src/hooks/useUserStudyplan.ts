@@ -1,6 +1,7 @@
 import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
+import { getClientTimezone } from '@/lib/utils/getClientTimezone'
 import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
 import { useChatStore } from '@/store/useChatStore'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
@@ -54,7 +55,7 @@ export const useUserStudyplan = (params?: Params) => {
   const utilityValues: EvaluateUserStudyplanReturn = useMemo(() => {
     try {
       if (userStudyplan) {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const timezone = getClientTimezone()
         return evaluateUserStudyplan(userStudyplan, timezone)
       }
       throw new Error()

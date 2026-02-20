@@ -123,3 +123,8 @@ export interface CompleteTaskReqBody {
   index: number
   clientTimezone: string
 }
+
+export interface CreateStudySessionReqBody {
+  studyplanId: string
+  clientTimezone: string
+}

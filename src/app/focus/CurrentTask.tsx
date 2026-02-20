@@ -3,6 +3,7 @@
 import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { TasksContext } from '@/lib/context/TasksContext'
 import { dataFetch } from '@/lib/utils/dataFetch'
+import { getClientTimezone } from '@/lib/utils/getClientTimezone'
 import { useUserStore } from '@/store/useUserStore'
 import { Badge } from '@components/Badge'
 import { CONTENT_JSON } from '@consts'
@@ -58,7 +59,7 @@ export const CurrentTask = () => {
 
     const requestBody: CompleteTaskReqBody = {
       index: selectedTask,
-      clientTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      clientTimezone: getClientTimezone()
     }
 
     dataFetch<string>({

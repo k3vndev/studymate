@@ -151,3 +151,7 @@ export const SCREENS = {
 
 /** Minimum duration of a study session in seconds */
 export const MIN_SESSION_DURATION = 30
+
+export const DB_ERROR_CODES = {
+  NONEXISTENT_FOREIGN_KEY: '23503'
+} as const

@@ -1,12 +1,18 @@
-import { MIN_SESSION_DURATION } from '@/consts'
+import { dataFetch } from '@/lib/utils/dataFetch'
+import { getClientTimezone } from '@/lib/utils/getClientTimezone'
 import { useStatisticsStore } from '@/store/useStatisticsStore'
+import { CONTENT_JSON } from '@consts'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+interface Params {
+  studyplanId: string
+}
 
 /**
  * Custom hook to manage the focus timer logic,
  * including tracking seconds focused today and handling study session state.
  */
-export const useFocusTimer = () => {
+export const useFocusTimer = ({ studyplanId }: Params) => {
   const timerDisplayIntervalRef = useRef<NodeJS.Timeout>()
   const secondsFocusedToday = useStatisticsStore(s => s.secondsFocusedToday)
   const setSecondsFocusedToday = useStatisticsStore(s => s.setSecondsFocusedToday)
@@ -49,14 +55,14 @@ export const useFocusTimer = () => {
   // Handle the startup timer, showing a progress circle for 10 seconds before starting the actual focus timer
   const initializeStartupTimer = () => {
     const startMs = Date.now()
-    const waitSeconds = 10
+    const waitSeconds = 1.5 // TODO: Change back to 10 seconds before release
 
     // Start interval to update the decorative circle style every few millisconds (circle progress bar)
     startingUpIntervalRef.current = setInterval(() => {
       const elapsedMs = Date.now() - startMs
       const progress = Math.min(elapsedMs / (waitSeconds * 1000), 1) // Progress from 0 to 1 over 10 seconds
 
-      const range = [0.1, 0.05]
+      const range = [0.09, 0.033]
       const progressOpacity = range[0] + (range[1] - range[0]) * progress
       const backgroundOpacity = 0
       const degree = progress * 360
@@ -67,13 +73,13 @@ export const useFocusTimer = () => {
       }
       setDecorativeCircleStyle(newStyle)
 
-      // After 10 seconds, set isStartingUp to false, which will trigger the useEffect below to start the actual timer
+      // When progress reaches 100%, start the main timer and clear the startup timer interval
       if (progress >= 1) {
         setIsStartingUp(false)
-        startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
         setDecorativeCircleStyle(undefined)
         canStartMainTimerRef.current = true
 
+        startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
         document.removeEventListener('visibilitychange', visibilityChangeHandler)
       }
     }, 50)
@@ -93,6 +99,23 @@ export const useFocusTimer = () => {
     timerDisplayIntervalRef.current = setInterval(tick, 1000)
 
     // Make first call to the API and get the session id
+    dataFetch({
+      url: '/api/study_sessions',
+      options: {
+        method: 'POST',
+        headers: CONTENT_JSON,
+        body: JSON.stringify({
+          studyplanId: studyplanId,
+          clientTimezone: getClientTimezone()
+        })
+      },
+      onSuccess: data => {
+        console.log(data)
+      },
+      onError: error => {
+        console.error('Error starting study session:', error)
+      }
+    })
   }, [])
 
   useEffect(() => {

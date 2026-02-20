@@ -24,7 +24,7 @@ export default function FocusPage() {
           {userStudyplan ? (
             <div className='flex flex-col items-center h-full justify-between animate-fade-in-fast'>
               <InfoHeader name={userStudyplan.name} currentDay={currentDay} />
-              <Timer />
+              <Timer studyplanId={userStudyplan.original_id} />
               <CurrentTask />
             </div>
           ) : (
