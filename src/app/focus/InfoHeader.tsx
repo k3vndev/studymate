@@ -1,5 +1,4 @@
 import { Header } from '@@/Header'
-import { MoreIcon } from '@icons'
 
 interface Props {
   name: string
@@ -13,6 +12,7 @@ export const InfoHeader = ({ name, currentDay }: Props) => (
       <Header size={3}>{name}</Header>
       <span className='text-gray-10'>Day {currentDay}</span>
     </div>
-    <MoreIcon className='text-gray-10 size-7 button' />
+
+    {/* Slot at the top right. More options icon was here */}
   </div>
 )

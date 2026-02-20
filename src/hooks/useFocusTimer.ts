@@ -100,7 +100,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
         nextHeartBeatMSRef.current = now + HEART_BEAT_INTERVAL.REGULAR
       }
 
-      // Check if the day has changed since the timer started
+      // -- Handle day change --
       const startDate = new Date(startedAtMsRef.current)
       const nowDate = new Date()
 
@@ -109,7 +109,6 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       const startDateStr = formatDate(startDate)
       const nowDateStr = formatDate(nowDate)
 
-      // If the day has changed, we need to end the current study session and start a new one for the new day
       if (startDateStr !== nowDateStr) {
         // Clear the main timer interval while we handle the day change
         mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
@@ -172,17 +171,18 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   // Handle main state changes
   useEffect(() => {
     // -- Set up visibility change listener to handle user switching tabs or minimizing the window --
-    document.addEventListener('visibilitychange', visibilityChangeHandler)
-    if (document.visibilityState !== 'visible') {
-      setIsStartingUp(false)
-      return
-    }
-
-    // -- Start the appropriate timer based on whether we're in the startup phase or not --
     if (isStartingUp) {
+      document.addEventListener('visibilitychange', visibilityChangeHandler)
+
+      if (document.visibilityState !== 'visible') {
+        setIsStartingUp(false)
+        return
+      }
+
       initializeStartupTimer()
       return
     }
+
     initializeMainTimer()
 
     // Clean up event listener on unmount

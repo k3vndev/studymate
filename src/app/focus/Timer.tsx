@@ -1,5 +1,5 @@
-import { useFocusTimer } from '@/hooks/useFocusTimer'
 import { FONTS } from '@consts'
+import { useFocusTimer } from '@hooks/useFocusTimer'
 
 interface Props {
   studyplanId: string
@@ -16,7 +16,7 @@ export const Timer = ({ studyplanId }: Props) => {
         {/* Text timer */}
         {!isStartingUp && (
           <span
-            className={`text-white/85 text-9xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-fade-in-fast [&>span]:${FONTS.AZERET_MONO}}`}
+            className={`text-white/85 xl:text-9xl sm:text-8xl text-6xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-fade-in-fast [&>span]:${FONTS.AZERET_MONO}}`}
             style={{
               textShadow: '0px 0px 0.25rem rgba(255, 255, 255, 0.5)',
               animationDuration: '600ms'
