@@ -1,19 +1,16 @@
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { getClientTimezone } from '@/lib/utils/getClientTimezone'
 import { useStatisticsStore } from '@/store/useStatisticsStore'
+import type { UpdateStudySessionReqBody } from '@/types'
 import { CONTENT_JSON } from '@consts'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
-interface Params {
-  studyplanId: string
-}
 
 /**
  * Custom hook to manage the focus timer logic,
  * including tracking seconds focused today and handling study session state.
  */
 export const useFocusTimer = ({ studyplanId }: Params) => {
-  const timerDisplayIntervalRef = useRef<NodeJS.Timeout>()
+  const mainTimerIntervalRef = useRef<NodeJS.Timeout>()
   const secondsFocusedToday = useStatisticsStore(s => s.secondsFocusedToday)
   const setSecondsFocusedToday = useStatisticsStore(s => s.setSecondsFocusedToday)
 
@@ -29,12 +26,16 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
   const startingUpIntervalRef = useRef<NodeJS.Timeout>()
 
+  const HEART_BEAT_INTERVAL = {
+    FIRST: 60 * 1000, // First heartbeat after 1 minute
+    REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
+  }
+  const nextHeartBeatMSRef = useRef<number>(0)
+
   /*
     TODO:
-    - Add encouraging messages under the timer.
-    - Every 5 minutes, send an update to the server using PATH method with the session id, to update the minutes focused in the study_session row. This way, if the user closes the app, we still have the data up to the last 5 minutes.
-    - When the user finishes the study session, send a final update to the server to mark the session as completed using the session id and PUT method.
     - Reset timer and notify the server when day changes. Server will handle everything and return the new session id for next day.
+    - Load today's focused seconds from the database when the hook is first used.
   */
 
   const getElapsedMS = () => {
@@ -92,14 +93,30 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     startedAtMsRef.current = Date.now()
 
     // Handle ticks
-    const tick = () => {
+    const tick = async () => {
       const nextElapsedMS = getElapsedMS()
       setSecondsFocusedToday(initialSecondsFocusedTodayRef.current + Math.floor(nextElapsedMS / 1000))
+
+      // If it's time for the next heartbeat, send update to the server
+      const now = Date.now()
+      const isTimeForNextHeartBeat = now >= nextHeartBeatMSRef.current
+
+      if (studySessionIdRef.current && isTimeForNextHeartBeat) {
+        // Set the next heartbeat time
+        nextHeartBeatMSRef.current = now + HEART_BEAT_INTERVAL.REGULAR
+
+        // Send update to the server with the new focused time
+        const requestBody: UpdateStudySessionReqBody = {
+          sessionId: studySessionIdRef.current,
+          clientTimezone: getClientTimezone()
+        }
+        updateStudySession('PATCH', requestBody)
+      }
     }
-    timerDisplayIntervalRef.current = setInterval(tick, 1000)
+    mainTimerIntervalRef.current = setInterval(tick, 1000)
 
     // Make first call to the API and get the session id
-    dataFetch({
+    dataFetch<string>({
       url: '/api/study_sessions',
       options: {
         method: 'POST',
@@ -109,30 +126,54 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
           clientTimezone: getClientTimezone()
         })
       },
-      onSuccess: data => {
-        console.log(data)
-      },
-      onError: error => {
-        console.error('Error starting study session:', error)
+      onSuccess: studySessionId => {
+        studySessionIdRef.current = studySessionId
+        nextHeartBeatMSRef.current = Date.now() + HEART_BEAT_INTERVAL.FIRST
       }
     })
   }, [])
 
+  // Used to send requests about the study session, either for heartbeats or ending the session
+  const updateStudySession = useCallback((method: 'PATCH' | 'PUT', data: UpdateStudySessionReqBody) => {
+    dataFetch({
+      url: '/api/study_sessions',
+      options: {
+        method: method,
+        headers: CONTENT_JSON,
+        body: JSON.stringify(data)
+      }
+    })
+  }, [])
+
+  // Handle main state changes
   useEffect(() => {
     if (isStartingUp) {
       initializeStartupTimer()
-      return
     }
-
-    canStartMainTimerRef.current && initializeMainTimer()
-
-    return () => {
-      // Clear the interval when the component unmounts to prevent memory leaks
-      timerDisplayIntervalRef.current && clearInterval(timerDisplayIntervalRef.current)
-      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
-      document.removeEventListener('visibilitychange', visibilityChangeHandler)
+    // If the startup timer finishes and the main timer can start, start the main timer
+    else if (canStartMainTimerRef.current) {
+      initializeMainTimer()
     }
   }, [isStartingUp])
+
+  // Handle component unmounting or user leaving the page
+  useEffect(
+    () => () => {
+      // Clear intervals and event listeners
+      mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
+      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
+      document.removeEventListener('visibilitychange', visibilityChangeHandler)
+
+      // If there's an active study session, send final update to the server to mark the session as completed
+      if (studySessionIdRef.current) {
+        updateStudySession('PUT', {
+          sessionId: studySessionIdRef.current,
+          clientTimezone: getClientTimezone()
+        })
+      }
+    },
+    []
+  )
 
   const displayTimer = useMemo(() => {
     const hours = Math.floor(secondsFocusedToday / 3600)
@@ -156,4 +197,8 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     isStartingUp,
     decorativeCircleStyle
   }
+}
+
+interface Params {
+  studyplanId: string
 }

@@ -8,6 +8,8 @@ interface Props {
 export const Timer = ({ studyplanId }: Props) => {
   const { displayTimer, isStartingUp, decorativeCircleStyle } = useFocusTimer({ studyplanId })
 
+  // TODO: Show encouraging messages under the timer
+
   return (
     <div className='relative size-full'>
       <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>

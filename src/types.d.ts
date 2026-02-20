@@ -113,10 +113,6 @@ export interface StreamResponseMessage {
 
 // -- Request bodies --
 
-/**
- * Start an already created Studyplan by passing its id or create a new one by passing a BaseStudyplan object.
- * The API route will return the UserStudyplan created or selected.
- */
 export type StartStudyplanReqBody = BaseStudyplan | string
 
 export interface CompleteTaskReqBody {
@@ -126,5 +122,10 @@ export interface CompleteTaskReqBody {
 
 export interface CreateStudySessionReqBody {
   studyplanId: string
+  clientTimezone: string
+}
+
+export interface UpdateStudySessionReqBody {
+  sessionId: string
   clientTimezone: string
 }

@@ -1,20 +1,16 @@
+import { getClientTimestamp } from '@api/utils/getClientTimestamp'
 import { getUserId } from '@api/utils/getUserId'
+import { handleStudySessionUpdate } from '@api/utils/handleStudySessionUpdate'
 import { response } from '@api/utils/response'
 import { DB_ERROR_CODES } from '@consts'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { CreateStudySessionReqBody } from '@types'
-import { DateTime, IANAZone } from 'luxon'
 import { cookies } from 'next/headers'
 import { z } from 'zod'
 
+// API route to handle study session creation and updates (heartbeats and completion)
 export const POST = async (req: Request) => {
   const supabase = createServerComponentClient({ cookies })
-
-  // Authenticate user
-  const userId = await getUserId({ supabase })
-  if (userId === null) {
-    return response(false, 401, { msg: 'Unauthorized' })
-  }
 
   const body: CreateStudySessionReqBody = await req.json()
   let studyplanId: string
@@ -24,7 +20,7 @@ export const POST = async (req: Request) => {
   try {
     const parsed = await z
       .object({
-        studyplanId: z.string().uuid(),
+        studyplanId: z.string(),
         clientTimezone: z.string()
       })
       .parseAsync(body)
@@ -35,11 +31,15 @@ export const POST = async (req: Request) => {
     return response(false, 400, { msg: 'Invalid request body' })
   }
 
-  // Validate timezone and convert client time to UTC
-  if (!IANAZone.isValidZone(clientTimezone)) {
-    return response(false, 400, { msg: 'Invalid timezone' })
+  // Authenticate user
+  const userId = await getUserId({ supabase })
+  if (userId === null) {
+    return response(false, 401, { msg: 'Unauthorized' })
   }
-  const clientNow = DateTime.now().setZone(clientTimezone).toUTC().toISO()
+
+  // Validate timezone and convert client time to UTC
+  const clientNow = getClientTimestamp(clientTimezone)
+  if (!clientNow) return response(false, 400, { msg: 'Invalid timezone' })
 
   // Create new study session in the database, linked to the user and studyplan
   try {
@@ -59,6 +59,24 @@ export const POST = async (req: Request) => {
     return response(true, 201, { data: data.id })
   } catch (error) {
     console.error('Unexpected error while creating study session:', error)
+    return response(false, 500)
+  }
+}
+
+// API method to handle both study session heartbeats or pings.
+export const PATCH = async (req: Request) => {
+  try {
+    return await handleStudySessionUpdate(req, 'last_ping_at')
+  } catch {
+    return response(false, 500)
+  }
+}
+
+// API method to handle study session completion
+export const PUT = async (req: Request) => {
+  try {
+    return await handleStudySessionUpdate(req, 'ended_at')
+  } catch {
     return response(false, 500)
   }
 }
