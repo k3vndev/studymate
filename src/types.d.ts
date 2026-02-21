@@ -111,6 +111,14 @@ export interface StreamResponseMessage {
   content: string
 }
 
+export interface StudySession {
+  started_at: string
+  last_ping_at: string | null
+  ended_at: string | null
+  studyplan_id: string | null
+  id: string
+}
+
 // -- Request bodies --
 
 export type StartStudyplanReqBody = BaseStudyplan | string

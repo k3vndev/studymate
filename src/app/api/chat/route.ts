@@ -3,7 +3,6 @@ import { dataParser } from '@/app/api/utils/dataParser'
 import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
 import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
 import { getUserId } from '@api/utils/getUserId'
-import { USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type {

@@ -12,8 +12,8 @@ import { z } from 'zod'
 // API route to get study sessions for a specific day or studyplan
 // Supports query parameters:
 // - studyplan_id (optional): filter sessions by studyplan
-// - start (optional): ISO date string to filter sessions that started on or after this date
-// - end (optional): ISO date string to filter sessions that started on or before this date
+// - date_start (optional): ISO date string to filter sessions that started on or after this date
+// - date_end (optional): ISO date string to filter sessions that started on or before this date
 export const GET = async (req: Request) => {
   const supabase = createServerComponentClient({ cookies })
 
@@ -31,7 +31,7 @@ export const GET = async (req: Request) => {
 
   // Validate dates if provided (should be an ISO string)
   try {
-    ;[start, end] = ['start', 'end'].map(param => {
+    ;[start, end] = ['date_start', 'date_end'].map(param => {
       const val = searchParams.get(param)
       if (val === null) return null
 
@@ -50,7 +50,10 @@ export const GET = async (req: Request) => {
 
   // Fetch study sessions from the database for the user, applying filters if provided
   try {
-    let query = supabase.from('study_sessions').select('*').eq('user_id', userId)
+    let query = supabase
+      .from('study_sessions')
+      .select('started_at, last_ping_at, ended_at, studyplan_id, id')
+      .eq('user_id', userId)
 
     if (studyplanId) query = query.eq('studyplan_id', studyplanId)
     if (start) query = query.gte('started_at', start)

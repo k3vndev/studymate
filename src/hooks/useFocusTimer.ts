@@ -4,6 +4,7 @@ import { useStatisticsStore } from '@/store/useStatisticsStore'
 import { CONTENT_JSON } from '@consts'
 import type { UpdateStudySessionReqBody } from '@types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useUserStatistics } from './useUserStatistics'
 
 /**
  * Custom hook to manage the focus timer logic,
@@ -16,7 +17,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
   const startedAtMsRef = useRef(0)
   const studySessionIdRef = useRef<null | string>(null)
-  const initialSecondsFocusedTodayRef = useRef(secondsFocusedToday)
+  const initialSecondsTodayRef = useRef<number | null>(null)
   const canStartMainTimerRef = useRef(false)
 
   const [isStartingUp, setIsStartingUp] = useState(true)
@@ -28,6 +29,14 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
   }
   const nextHeartBeatMSRef = useRef<number>(0)
+
+  useUserStatistics()
+
+  useEffect(() => {
+    if (initialSecondsTodayRef.current === null && secondsFocusedToday !== null) {
+      initialSecondsTodayRef.current = secondsFocusedToday
+    }
+  }, [secondsFocusedToday])
 
   /*
     TODO:
@@ -65,7 +74,11 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       const degree = progress * 360
 
       const newStyle: React.CSSProperties = {
-        background: `conic-gradient(rgba(255, 255, 255, ${progressOpacity}) ${degree}deg, rgba(255, 255, 255, ${backgroundOpacity}) ${degree}deg)`,
+        background: `
+          conic-gradient(
+            rgba(255, 255, 255, ${progressOpacity}) ${degree}deg,
+            rgba(255, 255, 255, ${backgroundOpacity}) ${degree}deg
+          )`,
         animation: 'none'
       }
       setDecorativeCircleStyle(newStyle)
@@ -89,7 +102,10 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     // Handle ticks, called every second
     const tick = async () => {
       const nextElapsedMS = getElapsedMS()
-      setSecondsFocusedToday(initialSecondsFocusedTodayRef.current + Math.floor(nextElapsedMS / 1000))
+
+      if (initialSecondsTodayRef.current !== null) {
+        setSecondsFocusedToday(initialSecondsTodayRef.current + Math.floor(nextElapsedMS / 1000))
+      }
 
       // If it's time for the next heartbeat, send update to the server
       const now = Date.now()
@@ -112,7 +128,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       if (startDateStr !== nowDateStr) {
         // Clear the main timer interval while we handle the day change
         mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
-        initialSecondsFocusedTodayRef.current = 0
+        initialSecondsTodayRef.current = 0
         setSecondsFocusedToday(0)
 
         // End the current study session for the previous day
@@ -208,9 +224,11 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   )
 
   const displayTimer = useMemo(() => {
-    const hours = Math.floor(secondsFocusedToday / 3600)
-    const minutes = Math.floor((secondsFocusedToday % 3600) / 60)
-    const seconds = Math.floor(secondsFocusedToday % 60)
+    const value = secondsFocusedToday ?? 0
+
+    const hours = Math.floor(value / 3600)
+    const minutes = Math.floor((value % 3600) / 60)
+    const seconds = Math.floor(value % 60)
 
     const formattedHours = hours.toString().padStart(2, '0')
     const formattedMinutes = minutes.toString().padStart(2, '0')
