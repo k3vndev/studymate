@@ -1,7 +1,11 @@
-import type { DBUserData, UserStudyplan } from '@types'
+import type { DBUserData, StudySession, UserStudyplan } from '@types'
 import { create } from 'zustand'
+import { type ValueOrCallback, setState } from './utils/setState'
 
 export interface UserStore {
+  hydrated: boolean
+  setHydrated: (hydrated: boolean) => void
+
   profileData: DBUserData | null
   setProfileData: (value: DBUserData | null) => void
 
@@ -29,9 +33,18 @@ export interface UserStore {
     add: (placeAtStart?: boolean) => void
     remove: () => void
   }
+
+  secondsFocusedToday: number | null
+  setSecondsFocusedToday: (state: ValueOrCallback<number | null>) => void
+
+  userStudySessions: StudySession[] | null
+  setUserStudySessions: (state: ValueOrCallback<StudySession[] | null>) => void
 }
 
 export const useUserStore = create<UserStore>(set => ({
+  hydrated: false,
+  setHydrated: hydrated => set(() => ({ hydrated })),
+
   profileData: null,
   setProfileData: value => set(() => ({ profileData: value })),
 
@@ -90,5 +103,11 @@ export const useUserStore = create<UserStore>(set => ({
           return { studyplansLists: lists }
         })
     }
-  }
+  },
+
+  secondsFocusedToday: null,
+  setSecondsFocusedToday: state => set(s => setState(s, 'secondsFocusedToday', state, value => value)),
+
+  userStudySessions: null,
+  setUserStudySessions: state => set(s => setState(s, 'userStudySessions', state, value => value))
 }))

@@ -1,5 +1,6 @@
 'use client'
 
+import { useUserData } from '@/hooks/useUserData'
 import { useUserPrompts } from '@/hooks/useUserPrompts'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
@@ -16,6 +17,8 @@ import { Timer } from './Timer'
 export default function FocusPage() {
   const { userStudyplan, isLoading, currentDay } = useUserStudyplan()
   const prompts = useUserPrompts()
+
+  useUserData()
 
   return (
     <>

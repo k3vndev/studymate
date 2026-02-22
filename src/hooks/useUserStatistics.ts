@@ -1,35 +1,32 @@
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { useStatisticsStore } from '@/store/useStatisticsStore'
-import type { StudySession } from '@types'
+import { useUserStore } from '@/store/useUserStore'
 import { DateTime } from 'luxon'
-import { useEffect } from 'react'
+import { useCallback } from 'react'
 
+/**
+ * Custom hook to provide user statistics related to study sessions.
+ * @returns An object containing functions to retrieve various user statistics.
+ */
 export const useUserStatistics = () => {
-  const setSecondsFocusedToday = useStatisticsStore(s => s.setSecondsFocusedToday)
-  const secondsFocusedToday = useStatisticsStore(s => s.secondsFocusedToday)
+  const studySessions = useUserStore(s => s.userStudySessions)
 
-  /** Load today's focused seconds from the database */
-  const fetchSecondsFocusedToday = async () => {
-    // Generate ISO date string with timezone
-    const date_end = new Date()
-    date_end.setHours(23, 59, 59) // Set to end of the day
+  /**
+   * Get the total number of seconds the user has focused today by processing their study sessions.
+   * Consider memoizing this function to avoid unnecessary recalculations.
+   * @returns The total seconds focused today, or null if study sessions are not available.
+   */
+  const getSecondsFocusedToday = useCallback(() => {
+    if (!studySessions) return null
 
-    const url = new URL('/api/study_sessions', window.location.origin)
-    url.searchParams.set('date_end', date_end.toISOString())
-
-    // Fetch study sessions from the API
-    const sessions = await dataFetch<StudySession[]>({
-      url: url.toString(),
-      options: { method: 'GET' },
-      onError: err => {
-        console.error('Failed to fetch study sessions for statistics:', err)
-      }
+    // First, filter study sessions to only include those that started today
+    const startOfToday = DateTime.local().startOf('day')
+    const sessionsToday = studySessions.filter(session => {
+      const startedAt = DateTime.fromISO(session.started_at)
+      return startedAt >= startOfToday
     })
-    if (!sessions) return
 
-    // Calculate seconds focused today
+    // Extract seconds focused from study sessions
     let secondsFocusedToday = 0
-    for (const { started_at, ended_at, last_ping_at } of sessions) {
+    for (const { started_at, ended_at, last_ping_at } of sessionsToday) {
       const start = DateTime.fromISO(started_at)
       const end = ended_at ? DateTime.fromISO(ended_at) : DateTime.fromISO(last_ping_at!)
       if (!start.isValid || !end.isValid) continue
@@ -38,13 +35,10 @@ export const useUserStatistics = () => {
       const sessionSeconds = Math.abs(end.diff(start, 'seconds').seconds)
       secondsFocusedToday += sessionSeconds
     }
-    setSecondsFocusedToday(secondsFocusedToday)
-  }
+    return secondsFocusedToday
+  }, [studySessions])
 
-  // Load today's focused seconds on mount
-  useEffect(() => {
-    if (secondsFocusedToday === null) {
-      fetchSecondsFocusedToday()
-    }
-  }, [])
+  // TODO: Add more statistics functions here. Such as daily streak, average focus time, etc.
+
+  return { getSecondsFocusedToday }
 }

@@ -1,8 +1,8 @@
 import { dataFetch } from '@/lib/utils/dataFetch'
 import { getClientTimezone } from '@/lib/utils/getClientTimezone'
-import { useStatisticsStore } from '@/store/useStatisticsStore'
+import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
-import type { UpdateStudySessionReqBody } from '@types'
+import type { CreateStudySessionReqBody, UpdateStudySessionReqBody } from '@types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useUserStatistics } from './useUserStatistics'
 
@@ -12,8 +12,6 @@ import { useUserStatistics } from './useUserStatistics'
  */
 export const useFocusTimer = ({ studyplanId }: Params) => {
   const mainTimerIntervalRef = useRef<NodeJS.Timeout>()
-  const secondsFocusedToday = useStatisticsStore(s => s.secondsFocusedToday)
-  const setSecondsFocusedToday = useStatisticsStore(s => s.setSecondsFocusedToday)
 
   const startedAtMsRef = useRef(0)
   const studySessionIdRef = useRef<null | string>(null)
@@ -24,39 +22,26 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   const startingUpIntervalRef = useRef<NodeJS.Timeout>()
   const [decorativeCircleStyle, setDecorativeCircleStyle] = useState<React.CSSProperties>()
 
+  const secondsFocusedToday = useUserStore(s => s.secondsFocusedToday)
+  const setSecondsFocusedToday = useUserStore(s => s.setSecondsFocusedToday)
+  const userStoreHydrated = useUserStore(s => s.hydrated)
+
+  const { getSecondsFocusedToday } = useUserStatistics()
+
   const HEART_BEAT_INTERVAL = {
     FIRST: 60 * 1000, // First heartbeat after 1 minute
     REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
   }
   const nextHeartBeatMSRef = useRef<number>(0)
 
-  useUserStatistics()
-
+  // On initial load, calculate the seconds focused today from the user's study sessions and set it in the store
   useEffect(() => {
-    if (initialSecondsTodayRef.current === null && secondsFocusedToday !== null) {
-      initialSecondsTodayRef.current = secondsFocusedToday
+    if (userStoreHydrated && secondsFocusedToday === null && initialSecondsTodayRef.current === null) {
+      const initialSeconds = getSecondsFocusedToday()
+      initialSecondsTodayRef.current = initialSeconds
+      setSecondsFocusedToday(initialSeconds)
     }
-  }, [secondsFocusedToday])
-
-  /*
-    TODO:
-    - Load today's focused seconds from the database when the hook is first used.
-  */
-
-  const getElapsedMS = () => {
-    const elapsedMs = Date.now() - startedAtMsRef.current
-    return Math.max(0, elapsedMs)
-  }
-
-  const visibilityChangeHandler = useCallback(() => {
-    if (document.visibilityState === 'hidden') {
-      setIsStartingUp(false)
-      setDecorativeCircleStyle(undefined)
-      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
-    } else {
-      setIsStartingUp(true)
-    }
-  }, [])
+  }, [userStoreHydrated, secondsFocusedToday])
 
   // Handle the startup timer, showing a progress circle for 10 seconds before starting the actual focus timer
   const initializeStartupTimer = () => {
@@ -145,22 +130,25 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     createNewSession()
   }, [])
 
-  const createNewSession = () =>
-    dataFetch<string>({
+  const createNewSession = () => {
+    const requestBody: CreateStudySessionReqBody = {
+      studyplanId: studyplanId,
+      clientTimezone: getClientTimezone()
+    }
+
+    return dataFetch<string>({
       url: '/api/study_sessions',
       options: {
         method: 'POST',
         headers: CONTENT_JSON,
-        body: JSON.stringify({
-          studyplanId: studyplanId,
-          clientTimezone: getClientTimezone()
-        })
+        body: JSON.stringify(requestBody)
       },
       onSuccess: sessionId => {
         studySessionIdRef.current = sessionId
         nextHeartBeatMSRef.current = Date.now() + HEART_BEAT_INTERVAL.FIRST
       }
     })
+  }
 
   /** Used to send requests about the study session, either for heartbeats or ending the session. */
   const studySessionUpdater = useMemo(() => {
@@ -207,21 +195,20 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     }
   }, [isStartingUp])
 
-  // Handle component unmounting or user leaving the page
-  useEffect(
-    () => () => {
-      // Clear intervals and event listeners
-      mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
-      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
-      document.removeEventListener('visibilitychange', visibilityChangeHandler)
+  const getElapsedMS = () => {
+    const elapsedMs = Date.now() - startedAtMsRef.current
+    return Math.max(0, elapsedMs)
+  }
 
-      // If there's an active study session, send final update to the server to mark the session as completed
-      if (studySessionIdRef.current) {
-        studySessionUpdater.end()
-      }
-    },
-    []
-  )
+  const visibilityChangeHandler = useCallback(() => {
+    if (document.visibilityState === 'hidden') {
+      setIsStartingUp(false)
+      setDecorativeCircleStyle(undefined)
+      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
+    } else {
+      setIsStartingUp(true)
+    }
+  }, [])
 
   const displayTimer = useMemo(() => {
     const value = secondsFocusedToday ?? 0
@@ -240,6 +227,22 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       s: formattedSeconds
     }
   }, [secondsFocusedToday])
+
+  // Handle component unmounting or user leaving the page
+  useEffect(
+    () => () => {
+      // Clear intervals and event listeners
+      mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
+      startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
+      document.removeEventListener('visibilitychange', visibilityChangeHandler)
+
+      // If there's an active study session, send final update to the server to mark the session as completed
+      if (studySessionIdRef.current) {
+        studySessionUpdater.end()
+      }
+    },
+    []
+  )
 
   return {
     displayTimer,
