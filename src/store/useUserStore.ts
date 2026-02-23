@@ -22,9 +22,7 @@ export interface UserStore {
     completed?: string[]
     saved?: string[]
   }
-  setStudyplansLists: (
-    callback: (studyplans: UserStore['studyplansLists']) => UserStore['studyplansLists']
-  ) => void
+  setStudyplansLists: (state: ValueOrCallback<UserStore['studyplansLists']>) => void
 
   modifyStudyplansList: (
     modifyId: string,
@@ -65,10 +63,7 @@ export const useUserStore = create<UserStore>(set => ({
 
   studyplansLists: {},
 
-  setStudyplansLists: callback =>
-    set(({ studyplansLists: studyplans }) => {
-      return { studyplansLists: callback({ ...studyplans }) }
-    }),
+  setStudyplansLists: callback => set(s => setState(s, 'studyplansLists', callback, value => value)),
 
   modifyStudyplansList: (id, key) => {
     const getValues = (ogLists: UserStore['studyplansLists']) => {

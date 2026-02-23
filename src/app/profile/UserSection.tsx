@@ -7,7 +7,7 @@ import { UserImage } from './UserImage'
 import { UserName } from './UserName'
 
 export const UserSection = () => {
-  const { profile } = useUserData()
+  const { profile, cleanUserData } = useUserData()
 
   return (
     <section className='flex flex-col gap-6 relative animate-fade-in-very-fast'>
@@ -22,7 +22,7 @@ export const UserSection = () => {
       </article>
       <Achievements />
 
-      <OptionsButton />
+      <OptionsButton cleanUserData={cleanUserData} />
     </section>
   )
 }

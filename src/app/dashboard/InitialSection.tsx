@@ -8,7 +8,7 @@ import { MagicWandIcon } from '@components/icons'
 import { MATE_MESSAGES } from '@consts'
 
 export const InitialSection = () => {
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
   const { userStudyplan, isLoading } = useUserStudyplan()
 
   if (isLoading) {

@@ -16,7 +16,7 @@ export default function ProfilePage() {
         <GalleryStudyplans
           title='Your saved Studyplans'
           storeKey='saved'
-          emptyMessage='Looks a little empty... Start saving some Studyplans! 😌'
+          emptyMessage='Looks a little empty... Start saving some Studyplans for later! 😌'
           carousel
         />
         <GalleryStudyplans

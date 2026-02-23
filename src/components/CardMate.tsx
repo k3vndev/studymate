@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const CardMate = ({ message, children, onClick, className }: Props) => {
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
 
   return (
     <article

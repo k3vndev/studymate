@@ -12,7 +12,7 @@ import { TaskTile } from './TaskTile'
 type Props = UserStudyplan['daily_lessons'][number]
 
 export const TodaysTasks = ({ desc, tasks }: Props) => {
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
   const allTasksAreDone = tasks.every(t => t.completed_at)
   const { screenSize } = useResponsiveness()
 

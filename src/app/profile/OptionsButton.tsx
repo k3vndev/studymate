@@ -6,12 +6,18 @@ import { LogOutIcon } from '@/components/icons'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 
-export const OptionsButton = () => {
+interface Props {
+  cleanUserData: () => void
+}
+
+export const OptionsButton = ({ cleanUserData }: Props) => {
   const supabase = createClientComponentClient()
   const router = useRouter()
 
   const logOut = async () => {
     await supabase.auth.signOut()
+    cleanUserData()
+
     router.push('/')
   }
 

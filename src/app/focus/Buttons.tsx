@@ -28,7 +28,7 @@ export const Buttons = () => {
 
 const ExplainTaskButton = () => {
   const { selectedTask } = useContext(TasksContext)
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
   const { isLoading } = useContext(TasksContext)
 
   const { screenSize } = useResponsiveness()

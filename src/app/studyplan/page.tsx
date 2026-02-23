@@ -11,7 +11,7 @@ import { useUserStudyplan } from '@hooks/useUserStudyplan'
 
 export default function UserStudyplanPage() {
   const { userStudyplan, isLoading } = useUserStudyplan()
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
 
   return (
     <>
