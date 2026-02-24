@@ -1,18 +1,17 @@
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { getUserId } from '@api/utils/getUserId'
 import { response } from '@api/utils/response'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { CompleteTaskReqBody, UserStudyplan } from '@types'
 import { DateTime, IANAZone } from 'luxon'
-import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
 
 // Complete a task.
 // Recieves a CompleteTaskReqBody object, responds with the completed task's completion timestamp if the request was successful
 export const POST = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   let newStudyplan: UserStudyplan
   let taskIndex: number

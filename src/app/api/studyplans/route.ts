@@ -1,8 +1,7 @@
 import { response } from '@/app/api/utils/response'
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { databaseQuery } from '@api/utils/databaseQuery'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { PublicStudyplan } from '@types'
-import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
 
@@ -21,7 +20,7 @@ export const GET = async (req: NextRequest) => {
     return response(false, 400, { msg: 'Invalid limit' })
   }
 
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   try {
     const data = await databaseQuery<PublicStudyplan[]>(
@@ -44,7 +43,7 @@ export const POST = async (req: NextRequest) => {
     return response(false, 400, { msg: 'Id array is missing or invalid' })
   }
 
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   try {
     const data = await databaseQuery<PublicStudyplan[]>(

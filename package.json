@@ -9,32 +9,32 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/auth-helpers-nextjs": "0.10.0",
-    "@supabase/supabase-js": "^2.50.0",
-    "canvas-confetti": "1.9.3",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.97.0",
+    "canvas-confetti": "1.9.4",
     "highlight.js": "^11.11.1",
     "luxon": "^3.7.2",
     "next": "^15.5.12",
-    "openai": "4.76.1",
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "openai": "4.76.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.3.1",
     "tailwind-scrollbar-hide": "^4.0.0",
-    "zod": "3.24.4",
+    "zod": "3.25.76",
     "zustand": "5.0.11"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/canvas-confetti": "1.9.0",
     "@types/luxon": "^3.7.1",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^20.19.33",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^18.3.7",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3"
   }
 }

@@ -12,8 +12,8 @@ interface Props {
 }
 
 export const GeneratingStudyplanLoader = ({ content, className = '' }: Props) => {
-  const { name, desc, lessons_count, current_lesson } = content
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const { name, desc, lessons_count } = content
+  const intervalRef = useRef<NodeJS.Timeout>(null)
 
   const [ellipsisDots, setEllipsisDots] = useState('')
 

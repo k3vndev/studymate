@@ -1,3 +1,4 @@
+import type { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@/lib/schemas/PromptRequest'
 import type { CATEGORIES } from '@consts'
 import type { z } from 'zod'
@@ -137,3 +138,5 @@ export interface UpdateStudySessionReqBody {
   sessionId: string
   clientTimezone: string
 }
+
+export type SupabaseServerClient = Awaited<ReturnType<typeof supabaseServerClient>>

@@ -1,10 +1,9 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { DateTime } from 'luxon'
-import { cookies } from 'next/headers'
 import { z } from 'zod'
 import { getClientTimestamp } from './getClientTimestamp'
 import { getUserId } from './getUserId'
 import { response } from './response'
+import { supabaseServerClient } from './supabaseServerClient'
 
 /**
  * Utility function to handle study session updates, used by both the PATCH and PUT API methods for updating the last_ping_at field (heartbeats) or the ended_at field (completion) of a study session.
@@ -15,7 +14,7 @@ import { response } from './response'
  * @returns A response object indicating the success or failure of the operation
  */
 export const handleStudySessionUpdate = async (req: Request, db_key: 'last_ping_at' | 'ended_at') => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   const body = await req.json()
 
   let sessionId: string

@@ -1,12 +1,11 @@
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { getClientTimestamp } from '@api/utils/getClientTimestamp'
 import { getUserId } from '@api/utils/getUserId'
 import { handleStudySessionUpdate } from '@api/utils/handleStudySessionUpdate'
 import { response } from '@api/utils/response'
 import { DB_ERROR_CODES } from '@consts'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { CreateStudySessionReqBody } from '@types'
 import { DateTime } from 'luxon'
-import { cookies } from 'next/headers'
 import { z } from 'zod'
 
 // API route to get study sessions for a specific day or studyplan
@@ -15,7 +14,7 @@ import { z } from 'zod'
 // - date_start (optional): ISO date string to filter sessions that started on or after this date
 // - date_end (optional): ISO date string to filter sessions that started on or before this date
 export const GET = async (req: Request) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const { searchParams } = new URL(req.url)
   let studyplanId = searchParams.get('studyplan_id')
@@ -70,7 +69,7 @@ export const GET = async (req: Request) => {
 
 // API route to handle study session creation and updates (heartbeats and completion)
 export const POST = async (req: Request) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const body: CreateStudySessionReqBody = await req.json()
   let studyplanId: string

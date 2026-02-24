@@ -1,13 +1,12 @@
 'use client'
 
+import { supabaseBrowserClient } from '@/lib/utils/supabaseBrowserClient'
 import { GithubIcon } from '@icons'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export const LoginButton = () => {
-  const supabase = createClientComponentClient()
-
   const handleSignIn = async () => {
     if (typeof window === 'undefined') return
+    const supabase = supabaseBrowserClient()
 
     await supabase.auth.signInWithOAuth({
       provider: 'github',

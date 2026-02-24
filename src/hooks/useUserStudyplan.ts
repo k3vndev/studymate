@@ -173,7 +173,6 @@ const dataFetchHandler = <T>({ url, options, onSuccess }: DataFetchHandlerParams
         onSuccess?.(data)
         res()
       },
-      onError: () => rej(),
-      redirectOn401: true
+      onError: () => rej()
     })
   })

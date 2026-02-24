@@ -36,7 +36,7 @@ export const GradientBorder = ({
   style
 }: Props) => {
   const [{ opacity, animation }, setAnimationValues] = useState(initialAnimationValues)
-  const timeout = useRef<NodeJS.Timeout>()
+  const timeout = useRef<NodeJS.Timeout>(null)
   const ANIMATION_DURATION = 2000
 
   useEvent(EVENTS.ON_HIGHLIGHT_BORDER, () => {
@@ -46,13 +46,18 @@ export const GradientBorder = ({
       opacity: 'opacity-100 [transition:opacity_0.7s_ease]',
       animation: 'animate-bounce-once'
     })
-    clearTimeout(timeout.current)
+    timeout.current && clearTimeout(timeout.current)
     timeout.current = setTimeout(() => {
       setAnimationValues(initialAnimationValues)
     }, ANIMATION_DURATION)
   })
 
-  useEffect(() => () => clearTimeout(timeout.current), [])
+  useEffect(
+    () => () => {
+      timeout.current && clearTimeout(timeout.current)
+    },
+    []
+  )
 
   return (
     <div className={twMerge(`${animation} rounded-2xl overflow-clip ${className?.main ?? ''}`)} style={style}>

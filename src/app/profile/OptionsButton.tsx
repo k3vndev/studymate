@@ -1,9 +1,9 @@
 'use client'
 
-import { DropdownMenu } from '@/components/DropdownMenu/DropdownMenu'
-import { Option } from '@/components/DropdownMenu/Option'
-import { LogOutIcon } from '@/components/icons'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { supabaseBrowserClient } from '@/lib/utils/supabaseBrowserClient'
+import { DropdownMenu } from '@@/DropdownMenu/DropdownMenu'
+import { Option } from '@@/DropdownMenu/Option'
+import { LogOutIcon } from '@@/icons'
 import { useRouter } from 'next/navigation'
 
 interface Props {
@@ -11,10 +11,11 @@ interface Props {
 }
 
 export const OptionsButton = ({ cleanUserData }: Props) => {
-  const supabase = createClientComponentClient()
   const router = useRouter()
 
   const logOut = async () => {
+    const supabase = supabaseBrowserClient()
+
     await supabase.auth.signOut()
     cleanUserData()
 

@@ -1,11 +1,10 @@
-import { type SupabaseClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import type { SupabaseServerClient } from '@types'
 
 interface Params {
-  supabase?: SupabaseClient<any, 'public', any>
+  supabase: SupabaseServerClient
 }
 
-export const getUserId = async ({ supabase = createServerComponentClient({ cookies }) }: Params) => {
+export const getUserId = async ({ supabase }: Params) => {
   const { data } = await supabase.auth.getUser()
   if (data.user === null) {
     return null

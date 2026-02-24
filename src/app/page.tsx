@@ -1,14 +1,14 @@
-import { Background } from '@components/Background/Background'
-import { Glow } from '@components/Background/Glow'
-import { AppLogo } from '@components/AppLogo'
-import { LoginButton } from '@components/LoginButton'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { AppLogo } from '@@/AppLogo'
+import { Background } from '@@/Background/Background'
+import { Glow } from '@@/Background/Glow'
+import { LoginButton } from '@@/LoginButton'
+import { supabaseServerClient } from '@api/utils/supabaseServerClient'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
 export default async function Home() {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
+
   const auth = await supabase.auth.getUser()
   const { user } = auth.data
 

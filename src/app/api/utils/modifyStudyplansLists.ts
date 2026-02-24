@@ -1,10 +1,9 @@
-import type { DBStudyplansLists } from '@/types'
 import { databaseQuery } from '@api/utils/databaseQuery'
-import { type SupabaseClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import type { DBStudyplansLists, SupabaseServerClient } from '@types'
 import { cookies } from 'next/headers'
 
 interface Params {
-  supabase?: SupabaseClient<any, 'public', any>
+  supabase: SupabaseServerClient
   userId: string
   key: keyof DBStudyplansLists['studyplans_lists']
   modifyId: string
@@ -16,12 +15,7 @@ interface Params {
  *
  * Note: Provide the `supabase` client as a parameter when possible to avoid creating a new client every time this function is called, which can lead to performance issues. The function will create a new client only if one is not provided.
  */
-export const modifyStudyplansLists = ({
-  supabase = createServerComponentClient({ cookies }),
-  userId,
-  key,
-  modifyId
-}: Params) => {
+export const modifyStudyplansLists = ({ supabase, userId, key, modifyId }: Params) => {
   // Get studyplans list
   const getStudyplansList = async () => {
     const data = await databaseQuery<DBStudyplansLists[]>(supabase.from('users').select('studyplans_lists'))

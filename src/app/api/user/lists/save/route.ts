@@ -1,9 +1,9 @@
-import { modifyStudyplansLists } from '@/app/api/utils/modifyStudyplansLists'
-import { response } from '@/app/api/utils/response'
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { getUserId } from '@api/utils/getUserId'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
+import { response } from '@api/utils/response'
 import type { BaseStudyplan, PublicStudyplan } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
@@ -11,7 +11,7 @@ import { z } from 'zod'
 
 // Save or un-save an existing studyplan
 export const PATCH = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let studyplanId: string
   let saveStudyplan: boolean
 
@@ -58,7 +58,7 @@ export const PATCH = async (req: NextRequest) => {
 
 // Publish a studyplan and save it
 export const POST = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let studyplanFromReq: BaseStudyplan
 
   // Check if user is authenticated

@@ -1,12 +1,11 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { response } from '@/app/api/utils/response'
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { databaseQuery } from '@api/utils/databaseQuery'
 import { getUserId } from '@api/utils/getUserId'
-import { response } from '@/app/api/utils/response'
 import type { DBUserData } from '@types'
 
 export const GET = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)

@@ -4,12 +4,12 @@ import { FONTS } from '@consts'
 import { useEffect, useRef, useState } from 'react'
 
 export const CompletedBadge = () => {
-  const timeout = useRef<NodeJS.Timeout>()
+  const timeout = useRef<NodeJS.Timeout>(null)
   const [isDisabled, setIsDisabled] = useState(false)
 
   useEffect(() => {
     return () => {
-      clearTimeout(timeout.current)
+      timeout.current && clearTimeout(timeout.current)
       setIsDisabled(false)
     }
   }, [])

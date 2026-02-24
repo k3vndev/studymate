@@ -1,11 +1,10 @@
-import type { DBStudyplansLists } from '@types'
 import { response } from '@/app/api/utils/response'
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { databaseQuery } from '@api/utils/databaseQuery'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import type { DBStudyplansLists } from '@types'
 
 export const GET = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   try {
     const data = await databaseQuery<DBStudyplansLists[]>(supabase.from('users').select('studyplans_lists'))

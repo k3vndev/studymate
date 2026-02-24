@@ -1,26 +1,25 @@
 import { promptAIModel } from '@/app/api/utils/ai-model/promptAIModel'
 import { dataParser } from '@/app/api/utils/dataParser'
+import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
 import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
+import { databaseQuery } from '@api/utils/databaseQuery'
 import { getUserId } from '@api/utils/getUserId'
+import { response } from '@api/utils/response'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type {
   ChatMessage,
   DBChatMessages,
   PromptRequestSchema as PromptRequestSchemaType,
   StreamResponseMessage
 } from '@types'
-import { cookies } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type { ChatCompletionMessageParam } from 'openai/src/resources/index.js'
-import { databaseQuery } from '../utils/databaseQuery'
-import { response } from '../utils/response'
 
 // Get all previous chat messages
 export const GET = async () => {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await supabaseServerClient()
 
     type QueryType = { chat_with_mate: DBChatMessages[] }
     const data = await databaseQuery<QueryType[]>(supabase.from('users').select('chat_with_mate'))
@@ -44,7 +43,7 @@ export const GET = async () => {
 
 // Send a message to Mate and get a response
 export const POST = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   // Check if user is logged in
   const userId = await getUserId({ supabase })
@@ -161,7 +160,7 @@ export const POST = async (req: NextRequest) => {
 
 // Save messages to database
 export const PATCH = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   // Check if user is logged in
   const userId = await getUserId({ supabase })

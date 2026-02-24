@@ -1,5 +1,5 @@
 interface Props {
-  scrollRef: React.RefObject<HTMLDivElement>
+  scrollRef: React.RefObject<HTMLDivElement | null>
 }
 
 export const ScrollHelper = ({ scrollRef }: Props) => (

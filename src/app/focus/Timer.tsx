@@ -35,7 +35,7 @@ export const Timer = ({ studyplanId }: Props) => {
           <div
             className={`flex flex-col items-center gap-1 z-50 text-nowrap animate-bounce-once ${FONTS.POPPINS}`}
             style={{
-              animationDelay: '400ms',
+              animationDelay: '200ms',
               animationDuration: '800ms'
             }}
           >

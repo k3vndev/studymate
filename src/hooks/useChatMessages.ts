@@ -36,8 +36,7 @@ export const useChatMessages = () => {
         setMessages(newMessages)
         preloadChatStudyplans(newMessages)
       },
-      onError: () => setIsOnLoadingError(true),
-      redirectOn401: true
+      onError: () => setIsOnLoadingError(true)
     })
   }
   useEffect(loadChatHistory, [])

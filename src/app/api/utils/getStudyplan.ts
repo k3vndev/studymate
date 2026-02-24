@@ -1,18 +1,12 @@
 import { databaseQuery } from '@api/utils/databaseQuery'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import type { SupabaseClient } from '@supabase/supabase-js'
-import type { PublicStudyplan } from '@types'
-import { cookies } from 'next/headers'
+import type { PublicStudyplan, SupabaseServerClient } from '@types'
 
 interface Params {
   id: string
-  supabase?: SupabaseClient<any, 'public', any>
+  supabase: SupabaseServerClient
 }
 
-export const getStudyplan = async <T>({
-  id,
-  supabase = createServerComponentClient({ cookies })
-}: Params) => {
+export const getStudyplan = async <T>({ id, supabase }: Params) => {
   if (typeof id !== 'string') return null
 
   try {

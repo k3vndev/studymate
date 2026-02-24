@@ -11,7 +11,7 @@ import { useUserStatistics } from './useUserStatistics'
  * including tracking seconds focused today and handling study session state.
  */
 export const useFocusTimer = ({ studyplanId }: Params) => {
-  const mainTimerIntervalRef = useRef<NodeJS.Timeout>()
+  const mainTimerIntervalRef = useRef<NodeJS.Timeout>(null)
 
   const startedAtMsRef = useRef(0)
   const studySessionIdRef = useRef<null | string>(null)
@@ -19,7 +19,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   const canStartMainTimerRef = useRef(false)
 
   const [isStartingUp, setIsStartingUp] = useState(true)
-  const startingUpIntervalRef = useRef<NodeJS.Timeout>()
+  const startingUpIntervalRef = useRef<NodeJS.Timeout>(null)
   const [decorativeCircleStyle, setDecorativeCircleStyle] = useState<React.CSSProperties>()
 
   const secondsFocusedToday = useUserStore(s => s.secondsFocusedToday)

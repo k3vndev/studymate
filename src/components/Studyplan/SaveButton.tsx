@@ -54,8 +54,7 @@ export const SaveButton = () => {
           })
         }
       },
-      onFinish: () => setIsLoading(false),
-      redirectOn401: true
+      onFinish: () => setIsLoading(false)
     })
   }
 
@@ -80,8 +79,7 @@ export const SaveButton = () => {
         }
         modifyStudyplansList(publicId, 'saved').remove()
       },
-      onFinish: () => setIsLoading(false),
-      redirectOn401: true
+      onFinish: () => setIsLoading(false)
     })
   }
 

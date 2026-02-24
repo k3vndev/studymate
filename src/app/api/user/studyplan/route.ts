@@ -5,14 +5,13 @@ import { getStudyplan } from '@api/utils/getStudyplan'
 import { getUserId } from '@api/utils/getUserId'
 import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
 import { response } from '@api/utils/response'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
-import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
+import { supabaseServerClient } from '../../utils/supabaseServerClient'
 
 // Get user studyplan and current day
 export const GET = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
@@ -35,7 +34,7 @@ export const GET = async () => {
 // Start a studyplan
 export const POST = async (req: NextRequest) => {
   const requestBody: StartStudyplanReqBody = await req.json()
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let original_id: string | null = null
 
   const userId = await getUserId({ supabase })
@@ -112,7 +111,7 @@ export const POST = async (req: NextRequest) => {
 
 // Abandon studyplan
 export const DELETE = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
@@ -127,7 +126,7 @@ export const DELETE = async () => {
 
 // Complete studyplan
 export const PUT = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)

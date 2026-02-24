@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 interface Props {
-  ulRef: React.RefObject<HTMLUListElement>
+  ulRef: React.RefObject<HTMLUListElement | null>
   showItemsCount: number
   tileWidth?: number
 }
