@@ -15,6 +15,7 @@ A modern web application to enhance self-learning with AI. Create, follow, and c
     - [/studyplan/focus](#studyplan/focus)
     - [/profile](#profile)
 - [How it works](#how-it-works)
+- [Local Setup](#local-setup)
 - [Future Additions](#future-additions)
 - [Can I Use This?](#can-i-use-this)
 - [Special Thanks](#special-thanks)
@@ -96,15 +97,44 @@ When you start a Studyplan, you actually get a copy of the Studyplan in your [St
 Studymate is not a social media, so this is the only interaction you'll have with other users.
 
 
+## Local Setup
+
+1. Install dependencies:
+
+```bash
+pnpm install
+```
+
+2. Create your local env file from the template:
+
+```powershell
+Copy-Item .env.example .env.local # Windows
+cp .env.example .env.local # Unix
+```
+
+3. Fill in your own keys in `.env.local`:
+
+```dotenv
+OPENAI_API_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+```
+
+4. Run the development server:
+
+```bash
+pnpm dev
+```
+
 ## Future Additions
 
 StudyMate is still in development and will keep getting updates — all of its content will still be free, of course.
 
 📃 Planned features include:
 - User profiles [✓]
-- Achievements
-- Streak tracking
-- Study statistics
+- Achievements [Postponed]
+- Streak tracking [✓]
+- Study statistics [✓]
 - Chat messages deletion and editing
 - Mate responses streaming [✓]
 - Max days for Studyplans increase [✓]
