@@ -1,4 +1,4 @@
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
+import { GalleryStudyplansContext } from '@context/GalleryStudyplansContext'
 import { ChevronIcon } from '@icons'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'

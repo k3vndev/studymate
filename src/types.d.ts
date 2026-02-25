@@ -1,9 +1,9 @@
-import type { PromptRequestSchema as PromptRequestSchemaType } from '@/lib/schemas/PromptRequest'
-import type { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import type { CATEGORIES } from '@consts'
+import type { PromptRequestSchema as PromptRequestSchemaType } from '@schemas/PromptRequest'
+import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from '@schemas/Studyplan'
+import type { StudyplanPublicSchema } from '@schemas/StudyplanPublic'
+import type { supabaseServerClient } from '@utils/supabaseServerClient'
 import type { z } from 'zod'
-import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from './lib/schemas/Studyplan'
-import type { StudyplanPublicSchema } from './lib/schemas/StudyplanPublic'
 
 export type Category = (typeof CATEGORIES)[number]
 

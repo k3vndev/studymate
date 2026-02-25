@@ -1,4 +1,4 @@
-import { TasksContext } from '@/lib/context/TasksContext'
+import { TasksContext } from '@context/TasksContext'
 import { useContext } from 'react'
 
 interface Props {

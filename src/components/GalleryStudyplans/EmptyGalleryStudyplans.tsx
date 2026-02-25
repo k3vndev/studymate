@@ -1,4 +1,4 @@
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
+import { GalleryStudyplansContext } from '@context/GalleryStudyplansContext'
 import { useContext } from 'react'
 import { Paragraph } from '../Paragraph'
 

@@ -1,65 +1,70 @@
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { useUserStore } from '@/store/useUserStore'
+import { useChatStore } from '@store/useChatStore'
+import { useUserStore } from '@store/useUserStore'
 import type { DBStudyplansLists, DBUserData, StudySession } from '@types'
+import { dataFetch } from '@utils/dataFetch'
 import { useEffect } from 'react'
 
 /**
  * Custom hook to fetch user data for the first time and provide it to components.
  */
 export const useUserData = () => {
-  const s = useUserStore()
+  const user = useUserStore()
+  const setMessages = useChatStore(s => s.setMessages)
 
   useEffect(() => {
-    if (s.hydrated || s.isLoadingData) {
+    if (user.hydrated || user.isLoadingData) {
       // Do not proceed if the store is already hydrated or data is loading
       return
     }
 
-    s.setIsLoadingData(true)
+    user.setIsLoadingData(true)
 
     Promise.all([
       // Fetch the lists from the API
       dataFetch<DBStudyplansLists['studyplans_lists']>({
         url: '/api/user/lists',
-        onSuccess: data => s.setStudyplansLists(() => data)
+        onSuccess: data => user.setStudyplansLists(() => data)
       }),
 
       // Fetch the basic user data (id, user_name, avatar_url...) from the API
       dataFetch<DBUserData>({
         url: '/api/user/profile',
-        onSuccess: data => s.setProfileData(data)
+        onSuccess: data => user.setProfileData(data)
       }),
 
       // Fetch all user study sessions statistics
       dataFetch<StudySession[]>({
         url: '/api/study_sessions',
-        onSuccess: data => s.setUserStudySessions(data)
+        onSuccess: data => user.setUserStudySessions(data)
       })
     ])
       // Stop loading data when the process stops
       .finally(() => {
-        s.setIsLoadingData(false)
-        s.setHydrated(true)
+        user.setIsLoadingData(false)
+        user.setHydrated(true)
       })
-  }, [s.hydrated, s.isLoadingData])
+  }, [user.hydrated, user.isLoadingData])
 
   /**
    * Function to clean user data from the store, used for logout.
    */
   const cleanUserData = () => {
-    s.setStudyplansLists({})
-    s.setProfileData(null)
-    s.setUserStudySessions([])
-    s.setHydrated(false)
-    s.setIsLoadingData(false)
-    s.setUserStudySessions(null)
-    s.setSecondsFocusedToday(null)
+    user.setStudyplansLists({})
+    user.setProfileData(null)
+    user.setUserStudySessions([])
+    user.setHydrated(false)
+    user.setIsLoadingData(false)
+    user.setUserStudySessions(null)
+    user.setSecondsFocusedToday(null)
+    user.setStudyplan(null)
+
+    setMessages(null)
   }
 
   return {
-    lists: s.studyplansLists,
-    profile: s.profileData,
-    studySessions: s.userStudySessions,
+    lists: user.studyplansLists,
+    profile: user.profileData,
+    studySessions: user.userStudySessions,
     cleanUserData
   }
 }

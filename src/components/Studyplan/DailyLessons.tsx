@@ -1,8 +1,8 @@
-import { useVerticalNavigation } from '@/hooks/useVerticalNavigation'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
-import { formatDays } from '@/lib/utils/formatDays'
 import { FONTS } from '@consts'
+import { StudyplanContext } from '@context/StudyplanContext'
+import { useVerticalNavigation } from '@hooks/useVerticalNavigation'
 import { CheckIcon, ChevronIcon, ClockIcon } from '@icons'
+import { formatDays } from '@utils/formatDays'
 import { useContext, useState } from 'react'
 import { Header } from '../Header'
 

@@ -1,11 +1,9 @@
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
 import { Badge } from '@@/Badge'
 import { ChipButton } from '@@/ChipButton'
 import { Paragraph } from '@@/Paragraph'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { CheckIcon, RocketIcon } from '@icons'
 import { useRouter } from 'next/navigation'
-import { useContext } from 'react'
 
 // Note: This component should only be used for userStudyplan, not for public studyplans
 export const TodaysLesson = () => {

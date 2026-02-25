@@ -1,4 +1,4 @@
-import { useStudyplansStore } from '@/store/useStudyplansStore'
+import { useStudyplansStore } from '@store/useStudyplansStore'
 import type { PublicStudyplan } from '@types'
 import { useEffect, useState } from 'react'
 

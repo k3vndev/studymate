@@ -1,7 +1,7 @@
 import { ChatMessage } from '@/app/chat/messages/tiles/ChatMessage'
-import { ChatContext } from '@/lib/context/ChatContext'
-import { useChatStore } from '@/store/useChatStore'
 import { CHAT_ERROR_MESSAGE } from '@consts'
+import { ChatContext } from '@context/ChatContext'
+import { useChatStore } from '@store/useChatStore'
 import type { ChatMessage as ChatMessageType } from '@types'
 import { useContext } from 'react'
 

@@ -1,4 +1,4 @@
-import { ChipButton } from '@components/ChipButton'
+import { ChipButton } from '@@/ChipButton'
 import { FONTS } from '@consts'
 import { CheckIcon, RocketIcon } from '@icons'
 import { useRouter } from 'next/navigation'

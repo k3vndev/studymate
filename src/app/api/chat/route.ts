@@ -1,11 +1,3 @@
-import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
-import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
-import { promptAIModel } from '@/lib/utils/ai-model/promptAIModel'
-import { dataParser } from '@/lib/utils/dataParser'
-import { databaseQuery } from '@/lib/utils/database/databaseQuery'
-import { getUserId } from '@/lib/utils/getUserId'
-import { response } from '@/lib/utils/response'
-import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
 import type {
   ChatMessage,
@@ -13,6 +5,14 @@ import type {
   PromptRequestSchema as PromptRequestSchemaType,
   StreamResponseMessage
 } from '@types'
+import { ChatStreamProcessor } from '@utils/ChatStreamProcessor'
+import { StudyplanStreamParser } from '@utils/StudyplanStreamParser'
+import { promptAIModel } from '@utils/ai-model/promptAIModel'
+import { dataParser } from '@utils/dataParser'
+import { databaseQuery } from '@utils/db/databaseQuery'
+import { getUserId } from '@utils/getUserId'
+import { response } from '@utils/response'
+import { supabaseServerClient } from '@utils/supabaseServerClient'
 import { type NextRequest, NextResponse } from 'next/server'
 import type { ChatCompletionMessageParam } from 'openai/src/resources/index.js'
 

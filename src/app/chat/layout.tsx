@@ -1,6 +1,6 @@
-import { Background } from '@components/Background/Background'
-import { Glow } from '@components/Background/Glow'
-import { Sidebar } from '@components/Sidebar'
+import { Background } from '@@/Background/Background'
+import { Glow } from '@@/Background/Glow'
+import { Sidebar } from '@@/Sidebar'
 
 export default function RootLayout({
   children

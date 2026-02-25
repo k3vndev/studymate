@@ -1,4 +1,4 @@
-import { modelTags } from '@/lib/utils/ai-model/modelTags'
+import { modelTags } from '@utils/ai-model/modelTags'
 
 /**
  * Processes a stream of text coming from the AI model, separating markdown content from Studyplan content using custom tags.

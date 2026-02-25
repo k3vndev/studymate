@@ -1,7 +1,7 @@
-import { useUserPrompts } from '@/hooks/useUserPrompts'
-import { CardMate } from '@components/CardMate'
-import { ChipButton } from '@components/ChipButton'
+import { CardMate } from '@@/CardMate'
+import { ChipButton } from '@@/ChipButton'
 import { MATE_MESSAGES } from '@consts'
+import { useUserPrompts } from '@hooks/useUserPrompts'
 import { MagicWandIcon } from '@icons'
 import { Input } from '../Input'
 

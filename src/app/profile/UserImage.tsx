@@ -1,4 +1,4 @@
-import { FallbackBox } from '@components/FallbackBox'
+import { FallbackBox } from '@@/FallbackBox'
 import type { DBUserData } from '@types'
 import Image from 'next/image'
 

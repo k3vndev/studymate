@@ -1,7 +1,7 @@
-import { databaseQuery } from '@/lib/utils/database/databaseQuery'
-import { response } from '@/lib/utils/response'
-import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import type { DBStudyplansLists } from '@types'
+import { databaseQuery } from '@utils/db/databaseQuery'
+import { response } from '@utils/response'
+import { supabaseServerClient } from '@utils/supabaseServerClient'
 
 export const GET = async () => {
   const supabase = await supabaseServerClient()

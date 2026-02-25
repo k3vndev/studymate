@@ -1,6 +1,6 @@
-import { useChatStore } from '@/store/useChatStore'
 import { EVENTS } from '@consts'
 import { useEvent } from '@hooks/useEvent'
+import { useChatStore } from '@store/useChatStore'
 import { useEffect, useRef, useState } from 'react'
 
 const CHAT_ON_BOTTOM_SCROLL_THRESHOLD = 20

@@ -1,10 +1,10 @@
 import { SCREENS } from '@consts'
-import { useResponsiveness } from '@/hooks/useResponsiveness'
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
+import { GalleryStudyplansContext } from '@context/GalleryStudyplansContext'
+import { useResponsiveness } from '@hooks/useResponsiveness'
+import { repeat } from '@utils/repeat'
 import { useContext } from 'react'
 import { TileStudyplan } from './TileStudyplan'
 import { TileStudyPlanFallback } from './TileStudyplanFallback'
-import { repeat } from '@/lib/utils/repeat'
 
 export const RowsGalleryStudyplans = () => {
   const { studyplansList, gap } = useContext(GalleryStudyplansContext)

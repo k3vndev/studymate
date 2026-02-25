@@ -1,6 +1,6 @@
-import { throwConfetti } from '@/lib/utils/throwConfetti'
 import { GradientBorder } from '@@/GradientBorder'
 import { FONTS } from '@consts'
+import { throwConfetti } from '@utils/throwConfetti'
 import { useEffect, useRef, useState } from 'react'
 
 export const CompletedBadge = () => {

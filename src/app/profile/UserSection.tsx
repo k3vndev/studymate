@@ -1,4 +1,4 @@
-import { Paragraph } from '@components/Paragraph'
+import { Paragraph } from '@@/Paragraph'
 import { useUserData } from '@hooks/useUserData'
 import { FlameIcon } from '@icons'
 import { Achievements } from './Achievements'

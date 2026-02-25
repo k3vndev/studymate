@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from '@components/Header'
-import { Paragraph } from '@components/Paragraph'
-import { Waitable } from '@components/Waitable'
+import { Header } from '@@/Header'
+import { Paragraph } from '@@/Paragraph'
+import { Waitable } from '@@/Waitable'
 import { EVENTS, FONTS } from '@consts'
 import { useEvent } from '@hooks/useEvent'
 import { useJustLoaded } from '@hooks/useJustLoaded'

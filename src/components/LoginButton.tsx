@@ -1,7 +1,7 @@
 'use client'
 
-import { supabaseBrowserClient } from '@/lib/utils/supabaseBrowserClient'
 import { GithubIcon } from '@icons'
+import { supabaseBrowserClient } from '@utils/supabaseBrowserClient'
 
 export const LoginButton = () => {
   const handleSignIn = async () => {

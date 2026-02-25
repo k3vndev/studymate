@@ -1,4 +1,4 @@
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { LoadingIcon, RocketIcon } from '@icons'
 import { useState } from 'react'
 import { GradientBorder } from '../GradientBorder'

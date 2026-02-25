@@ -1,6 +1,6 @@
-import { extractCategoryValues } from '@/lib/utils/extractCategoryValues'
 import { FONTS } from '@consts'
 import type { Category as CategoryType } from '@types'
+import { extractCategoryValues } from '@utils/extractCategoryValues'
 
 interface CategoryProps {
   category: CategoryType

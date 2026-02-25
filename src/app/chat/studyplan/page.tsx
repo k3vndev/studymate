@@ -1,8 +1,8 @@
 'use client'
 
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { Main } from '@components/Main'
-import { Studyplan } from '@components/Studyplan/Studyplan'
+import { Main } from '@@/Main'
+import { Studyplan } from '@@/Studyplan/Studyplan'
+import { useStudyplansStore } from '@store/useStudyplansStore'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 

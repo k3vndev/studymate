@@ -1,7 +1,7 @@
-import { EVENTS } from '@/consts'
-import { ChatContext } from '@/lib/context/ChatContext'
-import { dispatchEvent } from '@/lib/utils/dispatchEvent'
+import { EVENTS } from '@consts'
+import { ChatContext } from '@context/ChatContext'
 import { ArrowIcon } from '@icons'
+import { dispatchEvent } from '@utils/dispatchEvent'
 import { useContext } from 'react'
 
 export const ScrollDownButton = () => {

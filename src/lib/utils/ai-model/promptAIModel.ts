@@ -1,6 +1,6 @@
-import { MATE_PROMPT } from '@/lib/utils/ai-model/MATE_PROMPT'
 import { MATE_MESSAGES_MEMORY } from '@consts'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@types'
+import { MATE_PROMPT } from '@utils/ai-model/MATE_PROMPT'
 import OpenAI from 'openai'
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 

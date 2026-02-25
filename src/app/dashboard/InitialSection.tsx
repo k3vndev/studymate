@@ -1,11 +1,11 @@
-import { FallbackBox } from '@/components/FallbackBox'
-import { useUserPrompts } from '@/hooks/useUserPrompts'
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
-import { CardMate } from '@components/CardMate'
-import { CardStudyplan } from '@components/CardStudyplan'
-import { ChipButton } from '@components/ChipButton'
-import { MagicWandIcon } from '@components/icons'
+import { CardMate } from '@@/CardMate'
+import { CardStudyplan } from '@@/CardStudyplan'
+import { ChipButton } from '@@/ChipButton'
+import { FallbackBox } from '@@/FallbackBox'
+import { MagicWandIcon } from '@@/icons'
 import { MATE_MESSAGES } from '@consts'
+import { useUserPrompts } from '@hooks/useUserPrompts'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 
 export const InitialSection = () => {
   const prompts = useUserPrompts()

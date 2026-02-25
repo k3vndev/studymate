@@ -1,6 +1,6 @@
-import { dispatchEvent } from '@/lib/utils/dispatchEvent'
 import { EVENTS, FONTS } from '@consts'
 import { ErrorIcon, ReloadIcon } from '@icons'
+import { dispatchEvent } from '@utils/dispatchEvent'
 
 export const ChatError = ({ children }: { children: React.ReactNode }) => {
   const handleClick = () => {

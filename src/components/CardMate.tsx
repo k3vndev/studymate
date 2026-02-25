@@ -1,4 +1,4 @@
-import { Paragraph } from '@components/Paragraph'
+import { Paragraph } from '@@/Paragraph'
 import { MATE_IMAGES_ALT } from '@consts'
 import { useUserPrompts } from '@hooks/useUserPrompts'
 import Image from 'next/image'

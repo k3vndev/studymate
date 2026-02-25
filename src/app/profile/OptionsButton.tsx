@@ -1,9 +1,9 @@
 'use client'
 
-import { supabaseBrowserClient } from '@/lib/utils/supabaseBrowserClient'
 import { DropdownMenu } from '@@/DropdownMenu/DropdownMenu'
 import { Option } from '@@/DropdownMenu/Option'
 import { LogOutIcon } from '@@/icons'
+import { supabaseBrowserClient } from '@utils/supabaseBrowserClient'
 import { useRouter } from 'next/navigation'
 
 interface Props {

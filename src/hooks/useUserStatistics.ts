@@ -1,4 +1,4 @@
-import { useUserStore } from '@/store/useUserStore'
+import { useUserStore } from '@store/useUserStore'
 import { DateTime } from 'luxon'
 import { useCallback } from 'react'
 

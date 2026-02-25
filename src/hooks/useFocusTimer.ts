@@ -1,8 +1,8 @@
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { getClientTimezone } from '@/lib/utils/getClientTimezone'
-import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
+import { useUserStore } from '@store/useUserStore'
 import type { CreateStudySessionReqBody, UpdateStudySessionReqBody } from '@types'
+import { dataFetch } from '@utils/dataFetch'
+import { getClientTimezone } from '@utils/getClientTimezone'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useUserStatistics } from './useUserStatistics'
 

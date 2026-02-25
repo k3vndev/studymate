@@ -1,5 +1,5 @@
-import { TrophyIcon } from '@/components/icons'
-import { Paragraph } from '@/components/Paragraph'
+import { Paragraph } from '@@/Paragraph'
+import { TrophyIcon } from '@@/icons'
 
 export const Achievements = () => {
   // This is temporary

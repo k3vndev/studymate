@@ -1,5 +1,5 @@
-import { databaseQuery } from '@/lib/utils/database/databaseQuery'
 import type { SupabaseServerClient } from '@types'
+import { databaseQuery } from '@utils/db/databaseQuery'
 
 interface Params {
   supabase: SupabaseServerClient

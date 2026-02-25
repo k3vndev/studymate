@@ -1,4 +1,4 @@
-import { repeat } from '@/lib/utils/repeat'
+import { repeat } from '@utils/repeat'
 
 export const ChatBubbles = () => (
   <div className='flex gap-2 items-center justify-center h-7 w-12'>

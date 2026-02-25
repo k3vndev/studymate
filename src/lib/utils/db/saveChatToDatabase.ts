@@ -1,6 +1,6 @@
 import { CONTENT_JSON } from '@consts'
 import type { ChatMessage } from '@types'
-import { dataFetch } from '../dataFetch'
+import { dataFetch } from '@utils/dataFetch'
 
 export const saveChatToDatabase = (chatMessages: ChatMessage[] | null) =>
   new Promise<void>((resolve, reject) => {

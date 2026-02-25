@@ -1,4 +1,4 @@
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { RocketIcon } from '@icons'
 import { useState } from 'react'
 import { ChipButton } from '../ChipButton'

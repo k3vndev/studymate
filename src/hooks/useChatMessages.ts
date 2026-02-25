@@ -1,12 +1,12 @@
-import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
-import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { useChatStore } from '@/store/useChatStore'
-import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { CONTENT_JSON, EVENTS, USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { useEvent } from '@hooks/useEvent'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
+import { useChatStore } from '@store/useChatStore'
+import { useStudyplansStore } from '@store/useStudyplansStore'
 import type { ChatMessage, ChatStudyplan, PromptRequestSchema, PublicStudyplan } from '@types'
+import { ChatStreamProcessor } from '@utils/ChatStreamProcessor'
+import { StudyplanStreamParser } from '@utils/StudyplanStreamParser'
+import { dataFetch } from '@utils/dataFetch'
 import { useEffect, useRef, useState } from 'react'
 
 export const useChatMessages = () => {

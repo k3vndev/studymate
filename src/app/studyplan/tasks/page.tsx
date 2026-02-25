@@ -1,8 +1,8 @@
 'use client'
 
-import { Loadable } from '@components/Loadable'
-import { Main } from '@components/Main'
-import { Sidebar } from '@components/Sidebar'
+import { Loadable } from '@@/Loadable'
+import { Main } from '@@/Main'
+import { Sidebar } from '@@/Sidebar'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { TodaysTasks } from './TodaysTasks'
 

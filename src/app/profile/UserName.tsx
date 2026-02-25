@@ -1,5 +1,5 @@
-import { FallbackBox } from '@/components/FallbackBox'
-import { Header } from '@components/Header'
+import { FallbackBox } from '@@/FallbackBox'
+import { Header } from '@@/Header'
 import type { DBUserData } from '@types'
 
 interface Props {

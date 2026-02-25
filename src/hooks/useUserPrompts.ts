@@ -1,6 +1,6 @@
-import { useChatStore } from '@/store/useChatStore'
 import { USER_PROMPTS } from '@consts'
 import { useChatMessages } from '@hooks/useChatMessages'
+import { useChatStore } from '@store/useChatStore'
 import { usePathname, useRouter } from 'next/navigation'
 
 /**
