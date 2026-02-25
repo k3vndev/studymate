@@ -140,3 +140,9 @@ export interface UpdateStudySessionReqBody {
 }
 
 export type SupabaseServerClient = Awaited<ReturnType<typeof supabaseServerClient>>
+
+export interface WeeklyData {
+  date: string
+  weekDay: string
+  focused: boolean
+}

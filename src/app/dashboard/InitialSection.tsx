@@ -1,5 +1,5 @@
+import { CardStudyplan } from '@/components/Studyplan/CardStudyplan'
 import { CardMate } from '@@/CardMate'
-import { CardStudyplan } from '@@/CardStudyplan'
 import { ChipButton } from '@@/ChipButton'
 import { FallbackBox } from '@@/FallbackBox'
 import { MagicWandIcon } from '@@/icons'

@@ -41,7 +41,7 @@ export const CardMate = ({ message, children, onClick, className }: Props) => {
           height={150}
           className={twMerge(`
             [scale:1.15] object-cover self-end xs:origin-bottom origin-top
-            xs:max-w-40 xs:w-40 aspect-square ${className?.image ?? ''}
+            xs:max-w-40 xs:w-40 aspect-square saturate-[130%] ${className?.image ?? ''}
           `)}
         />
       </div>

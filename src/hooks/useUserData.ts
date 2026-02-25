@@ -35,7 +35,7 @@ export const useUserData = () => {
       // Fetch all user study sessions statistics
       dataFetch<StudySession[]>({
         url: '/api/study_sessions',
-        onSuccess: data => user.setUserStudySessions(data)
+        onSuccess: data => user.setStudySessions(data)
       })
     ])
       // Stop loading data when the process stops
@@ -51,10 +51,10 @@ export const useUserData = () => {
   const cleanUserData = () => {
     user.setStudyplansLists({})
     user.setProfileData(null)
-    user.setUserStudySessions([])
+    user.setStudySessions([])
     user.setHydrated(false)
     user.setIsLoadingData(false)
-    user.setUserStudySessions(null)
+    user.setStudySessions(null)
     user.setSecondsFocusedToday(null)
     user.setStudyplan(null)
 
@@ -64,7 +64,7 @@ export const useUserData = () => {
   return {
     lists: user.studyplansLists,
     profile: user.profileData,
-    studySessions: user.userStudySessions,
+    studySessions: user.studySessions,
     cleanUserData
   }
 }

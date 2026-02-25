@@ -32,15 +32,17 @@ export const Timer = ({ studyplanId }: Props) => {
           style={decorativeCircleStyle}
         />
         {isStartingUp && (
-          <div
-            className={`flex flex-col items-center gap-1 z-50 text-nowrap animate-bounce-once ${FONTS.POPPINS}`}
-            style={{
-              animationDelay: '200ms',
-              animationDuration: '800ms'
-            }}
-          >
-            <span className='text-xl font-semibold animate-pulse '>Starting to focus...</span>
-            <span className='text-3xl'>Don't leave this screen yet!</span>
+          <div className={`flex flex-col items-center gap-2 z-50 text-nowrap ${FONTS.POPPINS}`}>
+            <span className='text-xl text-white/50 font-semibold animate-pulse'>Starting to focus...</span>
+            <span
+              className='text-3xl animate-bounce-once'
+              style={{
+                animationDelay: '200ms',
+                animationDuration: '800ms'
+              }}
+            >
+              Don't leave this screen yet!
+            </span>
           </div>
         )}
       </span>

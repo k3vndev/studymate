@@ -1,40 +1,31 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-/**
- * A custom React hook that provides responsive screen dimensions and loading state.
- *
- * This hook tracks the current window dimensions and provides a loading state to ensure
- * the component has access to accurate screen size information after the initial render.
- *
- * @returns {Object} An object containing screen dimensions and loading state
- * @returns {ScreenSize} returns.screenSize - Current screen dimensions
- * @returns {boolean} returns.loaded - Whether the hook has finished initializing
- */
 export const useResponsiveness = () => {
-  const [screenSize, setScreenSize] = useState<ScreenSize>({ x: 0, y: 0 })
+  const [screenSize, setScreenSize] = useState({ x: 0, y: 0 })
   const [loaded, setLoaded] = useState(false)
 
-  useEffect(() => {
-    const handleResize = () => {
-      const { innerWidth, innerHeight } = window
-      setScreenSize({ x: innerWidth, y: innerHeight })
-    }
-    handleResize()
+  const handleResize = useCallback(() => {
+    const { innerWidth, innerHeight } = window
+    setScreenSize({ x: innerWidth, y: innerHeight })
     setLoaded(true)
+  }, [])
 
+  useEffect(() => {
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  return { screenSize, loaded }
-}
+  const media = useMemo(() => {
+    const { x } = screenSize
+    return {
+      sm: x >= 640,
+      md: x >= 768,
+      lg: x >= 1024,
+      xl: x >= 1280,
+      '2xl': x >= 1536
+    }
+  }, [screenSize])
 
-/**
- * Interface representing screen dimensions
- */
-interface ScreenSize {
-  /** Screen width in pixels */
-  x: number
-  /** Screen height in pixels */
-  y: number
+  return { screenSize, loaded, media }
 }

@@ -35,8 +35,8 @@ export interface UserStore {
   secondsFocusedToday: number | null
   setSecondsFocusedToday: (state: ValueOrCallback<number | null>) => void
 
-  userStudySessions: StudySession[] | null
-  setUserStudySessions: (state: ValueOrCallback<StudySession[] | null>) => void
+  studySessions: StudySession[] | null
+  setStudySessions: (state: ValueOrCallback<StudySession[] | null>) => void
 }
 
 export const useUserStore = create<UserStore>(set => ({
@@ -103,6 +103,6 @@ export const useUserStore = create<UserStore>(set => ({
   secondsFocusedToday: null,
   setSecondsFocusedToday: state => set(s => setState(s, 'secondsFocusedToday', state, value => value)),
 
-  userStudySessions: null,
-  setUserStudySessions: state => set(s => setState(s, 'userStudySessions', state, value => value))
+  studySessions: null,
+  setStudySessions: state => set(s => setState(s, 'studySessions', state, value => value))
 }))
