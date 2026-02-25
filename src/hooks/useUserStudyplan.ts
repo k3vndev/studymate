@@ -11,7 +11,8 @@ import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@utils/
 import { getClientTimezone } from '@utils/getClientTimezone'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useOnDayChange } from './useOnDayChange'
 
 interface Params {
   fetchOnAwake?: boolean
@@ -31,6 +32,8 @@ export const useUserStudyplan = (params?: Params) => {
 
   const onUser = useUserBehavior()
   const router = useRouter()
+
+  const [dayChangedToggle, setDayChangedToggle] = useState(false)
 
   // Initial fetch of user's Studyplan
   useEffect(() => {
@@ -68,7 +71,7 @@ export const useUserStudyplan = (params?: Params) => {
         areTodaysTasksAllDone: false
       }
     }
-  }, [userStudyplan])
+  }, [userStudyplan, dayChangedToggle])
 
   const start = () => {
     if (!stateStudyplan) throw new Error('No studyplan in state to start')
@@ -145,6 +148,13 @@ export const useUserStudyplan = (params?: Params) => {
       router[method](`/studyplan/${original_id}`)
     }
   }
+
+  useOnDayChange(() => {
+    // Handle day change to update the studyplan's current day and tasks
+    if (userStudyplan) {
+      setDayChangedToggle(prev => !prev)
+    }
+  }, [userStudyplan])
 
   return {
     userStudyplan: userStudyplan ?? null,

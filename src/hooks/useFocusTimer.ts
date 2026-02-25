@@ -4,6 +4,7 @@ import type { CreateStudySessionReqBody, UpdateStudySessionReqBody } from '@type
 import { dataFetch } from '@utils/dataFetch'
 import { getClientTimezone } from '@utils/getClientTimezone'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useOnDayChange } from './useOnDayChange'
 import { useUserStatistics } from './useUserStatistics'
 
 /**
@@ -36,12 +37,34 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
   // On initial load, calculate the seconds focused today from the user's study sessions and set it in the store
   useEffect(() => {
+    // If we already have the seconds focused today from the store, but haven't set the initial value in the ref, set it (handles case where store is hydrated after this effect runs for the first time)
+    if (initialSecondsTodayRef.current === null && secondsFocusedToday !== null) {
+      initialSecondsTodayRef.current = secondsFocusedToday
+    }
+
+    // Only calculate and set the seconds focused today if the user store is hydrated and we haven't already set it
     if (userStoreHydrated && secondsFocusedToday === null && initialSecondsTodayRef.current === null) {
       const initialSeconds = getSecondsFocusedToday()
       initialSecondsTodayRef.current = initialSeconds
       setSecondsFocusedToday(initialSeconds)
+      return
     }
   }, [userStoreHydrated, secondsFocusedToday])
+
+  // Handle day change
+  useOnDayChange(async () => {
+    // Clear the main timer interval while we handle the day change
+    mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
+    initialSecondsTodayRef.current = 0
+    setSecondsFocusedToday(0)
+
+    // End the current study session for the previous day
+    await studySessionUpdater.end()
+
+    // Start a new study session for the new day
+    studySessionIdRef.current = null
+    initializeMainTimer()
+  })
 
   // Handle the startup timer, showing a progress circle for 10 seconds before starting the actual focus timer
   const initializeStartupTimer = () => {
@@ -99,29 +122,6 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       if (studySessionIdRef.current && isTimeForNextHeartBeat) {
         studySessionUpdater.ping()
         nextHeartBeatMSRef.current = now + HEART_BEAT_INTERVAL.REGULAR
-      }
-
-      // -- Handle day change --
-      const startDate = new Date(startedAtMsRef.current)
-      const nowDate = new Date()
-
-      // Format dates as YYYY-MM-DD for comparison
-      const formatDate = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-      const startDateStr = formatDate(startDate)
-      const nowDateStr = formatDate(nowDate)
-
-      if (startDateStr !== nowDateStr) {
-        // Clear the main timer interval while we handle the day change
-        mainTimerIntervalRef.current && clearInterval(mainTimerIntervalRef.current)
-        initialSecondsTodayRef.current = 0
-        setSecondsFocusedToday(0)
-
-        // End the current study session for the previous day
-        await studySessionUpdater.end()
-
-        // Start a new study session for the new day
-        studySessionIdRef.current = null
-        initializeMainTimer()
       }
     }
     mainTimerIntervalRef.current = setInterval(tick, 1000)

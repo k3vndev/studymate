@@ -96,7 +96,7 @@ export const CurrentTask = () => {
       scrollToTask(selectedTask + add)
     }
 
-    ulRef.current?.addEventListener('wheel', handleWheel)
+    ulRef.current?.addEventListener('wheel', handleWheel, { passive: false })
     return () => ulRef.current?.removeEventListener('wheel', handleWheel)
   }, [selectedTask])
 
