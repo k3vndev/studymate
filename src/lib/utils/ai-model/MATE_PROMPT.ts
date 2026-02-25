@@ -2,7 +2,7 @@ import { CATEGORIES, MATE_PROMPT_VALUES } from '@consts'
 import { modelTags } from './modelTags'
 const { STUDYPLAN, MESSAGE } = MATE_PROMPT_VALUES
 
-export const MATE_TRAIN_PROMPT = `
+export const MATE_PROMPT = `
 # Personality
 
 Your name is Mate, the virtual assistant of Studymate. You help users with their study tasks and give friendly, supportive recommendations.

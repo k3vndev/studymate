@@ -1,13 +1,13 @@
-import { getCategoryValues } from '@/lib/utils/getCategoryValues'
-import { parseDays } from '@/lib/utils/parseDays'
+import { extractCategoryValues } from '@/lib/utils/extractCategoryValues'
+import { formatDays } from '@/lib/utils/formatDays'
 import { FONTS } from '@consts'
 import { useSearchStudyplan } from '@hooks/useSearchStudyplan'
 import { ClockIcon } from '@icons'
 import Image from 'next/image'
 import Link from 'next/link'
-import { TileStudyPlanFallback } from './TileStudyplanFallback'
 import { useEffect, useRef } from 'react'
 import { twMerge } from 'tailwind-merge'
+import { TileStudyPlanFallback } from './TileStudyplanFallback'
 
 interface Props {
   className?: string
@@ -32,8 +32,8 @@ export const TileStudyplan = ({ id, className = '', style, inCarousel }: Props) 
 
   if (studyplan) {
     const { name, category, daily_lessons } = studyplan
-    const { image } = getCategoryValues(category)
-    const duration = parseDays(daily_lessons.length)
+    const { image } = extractCategoryValues(category)
+    const duration = formatDays(daily_lessons.length)
 
     return (
       <li

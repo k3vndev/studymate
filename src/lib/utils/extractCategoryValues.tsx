@@ -63,7 +63,7 @@ const defaultValues = {
  * @param category - The category for which to retrieve the corresponding icon and image values
  * @returns An object containing the icon and image values for the specified category, or default values if the category is not found
  */
-export const getCategoryValues = (category: Category) => {
+export const extractCategoryValues = (category: Category) => {
   const values = categoriesMap[category]
   return values ?? defaultValues
 }

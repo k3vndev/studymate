@@ -2,6 +2,9 @@ import type { ChatMessage, ChatStudyplan, DBChatMessages, PromptRequestSchema } 
 import type { ChatCompletionMessageParam } from 'openai/resources/index.mjs'
 import { modelTags } from './ai-model/modelTags'
 
+/**
+ * Utility functions to parse data between formats used in the app.
+ */
 export const dataParser = {
   fromStudyplanToModelPrompt: (studyplan: ChatStudyplan): string => {
     const { name, category, desc, daily_lessons } = studyplan

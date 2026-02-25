@@ -1,5 +1,5 @@
-import type { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import type { PromptRequestSchema as PromptRequestSchemaType } from '@/lib/schemas/PromptRequest'
+import type { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import type { CATEGORIES } from '@consts'
 import type { z } from 'zod'
 import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from './lib/schemas/Studyplan'

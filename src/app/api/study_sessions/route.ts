@@ -1,8 +1,8 @@
-import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
-import { getClientTimestamp } from '@api/utils/getClientTimestamp'
-import { getUserId } from '@api/utils/getUserId'
-import { handleStudySessionUpdate } from '@api/utils/handleStudySessionUpdate'
-import { response } from '@api/utils/response'
+import { updateStudySessionDB } from '@/lib/utils/database/updateStudySessionDB'
+import { getClientTimestamp } from '@/lib/utils/getClientTimestamp'
+import { getUserId } from '@/lib/utils/getUserId'
+import { response } from '@/lib/utils/response'
+import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import { DB_ERROR_CODES } from '@consts'
 import type { CreateStudySessionReqBody } from '@types'
 import { DateTime } from 'luxon'
@@ -125,7 +125,7 @@ export const POST = async (req: Request) => {
 // API method to handle study session heartbeats or pings.
 export const PATCH = async (req: Request) => {
   try {
-    return await handleStudySessionUpdate(req, 'last_ping_at')
+    return await updateStudySessionDB(req, 'last_ping_at')
   } catch {
     return response(false, 500)
   }
@@ -134,7 +134,7 @@ export const PATCH = async (req: Request) => {
 // API method to handle study session completion
 export const PUT = async (req: Request) => {
   try {
-    return await handleStudySessionUpdate(req, 'ended_at')
+    return await updateStudySessionDB(req, 'ended_at')
   } catch {
     return response(false, 500)
   }

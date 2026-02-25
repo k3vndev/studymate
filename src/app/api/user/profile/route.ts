@@ -1,7 +1,7 @@
-import { response } from '@/app/api/utils/response'
-import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
-import { databaseQuery } from '@api/utils/databaseQuery'
-import { getUserId } from '@api/utils/getUserId'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
+import { getUserId } from '@/lib/utils/getUserId'
+import { response } from '@/lib/utils/response'
+import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import type { DBUserData } from '@types'
 
 export const GET = async () => {

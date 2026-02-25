@@ -1,4 +1,4 @@
-import { getCategoryValues } from '@/lib/utils/getCategoryValues'
+import { extractCategoryValues } from '@/lib/utils/extractCategoryValues'
 import { FONTS } from '@consts'
 import type { Category as CategoryType } from '@types'
 
@@ -7,7 +7,7 @@ interface CategoryProps {
 }
 
 export const Category = ({ category }: CategoryProps) => {
-  const { icon } = getCategoryValues(category)
+  const { icon } = extractCategoryValues(category)
 
   return (
     <span

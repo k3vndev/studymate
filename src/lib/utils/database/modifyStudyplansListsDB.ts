@@ -1,6 +1,5 @@
-import { databaseQuery } from '@api/utils/databaseQuery'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
 import type { DBStudyplansLists, SupabaseServerClient } from '@types'
-import { cookies } from 'next/headers'
 
 interface Params {
   supabase: SupabaseServerClient
@@ -15,7 +14,7 @@ interface Params {
  *
  * Note: Provide the `supabase` client as a parameter when possible to avoid creating a new client every time this function is called, which can lead to performance issues. The function will create a new client only if one is not provided.
  */
-export const modifyStudyplansLists = ({ supabase, userId, key, modifyId }: Params) => {
+export const modifyStudyplansListsDB = ({ supabase, userId, key, modifyId }: Params) => {
   // Get studyplans list
   const getStudyplansList = async () => {
     const data = await databaseQuery<DBStudyplansLists[]>(supabase.from('users').select('studyplans_lists'))

@@ -1,9 +1,9 @@
 import { DateTime } from 'luxon'
 import { z } from 'zod'
-import { getClientTimestamp } from './getClientTimestamp'
-import { getUserId } from './getUserId'
-import { response } from './response'
-import { supabaseServerClient } from './supabaseServerClient'
+import { getClientTimestamp } from '../getClientTimestamp'
+import { getUserId } from '../getUserId'
+import { response } from '../response'
+import { supabaseServerClient } from '../supabaseServerClient'
 
 /**
  * Utility function to handle study session updates, used by both the PATCH and PUT API methods for updating the last_ping_at field (heartbeats) or the ended_at field (completion) of a study session.
@@ -13,7 +13,7 @@ import { supabaseServerClient } from './supabaseServerClient'
  * @param db_key The database field to update ('last_ping_at' or 'ended_at')
  * @returns A response object indicating the success or failure of the operation
  */
-export const handleStudySessionUpdate = async (req: Request, db_key: 'last_ping_at' | 'ended_at') => {
+export const updateStudySessionDB = async (req: Request, db_key: 'last_ping_at' | 'ended_at') => {
   const supabase = await supabaseServerClient()
   const body = await req.json()
 

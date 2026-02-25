@@ -1,4 +1,4 @@
-import { databaseQuery } from '@api/utils/databaseQuery'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
 import type { PublicStudyplan, SupabaseServerClient } from '@types'
 
 interface Params {
@@ -6,7 +6,7 @@ interface Params {
   supabase: SupabaseServerClient
 }
 
-export const getStudyplan = async <T>({ id, supabase }: Params) => {
+export const getStudyplanDB = async <T>({ id, supabase }: Params) => {
   if (typeof id !== 'string') return null
 
   try {

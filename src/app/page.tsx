@@ -1,8 +1,8 @@
+import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import { AppLogo } from '@@/AppLogo'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
 import { LoginButton } from '@@/LoginButton'
-import { supabaseServerClient } from '@api/utils/supabaseServerClient'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 

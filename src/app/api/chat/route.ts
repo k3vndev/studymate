@@ -1,11 +1,11 @@
-import { promptAIModel } from '@/app/api/utils/ai-model/promptAIModel'
-import { dataParser } from '@/app/api/utils/dataParser'
-import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
 import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
-import { databaseQuery } from '@api/utils/databaseQuery'
-import { getUserId } from '@api/utils/getUserId'
-import { response } from '@api/utils/response'
+import { promptAIModel } from '@/lib/utils/ai-model/promptAIModel'
+import { dataParser } from '@/lib/utils/dataParser'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
+import { getUserId } from '@/lib/utils/getUserId'
+import { response } from '@/lib/utils/response'
+import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
 import type {
   ChatMessage,

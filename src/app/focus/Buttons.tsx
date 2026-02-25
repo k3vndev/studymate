@@ -1,6 +1,6 @@
 import { useResponsiveness } from '@/hooks/useResponsiveness'
 import { TasksContext } from '@/lib/context/TasksContext'
-import { getOrdinal } from '@/lib/utils/getOrdinal'
+import { formatOrdinalNumber } from '@/lib/utils/formatOrdinalNumber'
 import { ChipButton } from '@components/ChipButton'
 import { SCREENS } from '@consts'
 import { useJustLoaded } from '@hooks/useJustLoaded'
@@ -37,7 +37,8 @@ const ExplainTaskButton = () => {
   const prompt = () => {
     // Get the ordinal number
     const ordinals = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh']
-    const ordinal = selectedTask < ordinals.length ? ordinals[selectedTask] : getOrdinal(selectedTask + 1)
+    const ordinal =
+      selectedTask < ordinals.length ? ordinals[selectedTask] : formatOrdinalNumber(selectedTask + 1)
 
     // Send prompt
     const message = `Hey Mate, would you help me with my ${ordinal} task of today?`

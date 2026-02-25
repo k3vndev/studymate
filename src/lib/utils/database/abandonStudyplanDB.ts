@@ -1,4 +1,4 @@
-import { databaseQuery } from '@api/utils/databaseQuery'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
 import type { SupabaseServerClient } from '@types'
 
 interface Params {
@@ -6,6 +6,6 @@ interface Params {
   userId: string
 }
 
-export const abandonStudyplan = async ({ supabase, userId }: Params) => {
+export const abandonStudyplanDB = async ({ supabase, userId }: Params) => {
   await databaseQuery(supabase.from('users').update({ studyplan: null }).eq('id', userId))
 }

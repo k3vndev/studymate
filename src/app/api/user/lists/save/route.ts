@@ -1,9 +1,9 @@
-import { supabaseServerClient } from '@/app/api/utils/supabaseServerClient'
 import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
-import { databaseQuery } from '@api/utils/databaseQuery'
-import { getUserId } from '@api/utils/getUserId'
-import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
-import { response } from '@api/utils/response'
+import { databaseQuery } from '@/lib/utils/database/databaseQuery'
+import { modifyStudyplansListsDB } from '@/lib/utils/database/modifyStudyplansListsDB'
+import { getUserId } from '@/lib/utils/getUserId'
+import { response } from '@/lib/utils/response'
+import { supabaseServerClient } from '@/lib/utils/supabaseServerClient'
 import type { BaseStudyplan, PublicStudyplan } from '@types'
 import { cookies } from 'next/headers'
 import type { NextRequest } from 'next/server'
@@ -39,7 +39,7 @@ export const PATCH = async (req: NextRequest) => {
     const action = saveStudyplan ? 'add' : 'remove'
 
     // Save or un-save studyplan
-    const wasSavedOrNot = await modifyStudyplansLists({
+    const wasSavedOrNot = await modifyStudyplansListsDB({
       supabase,
       userId,
       key: 'saved',
@@ -81,7 +81,7 @@ export const POST = async (req: NextRequest) => {
     const { id } = publishedStudyplan
 
     // Add studyplan to saved list
-    await modifyStudyplansLists({
+    await modifyStudyplansListsDB({
       supabase,
       userId,
       key: 'saved',

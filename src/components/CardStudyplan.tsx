@@ -1,5 +1,5 @@
 import { useUserStudyplan } from '@/hooks/useUserStudyplan'
-import { parseDays } from '@/lib/utils/parseDays'
+import { formatDays } from '@/lib/utils/formatDays'
 import { useStudyplansStore } from '@/store/useStudyplansStore'
 import { Badge } from '@@/Badge'
 import { ChipButton } from '@@/ChipButton'
@@ -62,7 +62,7 @@ export const CardStudyplan = ({ studyplan, userCurrent = false, inChat = false, 
             ) : (
               <>
                 <ClockIcon className='size-6' />
-                {parseDays(daily_lessons.length)}
+                {formatDays(daily_lessons.length)}
               </>
             )}
           </span>
