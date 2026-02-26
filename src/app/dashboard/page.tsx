@@ -1,20 +1,26 @@
 'use client'
 
+import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
 import { DailyStreakSection } from '@@/DailyStreak/DailyStreakSection'
 import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
+import { TodaysTasksSection } from '@@/TodaysTasks/TodaysTasksSection'
 import { InitialSection } from './InitialSection'
 
 export default function DashboardPage() {
+  const { userStudyplan, isLoading, todaysTasks } = useUserStudyplan()
+
   return (
     <>
       <Main className='gap-12 h-full'>
-        <InitialSection />
+        <InitialSection userStudyplan={userStudyplan} isLoading={isLoading} />
 
         <DailyStreakSection />
+
+        <TodaysTasksSection tasks={todaysTasks} isLoading={isLoading} />
 
         <GalleryStudyplans
           title='Studyplans for you'

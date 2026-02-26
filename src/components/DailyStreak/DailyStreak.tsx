@@ -16,7 +16,7 @@ export const DailyStreak = ({ weeklyData }: Props) => {
 
   return (
     <div
-      className='flex justify-between items-center md:px-8 px-2 pb-12 pt-4 flex-1 card'
+      className='flex justify-between items-center md:px-4 px-2 pb-12 pt-4 flex-1 card'
       onClick={handleClick}
     >
       {weeklyData?.map(({ date, weekDay, focused }, index) => {

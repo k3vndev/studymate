@@ -34,18 +34,24 @@ export const DailyStreakSection = () => {
 
     // Get reversed dates (so the most recent day is last) and format it to YYYY-MM-DD
     for (let i = 0; i < days; i++) {
+      // Get the date for the current day minus i days
       const date = new Date()
-      date.setDate(date.getDate() - (days - 1 - i))
+      date.setHours(0, 0, 0, 0)
+      const newDate = date.getDate() - (days - 1 - i)
+      date.setDate(newDate)
       const [formattedDate] = date.toISOString().split('T')
 
+      // Check if this date is in the set of focused days
       const focused = dailyHoursSet.has(formattedDate)
 
+      // Push the data for this day into the weekly array
       weekly.push({
         date: formattedDate,
         weekDay: date.toLocaleDateString('en-US', { weekday: 'long' }),
         focused
       })
 
+      // If this day is focused, increment the current streak. If not, reset the streak to 0.
       if (focused) {
         currentStreak++
       } else {

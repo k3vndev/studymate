@@ -15,13 +15,13 @@ export const Sidebar = () => (
       xl:-translate-y-1/2 xl:translate-x-0 -translate-x-1/2 rounded-full xl:px-0 sm:px-8 px-1 xl:py-0 sm:py-2 py-1 
     `}
   >
-    <h2 className={`text-white text-3xl xl:flex hidden gap-5 items-center ml-4 ${FONTS.POPPINS}`}>
+    <h1 className={`text-white text-3xl xl:flex hidden gap-5 items-center ml-4 ${FONTS.POPPINS}`}>
       <AppIcon width={40} height={40} className='size-10' />
       <div>
         <span className='font-semibold'>STUDY</span>
         <span className='italic'>MATE</span>
       </div>
-    </h2>
+    </h1>
 
     <ul className='flex xl:flex-col items-start xl:gap-4 sm:gap-6 gap-1'>
       {PATHS.map(({ name, icon }, i) => (
