@@ -5,6 +5,7 @@ import { Glow } from '@@/Background/Glow'
 import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
+import { StudySessionsChart } from '@@/routes/profile/StudySessionsChart'
 import { UserSection } from '@@/routes/profile/UserSection'
 
 export default function ProfilePage() {
@@ -12,6 +13,8 @@ export default function ProfilePage() {
     <>
       <Main className='flex flex-col gap-16'>
         <UserSection />
+
+        <StudySessionsChart />
 
         <GalleryStudyplans
           title='Your saved Studyplans'

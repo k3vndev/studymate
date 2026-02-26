@@ -1,4 +1,4 @@
-import { CONTENT_JSON } from '@consts'
+import { CONTENT_JSON, STUDY_SESSIONS } from '@consts'
 import { useUserStore } from '@store/useUserStore'
 import type { CreateStudySessionReqBody, UpdateStudySessionReqBody } from '@types'
 import { dataFetch } from '@utils/dataFetch'
@@ -29,11 +29,9 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
   const { getSecondsFocusedToday } = useUserStatistics()
 
-  const HEART_BEAT_INTERVAL = {
-    FIRST: 60 * 1000, // First heartbeat after 1 minute
-    REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
-  }
   const nextHeartBeatMSRef = useRef<number>(0)
+
+  const { HEARTBEAT_INTERVAL } = STUDY_SESSIONS
 
   // On initial load, calculate the seconds focused today from the user's study sessions and set it in the store
   useEffect(() => {
@@ -69,12 +67,12 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   // Handle the startup timer, showing a progress circle for 10 seconds before starting the actual focus timer
   const initializeStartupTimer = () => {
     const startMs = Date.now()
-    const waitSeconds = 10
+    const waitMiliseconds = STUDY_SESSIONS.STARTING_UP
 
     // Start interval to update the decorative circle style every few millisconds (circle progress bar)
     startingUpIntervalRef.current = setInterval(() => {
       const elapsedMs = Date.now() - startMs
-      const progress = Math.min(elapsedMs / (waitSeconds * 1000), 1) // Progress from 0 to 1 over 10 seconds
+      const progress = Math.min(elapsedMs / waitMiliseconds, 1) // Progress from 0 to 1 over 10 seconds
 
       const range = [0.1, 0.04]
       const progressOpacity = range[0] + (range[1] - range[0]) * progress
@@ -121,7 +119,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
       if (studySessionIdRef.current && isTimeForNextHeartBeat) {
         studySessionUpdater.ping()
-        nextHeartBeatMSRef.current = now + HEART_BEAT_INTERVAL.REGULAR
+        nextHeartBeatMSRef.current = now + HEARTBEAT_INTERVAL.REGULAR
       }
     }
     mainTimerIntervalRef.current = setInterval(tick, 1000)
@@ -145,7 +143,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       },
       onSuccess: sessionId => {
         studySessionIdRef.current = sessionId
-        nextHeartBeatMSRef.current = Date.now() + HEART_BEAT_INTERVAL.FIRST
+        nextHeartBeatMSRef.current = Date.now() + HEARTBEAT_INTERVAL.FIRST
       }
     })
   }

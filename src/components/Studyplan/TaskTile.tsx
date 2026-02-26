@@ -23,7 +23,7 @@ export const TaskTile = ({ goal, done, index }: Props) => {
   return (
     <div
       className={`
-        ${background} flex items-center justify-between w-full rounded-lg shadow-card shadow-black/15 card
+        ${background} flex items-center justify-between w-full rounded-lg shadow-card-shape shadow-black/15 card
         gap-4 md:px-8 sm:px-6 px-4 min-h-20 sm:py-3 py-4
       `}
       onClick={handleClick}

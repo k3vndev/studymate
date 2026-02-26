@@ -98,7 +98,7 @@ const CarouselButton = ({ className, children, onClick, visible }: CarouselButto
       <button
         className={`
           p-2 rounded-full bg-gray-60 border border-gray-10/50 *:size-8 text-gray-20
-          button animate-fade-in-fast shadow-card shadow-black/30 relative
+          button animate-fade-in-fast shadow-card-shape shadow-black/30 relative
         `}
         onClick={onClick}
         disabled={!visible}

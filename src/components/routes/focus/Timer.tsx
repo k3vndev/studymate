@@ -28,7 +28,7 @@ export const Timer = ({ studyplanId }: Props) => {
 
         {/* Decorative Circle */}
         <div
-          className='absolute size-64 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle shadow-blue-10/15 animate-pulse transition'
+          className='absolute size-64 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle-shape shadow-blue-10/15 animate-pulse transition'
           style={decorativeCircleStyle}
         />
         {isStartingUp && (

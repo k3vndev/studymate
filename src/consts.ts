@@ -147,10 +147,14 @@ export const SCREENS = {
   THREE_XL: 1750
 } as const
 
-// Timer related constants
-
-/** Minimum duration of a study session in seconds */
-export const MIN_SESSION_DURATION = 30
+/** Study session related constants. Values are in miliseconds */
+export const STUDY_SESSIONS = {
+  HEARTBEAT_INTERVAL: {
+    FIRST: 60 * 1000, // First heartbeat after 1 minute
+    REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
+  },
+  STARTING_UP: 15 * 1000
+}
 
 export const DB_ERROR_CODES = {
   NONEXISTENT_FOREIGN_KEY: '23503'

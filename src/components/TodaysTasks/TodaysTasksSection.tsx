@@ -58,7 +58,7 @@ export const TodaysTasksSection = ({ tasks, isLoading }: Props) => {
           </ChipButton>
           <ChipButton onClick={navigateToTasks}>
             <RocketIcon />
-            See All
+            See all
           </ChipButton>
         </div>
       </div>

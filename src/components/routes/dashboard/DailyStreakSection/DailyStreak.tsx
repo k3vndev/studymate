@@ -33,7 +33,7 @@ export const DailyStreak = ({ weeklyData }: Props) => {
         return (
           <>
             <div
-              className={`md:size-6 size-4 scale-150 relative rounded-full shadow-card shadow-black/25 z-10 ${mainColor}`}
+              className={`md:size-6 size-4 scale-150 relative rounded-full [box-shadow:0_4px_6px_rgba(0,0,0,0.25)] z-10 ${mainColor}`}
               key={date}
             >
               <span className='absolute md:-bottom-6 -bottom-5 text-xs font-medium text-gray-10 left-1/2 -translate-x-1/2'>

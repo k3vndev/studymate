@@ -15,7 +15,7 @@ export const TaskTile = ({ done, goal, className = '' }: Props) => {
     <li
       className={twMerge(`
         px-4 min-h-full max-h-full w-full flex md:gap-5 gap-2 items-center 
-        shadow-card shadow-black/20 justify-between ${bgStyle} ${className}
+        shadow-card-shape shadow-black/20 justify-between ${bgStyle} ${className}
       `)}
     >
       <span className={`${textStyle} text-pretty w-full`}>{goal}</span>

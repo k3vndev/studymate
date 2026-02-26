@@ -72,7 +72,7 @@ export const DropdownMenu = ({ children, className }: Props) => {
               }}
               className={`
                 bg-gray-70 border border-gray-30 z-40 -translate-x-full
-                rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
+                rounded-xl py-2 min-w-32 shadow-card-shape shadow-black/70 origin-top-right ${style.menu} transition
               `}
               id={IDS.ELEMENT}
             >
