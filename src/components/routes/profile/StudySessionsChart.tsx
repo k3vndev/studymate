@@ -1,38 +1,11 @@
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@@/ui/chart'
-import { useUserStatistics } from '@hooks/useUserStatistics'
-import { useUserStore } from '@store/useUserStore'
-import { DateTime } from 'luxon'
-import { useMemo } from 'react'
-import { Bar, BarChart, XAxis } from 'recharts'
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
-export const StudySessionsChart = () => {
-  const { getDailyFocusedHours } = useUserStatistics()
-  const studySessions = useUserStore(s => s.studySessions)
+interface Props {
+  data: Record<string, number | string>[]
+}
 
-  const retrieveRecentDailyData = (daySpan: number) => {
-    const dailyHours = getDailyFocusedHours()
-    if (!dailyHours || daySpan <= 0) return null
-
-    // Transform daily hours to a Record for easier access
-    const dailyHoursMap: Record<string, number> = Object.fromEntries(dailyHours.map(d => [d.date, d.hours]))
-
-    // Record the last daySpan days
-    const lastDays: { date: string; hours: number }[] = []
-    for (let i = daySpan - 1; i >= 0; i--) {
-      const date = DateTime.now()
-        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-        .minus({ days: i })
-        .toISODate()!
-
-      const hours = dailyHoursMap[date] || 0
-      lastDays.push({ date, hours })
-    }
-
-    return lastDays
-  }
-
-  const data = useMemo(() => retrieveRecentDailyData(8), [studySessions])
-
+export const StudySessionsChart = ({ data }: Props) => {
   if (!data) return null
 
   const blue20Color = '#6168E8'
@@ -58,27 +31,30 @@ export const StudySessionsChart = () => {
     if (Number.isFinite(numericValue)) {
       return numericValue.toFixed(2)
     }
-
     return String(value)
   }
 
   return (
-    <div className='w-full bg-gray-60 border border-gray-30 rounded-xl'>
-      <ChartContainer config={chatConfig} className='h-48 w-full'>
+    <div className='w-full bg-black/25 border border-gray-30 rounded-xl p-5 pl-0'>
+      <ChartContainer config={chatConfig} className='max-h-64 min-h-32 w-full'>
         <BarChart data={data}>
+          <CartesianGrid vertical={false} className='opacity-15' />
           <Bar
             dataKey='hours'
             name='Hours'
             fill={blue20Color}
-            minPointSize={(value: number | null | undefined) => ((value ?? 0) > 0 ? 4 : 0)}
+            minPointSize={value => ((value ?? 0) > 0 ? 4 : 0)}
           />
           <ChartTooltip
+            cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.05 }}
             content={
               <ChartTooltipContent
+                className='bg-black/75 border-card-border backdrop-blur-md'
                 formatter={(value, name) => (
                   <>
-                    <span className='text-muted-foreground'>{name}</span>
-                    <span className='font-mono font-medium tabular-nums text-foreground'>
+                    <div className='size-3 bg-blue-20 rounded-sm' />
+                    <span className='text-gray-10/80'>{name}</span>
+                    <span className='font-mono font-medium tabular-nums  text-gray-10'>
                       {tooltipValueFormatter(value as number | string)}
                     </span>
                   </>
@@ -90,9 +66,16 @@ export const StudySessionsChart = () => {
             dataKey='date'
             tickLine={false}
             axisLine={false}
-            tickMargin={8}
+            tickMargin={12}
             minTickGap={32}
             tickFormatter={xAxisTickFormatter}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={16}
+            dataKey='hours'
+            tickFormatter={data => `${data}h`}
           />
         </BarChart>
       </ChartContainer>
