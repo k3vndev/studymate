@@ -8,9 +8,10 @@ interface Props {
 
 export const UserImage = ({ profile }: Props) => {
   const imageSize = 128
+  const cssSize = { width: `${imageSize}px`, height: `${imageSize}px` }
 
   if (!profile) {
-    return <FallbackBox className='rounded-full' style={{ width: imageSize, height: imageSize }} />
+    return <FallbackBox className='rounded-full aspect-square' style={cssSize} />
   }
 
   return (
@@ -20,6 +21,7 @@ export const UserImage = ({ profile }: Props) => {
       width={imageSize}
       height={imageSize}
       className='rounded-full'
+      style={cssSize}
     />
   )
 }

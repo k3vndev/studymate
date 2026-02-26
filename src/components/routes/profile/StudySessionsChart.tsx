@@ -1,4 +1,5 @@
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@@/ui/chart'
+import { DateTime } from 'luxon'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
 interface Props {
@@ -18,11 +19,8 @@ export const StudySessionsChart = ({ data }: Props) => {
   } satisfies ChartConfig
 
   const xAxisTickFormatter = (value: string) => {
-    const date = new Date(value)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric'
-    })
+    const date = DateTime.fromISO(value)
+    return date.toFormat('MMM d')
   }
 
   const tooltipValueFormatter = (value: number | string) => {
@@ -44,6 +42,7 @@ export const StudySessionsChart = ({ data }: Props) => {
             name='Hours'
             fill={blue20Color}
             minPointSize={value => ((value ?? 0) > 0 ? 4 : 0)}
+            radius={[4, 4, 0, 0]}
           />
           <ChartTooltip
             cursor={{ fill: 'hsl(var(--muted))', fillOpacity: 0.05 }}
