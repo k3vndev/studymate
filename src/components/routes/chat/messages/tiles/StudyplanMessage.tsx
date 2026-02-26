@@ -1,4 +1,4 @@
-import { CardStudyplan } from '@/components/Studyplan/CardStudyplan'
+import { CardStudyplan } from '@@/Studyplan/CardStudyplan'
 import { useUserStore } from '@store/useUserStore'
 import type { ChatStudyplan } from '@types'
 import { useMemo } from 'react'

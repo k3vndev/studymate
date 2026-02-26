@@ -1,4 +1,3 @@
-import { TodaysLesson } from '@/app/studyplan/TodaysLesson'
 import { Badge } from '@@/Badge'
 import { Header } from '@@/Header'
 import { Paragraph } from '@@/Paragraph'
@@ -9,6 +8,7 @@ import { ButtonsSection } from './ButtonsSection'
 import { Category } from './Category'
 import { DailyLessons } from './DailyLessons'
 import { OptionsButton } from './OptionsButton'
+import { TodaysLesson } from './TodaysLesson'
 
 interface Props {
   studyplan: StudyplanUnion

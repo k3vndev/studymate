@@ -3,6 +3,9 @@
 import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
+import { ScrollHelper } from '@@/routes/chat/ScrollHelper'
+import { MessagesScreen } from '@@/routes/chat/messages/MessagesScreen'
+import { NoMessagesScreen } from '@@/routes/chat/messages/NoMessagesScreen'
 import { ChatContext } from '@context/ChatContext'
 import { useChatCustomScroll } from '@hooks/useChatCustomScroll'
 import { useChatMessages } from '@hooks/useChatMessages'
@@ -10,9 +13,6 @@ import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { ReloadIcon } from '@icons'
 import { useChatStore } from '@store/useChatStore'
 import { useState } from 'react'
-import { ScrollHelper } from './ScrollHelper'
-import { MessagesScreen } from './messages/MessagesScreen'
-import { NoMessagesScreen } from './messages/NoMessagesScreen'
 
 export default function ChatPage() {
   const [inputElementHeight, setInputElementHeight] = useState(0)

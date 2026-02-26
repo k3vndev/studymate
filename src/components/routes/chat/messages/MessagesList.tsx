@@ -1,9 +1,9 @@
-import { ChatMessage } from '@/app/chat/messages/tiles/ChatMessage'
 import { CHAT_ERROR_MESSAGE } from '@consts'
 import { ChatContext } from '@context/ChatContext'
 import { useChatStore } from '@store/useChatStore'
 import type { ChatMessage as ChatMessageType } from '@types'
 import { useContext } from 'react'
+import { ChatMessage } from './tiles/ChatMessage'
 
 export const MessagesList = () => {
   const messages = useChatStore(s => s.messages) as ChatMessageType[]

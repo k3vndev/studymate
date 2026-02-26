@@ -3,8 +3,8 @@
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
+import { TodaysTasks } from '@@/Studyplan/TodaysTasks'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
-import { TodaysTasks } from './TodaysTasks'
 
 export default function TasksPage() {
   const { userStudyplan, currentDay, isLoading } = useUserStudyplan({ redirectTo: '/studyplan' })

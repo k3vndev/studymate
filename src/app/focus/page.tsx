@@ -7,12 +7,12 @@ import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
 import { MagicWandIcon } from '@@/icons'
+import { CurrentTask } from '@@/routes/focus/CurrentTask'
+import { InfoHeader } from '@@/routes/focus/InfoHeader'
+import { Timer } from '@@/routes/focus/Timer'
 import { useUserData } from '@hooks/useUserData'
 import { useUserPrompts } from '@hooks/useUserPrompts'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
-import { CurrentTask } from './CurrentTask'
-import { InfoHeader } from './InfoHeader'
-import { Timer } from './Timer'
 
 export default function FocusPage() {
   const { userStudyplan, isLoading, currentDay } = useUserStudyplan()

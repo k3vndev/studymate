@@ -1,12 +1,12 @@
 import { FONTS } from '@/consts'
+import { ChipButton } from '@@/ChipButton'
+import { FallbackBox } from '@@/FallbackBox'
 import { useUserStatistics } from '@hooks/useUserStatistics'
 import { FireIcon, RocketIcon } from '@icons'
 import { useUserStore } from '@store/useUserStore'
 import type { WeeklyData } from '@types'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ChipButton } from '../ChipButton'
-import { FallbackBox } from '../FallbackBox'
 import { DailyStreak } from './DailyStreak'
 
 export const DailyStreakSection = () => {

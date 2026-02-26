@@ -5,7 +5,7 @@ import { Glow } from '@@/Background/Glow'
 import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
-import { UserSection } from './UserSection'
+import { UserSection } from '@@/routes/profile/UserSection'
 
 export default function ProfilePage() {
   return (

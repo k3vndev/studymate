@@ -3,12 +3,12 @@
 import { useUserStudyplan } from '@/hooks/useUserStudyplan'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
-import { DailyStreakSection } from '@@/DailyStreak/DailyStreakSection'
 import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
 import { TodaysTasksSection } from '@@/TodaysTasks/TodaysTasksSection'
-import { InitialSection } from './InitialSection'
+import { DailyStreakSection } from '@@/routes/dashboard/DailyStreakSection/DailyStreakSection'
+import { InitialSection } from '@@/routes/dashboard/InitialSection'
 
 export default function DashboardPage() {
   const { userStudyplan, isLoading, todaysTasks } = useUserStudyplan()
