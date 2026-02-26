@@ -15,14 +15,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body
-        className={`
-          min-h-dvh 3xl:px-48 2xl:px-32 xl:px-16 lg:px-32 sm:px-8 xs:px-4 grid 
-          overflow-y-scroll bg-black py-6
-        `}
-      >
-        {children}
-        <Alert />
+      <body className='min-h-dvh bg-black'>
+        <div
+          id='app-shell'
+          className={`
+            min-h-dvh 3xl:px-48 2xl:px-32 xl:px-16 lg:px-32 sm:px-8 xs:px-4 grid py-6
+          `}
+        >
+          {children}
+          <Alert />
+        </div>
       </body>
     </html>
   )

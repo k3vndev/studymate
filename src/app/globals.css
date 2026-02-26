@@ -4,6 +4,40 @@
 
 :root {
   --studyplan-tile-height: 15rem;
+  --sidebar-width: clamp(16rem, 22vw, 22rem);
+  --sidebar-gap: 4rem;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  overflow: clip scroll;
+}
+
+@media (min-width: 1280px) {
+  #app-shell {
+    padding-left: calc(4rem + var(--sidebar-width) + var(--sidebar-gap));
+  }
+}
+
+@media (min-width: 1536px) {
+  #app-shell {
+    padding-left: calc(8rem + var(--sidebar-width) + var(--sidebar-gap));
+  }
+}
+
+@media (min-width: 1792px) {
+  #app-shell {
+    padding-left: calc(12rem + var(--sidebar-width) + var(--sidebar-gap));
+  }
+}
+
+body[data-scroll-locked] {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
 }
 
 * {

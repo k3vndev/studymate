@@ -28,14 +28,14 @@ export const Timer = ({ studyplanId }: Props) => {
 
         {/* Decorative Circle */}
         <div
-          className='absolute size-64 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle-shape shadow-blue-10/15 animate-pulse transition'
+          className='absolute md:size-64 xs:size-48 size-32 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle-shape shadow-blue-10/15 animate-pulse transition'
           style={decorativeCircleStyle}
         />
         {isStartingUp && (
-          <div className={`flex flex-col items-center gap-2 z-50 text-nowrap ${FONTS.POPPINS}`}>
+          <div className={`flex flex-col items-center sm:gap-2 gap-1 z-50 text-nowrap ${FONTS.POPPINS}`}>
             <span className='text-xl text-white/50 font-semibold animate-pulse'>Starting to focus...</span>
             <span
-              className='text-3xl animate-bounce-once'
+              className='md:text-3xl xs:text-2xl text-xl  animate-bounce-once'
               style={{
                 animationDelay: '200ms',
                 animationDuration: '800ms'
