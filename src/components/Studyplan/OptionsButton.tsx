@@ -1,10 +1,10 @@
-import { useUserStudyplan } from '@/hooks/useUserStudyplan'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
-import { showAlert } from '@/lib/utils/showAlert'
 import { DropdownMenu } from '@@/DropdownMenu/DropdownMenu'
 import { Line } from '@@/DropdownMenu/Line'
 import { Option } from '@@/DropdownMenu/Option'
+import { StudyplanContext } from '@context/StudyplanContext'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 import { CloudIcon, ReloadIcon, RocketIcon, TrashIcon } from '@icons'
+import { showAlert } from '@utils/showAlert'
 import { useContext } from 'react'
 
 export const OptionsButton = () => {

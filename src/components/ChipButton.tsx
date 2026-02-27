@@ -1,6 +1,6 @@
 'use client'
 
-import { Waitable } from '@components/Waitable'
+import { Waitable } from '@@/Waitable'
 import type { ReusableComponent } from '@types'
 import { twMerge } from 'tailwind-merge'
 

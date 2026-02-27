@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from '@components/Header'
-import { Paragraph } from '@components/Paragraph'
-import { Waitable } from '@components/Waitable'
+import { Header } from '@@/Header'
+import { Paragraph } from '@@/Paragraph'
+import { Waitable } from '@@/Waitable'
 import { EVENTS, FONTS } from '@consts'
 import { useEvent } from '@hooks/useEvent'
 import { useJustLoaded } from '@hooks/useJustLoaded'
@@ -59,7 +59,7 @@ export const Alert = () => {
       <div
         className={`
           ${opacity} ${scale} bg-gray-50/85 border border-gray-30 rounded-xl xs:px-10 px-6 xs:py-6 py-7 flex 
-          flex-col gap-6 shadow-card shadow-black/50 w-min max-w-full transition duration-200
+          flex-col gap-6 shadow-card-shape shadow-black/50 w-min max-w-full transition duration-200
           backdrop-blur-sm
         `}
         onPointerDown={e => e.stopPropagation()}

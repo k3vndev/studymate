@@ -1,11 +1,11 @@
-import { CONTENT_JSON } from '@/consts'
-import { useUserBehavior } from '@/hooks/useUserBehavior'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
-import { useChatStore } from '@/store/useChatStore'
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { useUserStore } from '@/store/useUserStore'
+import { CONTENT_JSON } from '@consts'
+import { StudyplanContext } from '@context/StudyplanContext'
+import { useUserBehavior } from '@hooks/useUserBehavior'
+import { useChatStore } from '@store/useChatStore'
+import { useStudyplansStore } from '@store/useStudyplansStore'
+import { useUserStore } from '@store/useUserStore'
+import { dataFetch } from '@utils/dataFetch'
+import { saveChatToDatabase } from '@utils/db/saveChatToDatabase'
 import { useRouter } from 'next/navigation'
 import { useContext, useState } from 'react'
 import { BookmarkIcon, LoadingIcon } from '../icons'
@@ -54,8 +54,7 @@ export const SaveButton = () => {
           })
         }
       },
-      onFinish: () => setIsLoading(false),
-      redirectOn401: true
+      onFinish: () => setIsLoading(false)
     })
   }
 
@@ -80,8 +79,7 @@ export const SaveButton = () => {
         }
         modifyStudyplansList(publicId, 'saved').remove()
       },
-      onFinish: () => setIsLoading(false),
-      redirectOn401: true
+      onFinish: () => setIsLoading(false)
     })
   }
 

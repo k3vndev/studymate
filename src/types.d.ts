@@ -1,8 +1,9 @@
-import type { PromptRequestSchema as PromptRequestSchemaType } from '@/lib/schemas/PromptRequest'
 import type { CATEGORIES } from '@consts'
+import type { PromptRequestSchema as PromptRequestSchemaType } from '@schemas/PromptRequest'
+import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from '@schemas/Studyplan'
+import type { StudyplanPublicSchema } from '@schemas/StudyplanPublic'
+import type { supabaseServerClient } from '@utils/supabaseServerClient'
 import type { z } from 'zod'
-import type { BaseStudyplanSchema, PublicStudyplanSchema, UserStudyplanSchema } from './lib/schemas/Studyplan'
-import type { StudyplanPublicSchema } from './lib/schemas/StudyplanPublic'
 
 export type Category = (typeof CATEGORIES)[number]
 
@@ -111,15 +112,37 @@ export interface StreamResponseMessage {
   content: string
 }
 
+export interface StudySession {
+  started_at: string
+  last_ping_at: string | null
+  ended_at: string | null
+  studyplan_id: string | null
+  id: string
+}
+
 // -- Request bodies --
 
-/**
- * Start an already created Studyplan by passing its id or create a new one by passing a BaseStudyplan object.
- * The API route will return the UserStudyplan created or selected.
- */
 export type StartStudyplanReqBody = BaseStudyplan | string
 
 export interface CompleteTaskReqBody {
   index: number
   clientTimezone: string
+}
+
+export interface CreateStudySessionReqBody {
+  studyplanId: string
+  clientTimezone: string
+}
+
+export interface UpdateStudySessionReqBody {
+  sessionId: string
+  clientTimezone: string
+}
+
+export type SupabaseServerClient = Awaited<ReturnType<typeof supabaseServerClient>>
+
+export interface WeeklyData {
+  date: string
+  weekDay: string
+  focused: boolean
 }

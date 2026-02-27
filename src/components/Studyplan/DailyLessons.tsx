@@ -1,8 +1,8 @@
-import { useVerticalNavigation } from '@/hooks/useVerticalNavigation'
-import { StudyplanContext } from '@/lib/context/StudyplanContext'
-import { parseDays } from '@/lib/utils/parseDays'
 import { FONTS } from '@consts'
+import { StudyplanContext } from '@context/StudyplanContext'
+import { useVerticalNavigation } from '@hooks/useVerticalNavigation'
 import { CheckIcon, ChevronIcon, ClockIcon } from '@icons'
+import { formatDays } from '@utils/formatDays'
 import { useContext, useState } from 'react'
 import { Header } from '../Header'
 
@@ -22,7 +22,7 @@ export const DailyLessons = () => {
         <Header className='text-nowrap'>Daily Lessons</Header>
         <span className='flex gap-2 text-gray-10 text-lg text-nowrap items-center'>
           <ClockIcon className='size-6' />
-          {parseDays(daily_lessons.length)}
+          {formatDays(daily_lessons.length)}
         </span>
       </div>
       <ul className='flex flex-col gap-3'>

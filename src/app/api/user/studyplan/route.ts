@@ -1,18 +1,17 @@
-import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
-import { abandonStudyplan } from '@api/utils/abandonStudyplan'
-import { databaseQuery } from '@api/utils/databaseQuery'
-import { getStudyplan } from '@api/utils/getStudyplan'
-import { getUserId } from '@api/utils/getUserId'
-import { modifyStudyplansLists } from '@api/utils/modifyStudyplansLists'
-import { response } from '@api/utils/response'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { BaseStudyplanSchema } from '@schemas/Studyplan'
 import type { BaseStudyplan, PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
-import { cookies } from 'next/headers'
+import { abandonStudyplanDB } from '@utils/db/abandonStudyplanDB'
+import { databaseQuery } from '@utils/db/databaseQuery'
+import { getStudyplanDB } from '@utils/db/getStudyplanDB'
+import { modifyStudyplansListsDB } from '@utils/db/modifyStudyplansListsDB'
+import { getUserId } from '@utils/getUserId'
+import { response } from '@utils/response'
+import { supabaseServerClient } from '@utils/supabaseServerClient'
 import type { NextRequest } from 'next/server'
 
 // Get user studyplan and current day
 export const GET = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
@@ -35,7 +34,7 @@ export const GET = async () => {
 // Start a studyplan
 export const POST = async (req: NextRequest) => {
   const requestBody: StartStudyplanReqBody = await req.json()
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let original_id: string | null = null
 
   const userId = await getUserId({ supabase })
@@ -48,7 +47,7 @@ export const POST = async (req: NextRequest) => {
 
     // Studyplan id was sent, try to find it in the database
     try {
-      const data = await getStudyplan<PublicStudyplan>({ id: original_id, supabase })
+      const data = await getStudyplanDB<PublicStudyplan>({ id: original_id, supabase })
       if (data === null) {
         return response(false, 404, { msg: 'Studyplan id not found' })
       }
@@ -112,13 +111,13 @@ export const POST = async (req: NextRequest) => {
 
 // Abandon studyplan
 export const DELETE = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
 
   try {
-    await abandonStudyplan({ supabase, userId })
+    await abandonStudyplanDB({ supabase, userId })
     return response(true, 200)
   } catch {
     return response(false, 500)
@@ -127,7 +126,7 @@ export const DELETE = async () => {
 
 // Complete studyplan
 export const PUT = async () => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   const userId = await getUserId({ supabase })
   if (userId === null) return response(false, 401)
@@ -151,13 +150,13 @@ export const PUT = async () => {
     }
 
     // Abandon studyplan
-    await abandonStudyplan({ supabase, userId })
+    await abandonStudyplanDB({ supabase, userId })
   } catch {
     return response(false, 500)
   }
 
   try {
-    await modifyStudyplansLists({ supabase, modifyId: originalId, key: 'completed', userId }).add()
+    await modifyStudyplansListsDB({ supabase, modifyId: originalId, key: 'completed', userId }).add()
     return response(true, 200, { data: originalId })
   } catch {
     return response(false, 500)

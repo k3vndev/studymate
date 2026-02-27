@@ -1,4 +1,4 @@
-import { Paragraph } from '@components/Paragraph'
+import { Paragraph } from '@@/Paragraph'
 import { MATE_IMAGES_ALT } from '@consts'
 import { useUserPrompts } from '@hooks/useUserPrompts'
 import Image from 'next/image'
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const CardMate = ({ message, children, onClick, className }: Props) => {
-  const prompts = useUserPrompts({ redirect: true })
+  const prompts = useUserPrompts()
 
   return (
     <article
@@ -41,7 +41,7 @@ export const CardMate = ({ message, children, onClick, className }: Props) => {
           height={150}
           className={twMerge(`
             [scale:1.15] object-cover self-end xs:origin-bottom origin-top
-            xs:max-w-40 xs:w-40 aspect-square ${className?.image ?? ''}
+            xs:max-w-40 xs:w-40 aspect-square saturate-[130%] ${className?.image ?? ''}
           `)}
         />
       </div>

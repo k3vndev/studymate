@@ -1,11 +1,11 @@
 import { SCREENS } from '@consts'
+import { GalleryStudyplansContext } from '@context/GalleryStudyplansContext'
 import { useResponsiveness } from '@hooks/useResponsiveness'
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
-import { use, useContext, useEffect, useRef, useState } from 'react'
-import { TileStudyPlanFallback } from './TileStudyplanFallback'
-import { repeat } from '@/lib/utils/repeat'
-import { TileStudyplan } from './TileStudyplan'
+import { repeat } from '@utils/repeat'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { CarouselButtons } from './CarouselButtons'
+import { TileStudyplan } from './TileStudyplan'
+import { TileStudyPlanFallback } from './TileStudyplanFallback'
 
 export const CarouselGalleryStudyplans = () => {
   const { studyplansList, gap } = useContext(GalleryStudyplansContext)

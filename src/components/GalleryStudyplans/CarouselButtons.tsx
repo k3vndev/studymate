@@ -1,10 +1,10 @@
-import { GalleryStudyplansContext } from '@/lib/context/GalleryStudyplansContext'
+import { GalleryStudyplansContext } from '@context/GalleryStudyplansContext'
 import { ChevronIcon } from '@icons'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 interface Props {
-  ulRef: React.RefObject<HTMLUListElement>
+  ulRef: React.RefObject<HTMLUListElement | null>
   showItemsCount: number
   tileWidth?: number
 }
@@ -98,7 +98,7 @@ const CarouselButton = ({ className, children, onClick, visible }: CarouselButto
       <button
         className={`
           p-2 rounded-full bg-gray-60 border border-gray-10/50 *:size-8 text-gray-20
-          button animate-fade-in-fast shadow-card shadow-black/30 relative
+          button animate-fade-in-fast shadow-card-shape shadow-black/30 relative
         `}
         onClick={onClick}
         disabled={!visible}

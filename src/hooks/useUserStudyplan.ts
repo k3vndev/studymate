@@ -1,16 +1,18 @@
-import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@/lib/utils/evaluateUserStudyplan'
-import { saveChatToDatabase } from '@/lib/utils/saveChatToDatabase'
-import { useChatStore } from '@/store/useChatStore'
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { useUserStore } from '@/store/useUserStore'
 import { CONTENT_JSON } from '@consts'
 import { useUserBehavior } from '@hooks/useUserBehavior'
+import { BaseStudyplanSchema } from '@schemas/Studyplan'
+import { useChatStore } from '@store/useChatStore'
+import { useStudyplansStore } from '@store/useStudyplansStore'
+import { useUserStore } from '@store/useUserStore'
 import type { PublicStudyplan, StartStudyplanReqBody, UserStudyplan } from '@types'
+import { dataFetch } from '@utils/dataFetch'
+import { saveChatToDatabase } from '@utils/db/saveChatToDatabase'
+import { type EvaluateUserStudyplanReturn, evaluateUserStudyplan } from '@utils/evaluateUserStudyplan'
+import { getClientTimezone } from '@utils/getClientTimezone'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useOnDayChange } from './useOnDayChange'
 
 interface Params {
   fetchOnAwake?: boolean
@@ -30,6 +32,8 @@ export const useUserStudyplan = (params?: Params) => {
 
   const onUser = useUserBehavior()
   const router = useRouter()
+
+  const dayChangedToggle = useOnDayChange()
 
   // Initial fetch of user's Studyplan
   useEffect(() => {
@@ -54,7 +58,7 @@ export const useUserStudyplan = (params?: Params) => {
   const utilityValues: EvaluateUserStudyplanReturn = useMemo(() => {
     try {
       if (userStudyplan) {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        const timezone = getClientTimezone()
         return evaluateUserStudyplan(userStudyplan, timezone)
       }
       throw new Error()
@@ -67,7 +71,7 @@ export const useUserStudyplan = (params?: Params) => {
         areTodaysTasksAllDone: false
       }
     }
-  }, [userStudyplan])
+  }, [userStudyplan, dayChangedToggle])
 
   const start = () => {
     if (!stateStudyplan) throw new Error('No studyplan in state to start')
@@ -172,7 +176,6 @@ const dataFetchHandler = <T>({ url, options, onSuccess }: DataFetchHandlerParams
         onSuccess?.(data)
         res()
       },
-      onError: () => rej(),
-      redirectOn401: true
+      onError: () => rej()
     })
   })

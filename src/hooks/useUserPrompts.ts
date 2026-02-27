@@ -1,22 +1,27 @@
-import { useChatStore } from '@/store/useChatStore'
 import { USER_PROMPTS } from '@consts'
 import { useChatMessages } from '@hooks/useChatMessages'
-import { useRouter } from 'next/navigation'
+import { useChatStore } from '@store/useChatStore'
+import { usePathname, useRouter } from 'next/navigation'
 
-interface Params {
-  redirect?: boolean
-}
-
-export const useUserPrompts = (params: Params = { redirect: false }) => {
+/**
+ * A custom hook that provides functions to trigger user prompts in the chat interface. It also handles redirection to the chat page if the user is not currently on it.
+ * @returns An object containing functions to trigger specific user prompts, a blank prompt, and a custom prompt.
+ */
+export const useUserPrompts = () => {
   const setHighlihtedMessage = useChatStore(s => s.setHighlihtedMessage)
   useChatMessages()
+
   const router = useRouter()
+  const pathname = usePathname()
 
   const { CREATE_STUDYPLAN, EXPLAIN_TASKS, WHAT_CAN_YOU_DO, WHATS_NEXT } = USER_PROMPTS
 
   const prompt = (message: string) => {
-    if (params.redirect) router.push('/chat')
     setHighlihtedMessage(message)
+
+    // Detect if user is currently on the chat page and redirect if not
+    const isOnChatPage = pathname.startsWith('/chat')
+    if (!isOnChatPage) router.push('/chat')
   }
 
   return {

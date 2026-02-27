@@ -1,4 +1,7 @@
+'use client'
+
 import type { ReusableComponent } from '@types'
+import { useEffect, useMemo, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type Props = {
@@ -19,8 +22,15 @@ type Props = {
 
 export const Glow = ({ className = '', style, margin = 5, size = 60, pos }: Props) => {
   const SIZE_FACTOR = 0.7
+  const [randomAnimationTime, setRandomAnimationTime] = useState('')
 
-  const getPositionStyle = (): React.CSSProperties => {
+  useEffect(() => {
+    const min = 1.5
+    const max = 3
+    setRandomAnimationTime(`${Math.random() * (max - min) + min}s`)
+  }, [])
+
+  const positionStyle = useMemo((): React.CSSProperties => {
     const [x, y] = pos.split('-')
 
     const getValue = (pos: string) => {
@@ -34,20 +44,25 @@ export const Glow = ({ className = '', style, margin = 5, size = 60, pos }: Prop
       top: `${getValue(y)}vh`,
       left: `${getValue(x)}vw`
     }
-  }
+  }, [pos, margin])
 
-  const getSize = (): React.CSSProperties => {
+  const sizeStyle = useMemo((): React.CSSProperties => {
     const sz = `calc(${size * SIZE_FACTOR}rem + 35vw)`
     return { width: sz, height: sz }
-  }
+  }, [size])
 
   return (
     <div
       className={twMerge(`
         absolute -translate-x-1/2 -translate-y-1/2 blur-[200px]
-        aspect-square ${className}
+        aspect-square animate-glow-scale ${className}
       `)}
-      style={{ ...getPositionStyle(), ...getSize(), ...style }}
+      style={{
+        ...positionStyle,
+        ...sizeStyle,
+        ...style,
+        animationDuration: randomAnimationTime
+      }}
     />
   )
 }

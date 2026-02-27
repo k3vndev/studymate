@@ -4,24 +4,25 @@ import { FONTS } from '@consts'
 import { AppIcon, BookIcon, ClockIcon, HomeIcon, MessageIcon, ProfileIcon } from '@icons'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { type JSX, useEffect, useState } from 'react'
 
 export const Sidebar = () => (
   <aside
     className={`
-      xl:w-[22vw] flex xl:flex-col gap-16 justify-center items-start fixed 
+      xl:w-[var(--sidebar-width)] flex xl:flex-col gap-16 justify-center items-start fixed 
       3xl:left-48 2xl:left-32 xl:left-16 left-1/2 xl:top-1/2 top-3 xl:overflow-visible overflow-hidden
-      xl:bg-transparent bg-black/50 xl:backdrop-blur-0 backdrop-blur-sm xl:border-none border border-card-border
       xl:-translate-y-1/2 xl:translate-x-0 -translate-x-1/2 rounded-full xl:px-0 sm:px-8 px-1 xl:py-0 sm:py-2 py-1 
+      xl:bg-transparent bg-black/75 xl:backdrop-blur-0 backdrop-blur-lg xl:border-none border border-card-border
+      z-50
     `}
   >
-    <h2 className={`text-white text-3xl xl:flex hidden gap-5 items-center ml-4 ${FONTS.POPPINS}`}>
+    <h1 className={`text-white text-3xl xl:flex hidden gap-5 items-center ml-4 ${FONTS.POPPINS}`}>
       <AppIcon width={40} height={40} className='size-10' />
       <div>
         <span className='font-semibold'>STUDY</span>
         <span className='italic'>MATE</span>
       </div>
-    </h2>
+    </h1>
 
     <ul className='flex xl:flex-col items-start xl:gap-4 sm:gap-6 gap-1'>
       {PATHS.map(({ name, icon }, i) => (

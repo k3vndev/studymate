@@ -1,5 +1,5 @@
-import { parseChatMessages } from '@/store/utils/parseChatMessages'
-import { type ValueOrCallback, setState } from '@/store/utils/setState'
+import { parseChatMessages } from '@store/utils/parseChatMessages'
+import { type ValueOrCallback, setState } from '@store/utils/setState'
 import type { ChatMessage, ChatStudyplan } from '@types'
 import { create } from 'zustand'
 
@@ -19,6 +19,9 @@ interface ChatsStore {
     newOriginalId: string,
     callback?: (newMessages: ChatMessage[]) => void
   ) => void
+
+  hydrated: boolean
+  setHydrated: (value: ValueOrCallback<boolean>) => void
 }
 
 export const useChatStore = create<ChatsStore>(set => ({
@@ -64,5 +67,8 @@ export const useChatStore = create<ChatsStore>(set => ({
       }
 
       return { messages: newMessages }
-    })
+    }),
+
+  hydrated: false,
+  setHydrated: state => set(s => setState(s, 'hydrated', state, value => value))
 }))

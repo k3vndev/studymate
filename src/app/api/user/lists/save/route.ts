@@ -1,17 +1,16 @@
-import { modifyStudyplansLists } from '@/app/api/utils/modifyStudyplansLists'
-import { response } from '@/app/api/utils/response'
-import { BaseStudyplanSchema } from '@/lib/schemas/Studyplan'
-import { databaseQuery } from '@api/utils/databaseQuery'
-import { getUserId } from '@api/utils/getUserId'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { BaseStudyplanSchema } from '@schemas/Studyplan'
 import type { BaseStudyplan, PublicStudyplan } from '@types'
-import { cookies } from 'next/headers'
+import { databaseQuery } from '@utils/db/databaseQuery'
+import { modifyStudyplansListsDB } from '@utils/db/modifyStudyplansListsDB'
+import { getUserId } from '@utils/getUserId'
+import { response } from '@utils/response'
+import { supabaseServerClient } from '@utils/supabaseServerClient'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
 
 // Save or un-save an existing studyplan
 export const PATCH = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let studyplanId: string
   let saveStudyplan: boolean
 
@@ -39,7 +38,7 @@ export const PATCH = async (req: NextRequest) => {
     const action = saveStudyplan ? 'add' : 'remove'
 
     // Save or un-save studyplan
-    const wasSavedOrNot = await modifyStudyplansLists({
+    const wasSavedOrNot = await modifyStudyplansListsDB({
       supabase,
       userId,
       key: 'saved',
@@ -58,7 +57,7 @@ export const PATCH = async (req: NextRequest) => {
 
 // Publish a studyplan and save it
 export const POST = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
   let studyplanFromReq: BaseStudyplan
 
   // Check if user is authenticated
@@ -81,7 +80,7 @@ export const POST = async (req: NextRequest) => {
     const { id } = publishedStudyplan
 
     // Add studyplan to saved list
-    await modifyStudyplansLists({
+    await modifyStudyplansListsDB({
       supabase,
       userId,
       key: 'saved',

@@ -1,11 +1,12 @@
 'use client'
 
-import { Main } from '@components/Main'
-import { Sidebar } from '@components/Sidebar'
-import { GalleryStudyplans } from '@components/GalleryStudyplans/GalleryStudyplans'
-import { UserSection } from './UserSection'
-import { Background } from '@components/Background/Background'
-import { Glow } from '@components/Background/Glow'
+import { Background } from '@@/Background/Background'
+import { Glow } from '@@/Background/Glow'
+import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
+import { Main } from '@@/Main'
+import { Sidebar } from '@@/Sidebar'
+import { StudySessionsSection } from '@@/routes/profile/StudySessionsSection'
+import { UserSection } from '@@/routes/profile/UserSection'
 
 export default function ProfilePage() {
   return (
@@ -13,10 +14,12 @@ export default function ProfilePage() {
       <Main className='flex flex-col gap-16'>
         <UserSection />
 
+        <StudySessionsSection />
+
         <GalleryStudyplans
           title='Your saved Studyplans'
           storeKey='saved'
-          emptyMessage='Looks a little empty... Start saving some Studyplans! 😌'
+          emptyMessage='Looks a little empty... Start saving some Studyplans for later! 😌'
           carousel
         />
         <GalleryStudyplans
@@ -29,8 +32,8 @@ export default function ProfilePage() {
       <Sidebar />
 
       <Background className='bg-[#020202]'>
-        <Glow className='bg-[#6313ED]/15' pos='left-top' margin={0} />
-        <Glow className='bg-[#6313ED]/5' pos='right-bottom' margin={0} />
+        <Glow className='bg-[#6313ED]/20' pos='left-top' margin={0} />
+        <Glow className='bg-[#6313ED]/10' pos='right-bottom' margin={0} />
       </Background>
     </>
   )

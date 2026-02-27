@@ -1,18 +1,18 @@
 'use client'
 
-import { dataFetch } from '@/lib/utils/dataFetch'
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { Button, ErrorCard, Gigant, Message } from '@components/ErrorCard'
-import { Loadable } from '@components/Loadable'
-import { Main } from '@components/Main'
-import { Sidebar } from '@components/Sidebar'
-import { Studyplan } from '@components/Studyplan/Studyplan'
-import { ArrowIcon } from '@components/icons'
+import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { Loadable } from '@@/Loadable'
+import { Main } from '@@/Main'
+import { Sidebar } from '@@/Sidebar'
+import { Studyplan } from '@@/Studyplan/Studyplan'
+import { ArrowIcon } from '@@/icons'
 import { CONTENT_JSON } from '@consts'
 import { useSearchStudyplan } from '@hooks/useSearchStudyplan'
 import { useUserData } from '@hooks/useUserData'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useStudyplansStore } from '@store/useStudyplansStore'
 import type { PublicStudyplan } from '@types'
+import { dataFetch } from '@utils/dataFetch'
+import { supabaseBrowserClient } from '@utils/supabaseBrowserClient'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -31,11 +31,10 @@ export default function PublicStudyplanPage() {
   useUserData()
 
   const checkSession = async () => {
-    const {
-      data: { session }
-    } = await createClientComponentClient().auth.getSession()
+    const supabase = supabaseBrowserClient()
+    const { data } = await supabase.auth.getSession()
 
-    setHasSession(session !== null)
+    setHasSession(data.session !== null)
   }
 
   const handleStudyplanLoad = () => {

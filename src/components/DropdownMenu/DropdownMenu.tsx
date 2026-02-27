@@ -1,6 +1,6 @@
-import { useOnClickSelector } from '@/hooks/useOnClickSelector'
-import { DropdownMenuContext } from '@/lib/context/DropdownMenuContext'
+import { DropdownMenuContext } from '@context/DropdownMenuContext'
 import { useEvent } from '@hooks/useEvent'
+import { useOnClickSelector } from '@hooks/useOnClickSelector'
 import { ChevronIcon, MoreIcon } from '@icons'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -72,7 +72,7 @@ export const DropdownMenu = ({ children, className }: Props) => {
               }}
               className={`
                 bg-gray-70 border border-gray-30 z-40 -translate-x-full
-                rounded-xl py-2 min-w-32 shadow-card shadow-black/70 origin-top-right ${style.menu} transition
+                rounded-xl py-2 min-w-32 shadow-card-shape shadow-black/70 origin-top-right ${style.menu} transition
               `}
               id={IDS.ELEMENT}
             >

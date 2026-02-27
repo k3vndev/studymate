@@ -1,4 +1,4 @@
-import { Inter, Poppins } from 'next/font/google'
+import { Azeret_Mono, Inter, Poppins } from 'next/font/google'
 
 // Fonts
 const poppins = Poppins({
@@ -11,9 +11,15 @@ const inter = Inter({
   subsets: ['latin']
 })
 
+const azeretMono = Azeret_Mono({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin']
+})
+
 export const FONTS = {
   POPPINS: poppins.className,
-  INTER: inter.className
+  INTER: inter.className,
+  AZERET_MONO: azeretMono.className
 }
 
 export const CONTENT_JSON = {
@@ -60,6 +66,18 @@ export const CATEGORIES = [
   'Productivity',
   'Study Techniques'
 ] as const
+
+/* Missing categories (each will need both an icon and an image):
+  - Languages
+  - Business
+  - Marketing
+  - Personal Development
+  - Health & Fitness
+  - Lifestyle
+  - Social Media
+  - Writing
+  - Music Production
+ */
 
 // Virtual assistant
 export const MATE_MESSAGES = {
@@ -127,4 +145,17 @@ export const SCREENS = {
   XL: 1280,
   TWO_XL: 1536,
   THREE_XL: 1750
+} as const
+
+/** Study session related constants. Values are in miliseconds */
+export const STUDY_SESSIONS = {
+  HEARTBEAT_INTERVAL: {
+    FIRST: 60 * 1000, // First heartbeat after 1 minute
+    REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
+  },
+  STARTING_UP: 10 * 1000
+}
+
+export const DB_ERROR_CODES = {
+  NONEXISTENT_FOREIGN_KEY: '23503'
 } as const

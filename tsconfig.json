@@ -24,10 +24,13 @@
       "@@/*": ["./src/components/*"],
       "@api/*": ["./src/app/api/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@schemas/*": ["./src/lib/schemas/*"],
       "@icons": ["./src/components/icons.tsx"],
       "@consts": ["./src/consts.ts"],
-      "@types": ["./src/types.d.ts"]
+      "@types": ["./src/types.d.ts"],
+      "@context/*": ["./src/lib/context/*"],
+      "@schemas/*": ["./src/lib/schemas/*"],
+      "@utils/*": ["./src/lib/utils/*"],
+      "@store/*": ["./src/store/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -1,27 +1,25 @@
-import { promptAIModel } from '@/app/api/utils/ai-model/promptAIModel'
-import { dataParser } from '@/app/api/utils/dataParser'
-import { ChatStreamProcessor } from '@/lib/utils/ChatStreamProcessor'
-import { StudyplanStreamParser } from '@/lib/utils/StudyplanStreamParser'
-import { getUserId } from '@api/utils/getUserId'
-import { USER_MAX_MESSAGE_LENGTH } from '@consts'
 import { PromptRequestSchema } from '@schemas/PromptRequest'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import type {
   ChatMessage,
   DBChatMessages,
   PromptRequestSchema as PromptRequestSchemaType,
   StreamResponseMessage
 } from '@types'
-import { cookies } from 'next/headers'
+import { ChatStreamProcessor } from '@utils/ChatStreamProcessor'
+import { StudyplanStreamParser } from '@utils/StudyplanStreamParser'
+import { promptAIModel } from '@utils/ai-model/promptAIModel'
+import { dataParser } from '@utils/dataParser'
+import { databaseQuery } from '@utils/db/databaseQuery'
+import { getUserId } from '@utils/getUserId'
+import { response } from '@utils/response'
+import { supabaseServerClient } from '@utils/supabaseServerClient'
 import { type NextRequest, NextResponse } from 'next/server'
 import type { ChatCompletionMessageParam } from 'openai/src/resources/index.js'
-import { databaseQuery } from '../utils/databaseQuery'
-import { response } from '../utils/response'
 
 // Get all previous chat messages
 export const GET = async () => {
   try {
-    const supabase = createServerComponentClient({ cookies })
+    const supabase = await supabaseServerClient()
 
     type QueryType = { chat_with_mate: DBChatMessages[] }
     const data = await databaseQuery<QueryType[]>(supabase.from('users').select('chat_with_mate'))
@@ -45,7 +43,7 @@ export const GET = async () => {
 
 // Send a message to Mate and get a response
 export const POST = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   // Check if user is logged in
   const userId = await getUserId({ supabase })
@@ -162,7 +160,7 @@ export const POST = async (req: NextRequest) => {
 
 // Save messages to database
 export const PATCH = async (req: NextRequest) => {
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = await supabaseServerClient()
 
   // Check if user is logged in
   const userId = await getUserId({ supabase })

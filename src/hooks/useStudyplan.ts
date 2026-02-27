@@ -1,7 +1,7 @@
-import { useStudyplansStore } from '@/store/useStudyplansStore'
-import { useUserStore } from '@/store/useUserStore'
+import { useStudyplansStore } from '@store/useStudyplansStore'
+import { useUserStore } from '@store/useUserStore'
 import type { StudyplanUnion } from '@types'
-import { use, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useUserData } from './useUserData'
 import { useUserStudyplan } from './useUserStudyplan'
 

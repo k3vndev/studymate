@@ -5,13 +5,20 @@ import { Glow } from '@@/Background/Glow'
 import { GalleryStudyplans } from '@@/GalleryStudyplans/GalleryStudyplans'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
-import { InitialSection } from './InitialSection'
+import { TodaysTasksSection } from '@@/TodaysTasks/TodaysTasksSection'
+import { DailyStreakSection } from '@@/routes/dashboard/DailyStreakSection/DailyStreakSection'
+import { InitialSection } from '@@/routes/dashboard/InitialSection'
+import { useUserStudyplan } from '@hooks/useUserStudyplan'
 
 export default function DashboardPage() {
+  const { userStudyplan, isLoading, todaysTasks } = useUserStudyplan()
+
   return (
     <>
       <Main className='gap-12 h-full'>
-        <InitialSection />
+        <InitialSection userStudyplan={userStudyplan} isLoading={isLoading} />
+        <DailyStreakSection />
+        <TodaysTasksSection tasks={todaysTasks} isLoading={isLoading} />
 
         <GalleryStudyplans
           title='Studyplans for you'
@@ -22,8 +29,8 @@ export default function DashboardPage() {
       <Sidebar />
 
       <Background>
-        <Glow className='bg-[#7331ff]/20' pos='left-top' />
-        <Glow className='bg-[#6A71FC]/25' pos='right-bottom' />
+        <Glow className='bg-[#7331ff]/15' pos='left-top' />
+        <Glow className='bg-[#6A71FC]/20' pos='right-bottom' />
       </Background>
     </>
   )

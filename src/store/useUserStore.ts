@@ -1,7 +1,11 @@
-import type { DBUserData, UserStudyplan } from '@types'
+import type { DBUserData, StudySession, UserStudyplan } from '@types'
 import { create } from 'zustand'
+import { type ValueOrCallback, setState } from './utils/setState'
 
 export interface UserStore {
+  hydrated: boolean
+  setHydrated: (hydrated: boolean) => void
+
   profileData: DBUserData | null
   setProfileData: (value: DBUserData | null) => void
 
@@ -18,9 +22,7 @@ export interface UserStore {
     completed?: string[]
     saved?: string[]
   }
-  setStudyplansLists: (
-    callback: (studyplans: UserStore['studyplansLists']) => UserStore['studyplansLists']
-  ) => void
+  setStudyplansLists: (state: ValueOrCallback<UserStore['studyplansLists']>) => void
 
   modifyStudyplansList: (
     modifyId: string,
@@ -29,9 +31,18 @@ export interface UserStore {
     add: (placeAtStart?: boolean) => void
     remove: () => void
   }
+
+  secondsFocusedToday: number | null
+  setSecondsFocusedToday: (state: ValueOrCallback<number | null>) => void
+
+  studySessions: StudySession[] | null
+  setStudySessions: (state: ValueOrCallback<StudySession[] | null>) => void
 }
 
 export const useUserStore = create<UserStore>(set => ({
+  hydrated: false,
+  setHydrated: hydrated => set(() => ({ hydrated })),
+
   profileData: null,
   setProfileData: value => set(() => ({ profileData: value })),
 
@@ -52,10 +63,7 @@ export const useUserStore = create<UserStore>(set => ({
 
   studyplansLists: {},
 
-  setStudyplansLists: callback =>
-    set(({ studyplansLists: studyplans }) => {
-      return { studyplansLists: callback({ ...studyplans }) }
-    }),
+  setStudyplansLists: callback => set(s => setState(s, 'studyplansLists', callback, value => value)),
 
   modifyStudyplansList: (id, key) => {
     const getValues = (ogLists: UserStore['studyplansLists']) => {
@@ -90,5 +98,11 @@ export const useUserStore = create<UserStore>(set => ({
           return { studyplansLists: lists }
         })
     }
-  }
+  },
+
+  secondsFocusedToday: null,
+  setSecondsFocusedToday: state => set(s => setState(s, 'secondsFocusedToday', state, value => value)),
+
+  studySessions: null,
+  setStudySessions: state => set(s => setState(s, 'studySessions', state, value => value))
 }))
