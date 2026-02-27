@@ -34,7 +34,7 @@ export const StudySessionsChart = ({ data }: Props) => {
 
   return (
     <div className='w-full bg-black/25 border border-gray-30 rounded-xl p-5 pl-0'>
-      <ChartContainer config={chatConfig} className='max-h-64 min-h-32 w-full'>
+      <ChartContainer config={chatConfig} className='max-h-56 min-h-32 w-full'>
         <BarChart data={data}>
           <CartesianGrid vertical={false} className='opacity-15' />
           <Bar

@@ -1,6 +1,7 @@
-import { FONTS } from '@/consts'
 import { ChipButton } from '@@/ChipButton'
 import { FallbackBox } from '@@/FallbackBox'
+import { FONTS } from '@consts'
+import { useOnDayChange } from '@hooks/useOnDayChange'
 import { useUserStatistics } from '@hooks/useUserStatistics'
 import { FireIcon, RocketIcon } from '@icons'
 import { useUserStore } from '@store/useUserStore'
@@ -17,7 +18,9 @@ export const DailyStreakSection = () => {
   const [streak, setStreak] = useState(0)
 
   const router = useRouter()
+  const dayChangedToggle = useOnDayChange()
 
+  // Runs on component mount and whenever the day changes to calculate the weekly data and current streak
   useEffect(() => {
     const dailyFocusedHours = getDailyFocusedHours()
     if (!dailyFocusedHours) return
@@ -61,7 +64,7 @@ export const DailyStreakSection = () => {
 
     setWeeklyData(weekly)
     setStreak(currentStreak)
-  }, [hydrated])
+  }, [hydrated, dayChangedToggle])
 
   const handleClick = () => {
     router.push('/focus')

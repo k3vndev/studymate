@@ -1,13 +1,15 @@
-import { type DependencyList, useEffect, useRef } from 'react'
+import { type DependencyList, useEffect, useRef, useState } from 'react'
 
 /**
  * Custom hook to execute a callback function whenever the day changes.
  * @param onDayChange Callback function to execute on day change
  * @param dependencies Optional dependencies array to control when the effect re-runs
+ * @returns A boolean toggle that changes value whenever the day changes, useful for triggering re-renders
  */
 export const useOnDayChange = (onDayChange?: () => void, dependencies: DependencyList = []) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const onDayChangeRef = useRef(onDayChange)
+  const [onDayChangeToggle, setOnDayChangeToggle] = useState(false)
 
   useEffect(() => {
     // Update the ref to the latest onDayChange function whenever it changes
@@ -26,6 +28,8 @@ export const useOnDayChange = (onDayChange?: () => void, dependencies: Dependenc
 
       timeoutRef.current = setTimeout(() => {
         onDayChangeRef.current?.()
+        setOnDayChangeToggle(prev => !prev)
+
         scheduleNextRun()
       }, msUntilNextDay)
     }
@@ -41,4 +45,6 @@ export const useOnDayChange = (onDayChange?: () => void, dependencies: Dependenc
     const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
     return nextDay.getTime()
   }
+
+  return onDayChangeToggle
 }

@@ -29,6 +29,7 @@ export const DailyStreak = ({ weeklyData }: Props) => {
         const isMobile = !media.md
         const weekDayShort = isMobile ? weekDay[0] : weekDay.slice(0, 3)
         const displayText = isLast ? 'Today' : weekDayShort
+        const textStyle = isLast ? 'text-white font-bold' : 'text-gray-10/75'
 
         return (
           <>
@@ -36,7 +37,9 @@ export const DailyStreak = ({ weeklyData }: Props) => {
               className={`md:size-6 size-4 scale-150 relative rounded-full [box-shadow:0_4px_6px_rgba(0,0,0,0.25)] z-10 ${mainColor}`}
               key={date}
             >
-              <span className='absolute md:-bottom-6 -bottom-5 text-xs font-medium text-gray-10 left-1/2 -translate-x-1/2'>
+              <span
+                className={`absolute md:-bottom-6 -bottom-5 text-xs font-medium left-1/2 -translate-x-1/2 ${textStyle}`}
+              >
                 {displayText}
               </span>
             </div>

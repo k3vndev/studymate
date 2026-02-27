@@ -33,7 +33,7 @@ export const useUserStudyplan = (params?: Params) => {
   const onUser = useUserBehavior()
   const router = useRouter()
 
-  const [dayChangedToggle, setDayChangedToggle] = useState(false)
+  const dayChangedToggle = useOnDayChange()
 
   // Initial fetch of user's Studyplan
   useEffect(() => {
@@ -148,13 +148,6 @@ export const useUserStudyplan = (params?: Params) => {
       router[method](`/studyplan/${original_id}`)
     }
   }
-
-  useOnDayChange(() => {
-    // Handle day change to update the studyplan's current day and tasks
-    if (userStudyplan) {
-      setDayChangedToggle(prev => !prev)
-    }
-  }, [userStudyplan])
 
   return {
     userStudyplan: userStudyplan ?? null,

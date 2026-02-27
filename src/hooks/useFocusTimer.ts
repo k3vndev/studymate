@@ -1,9 +1,10 @@
 import { CONTENT_JSON, STUDY_SESSIONS } from '@consts'
+import { FocusPageContext } from '@context/FocusPageContext'
 import { useUserStore } from '@store/useUserStore'
-import type { CreateStudySessionReqBody, UpdateStudySessionReqBody } from '@types'
+import type { CreateStudySessionReqBody, StudySession, UpdateStudySessionReqBody } from '@types'
 import { dataFetch } from '@utils/dataFetch'
 import { getClientTimezone } from '@utils/getClientTimezone'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { useOnDayChange } from './useOnDayChange'
 import { useUserStatistics } from './useUserStatistics'
 
@@ -13,25 +14,25 @@ import { useUserStatistics } from './useUserStatistics'
  */
 export const useFocusTimer = ({ studyplanId }: Params) => {
   const mainTimerIntervalRef = useRef<NodeJS.Timeout>(null)
-
   const startedAtMsRef = useRef(0)
   const studySessionIdRef = useRef<null | string>(null)
   const initialSecondsTodayRef = useRef<number | null>(null)
   const canStartMainTimerRef = useRef(false)
 
-  const [isStartingUp, setIsStartingUp] = useState(true)
   const startingUpIntervalRef = useRef<NodeJS.Timeout>(null)
   const [decorativeCircleStyle, setDecorativeCircleStyle] = useState<React.CSSProperties>()
 
   const secondsFocusedToday = useUserStore(s => s.secondsFocusedToday)
   const setSecondsFocusedToday = useUserStore(s => s.setSecondsFocusedToday)
   const userStoreHydrated = useUserStore(s => s.hydrated)
+  const setStudySessions = useUserStore(s => s.setStudySessions)
 
   const { getSecondsFocusedToday } = useUserStatistics()
 
   const nextHeartBeatMSRef = useRef<number>(0)
-
   const { HEARTBEAT_INTERVAL } = STUDY_SESSIONS
+
+  const { isStartingUpTimer, setIsStartingUpTimer } = useContext(FocusPageContext)
 
   // On initial load, calculate the seconds focused today from the user's study sessions and set it in the store
   useEffect(() => {
@@ -91,7 +92,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
       // When progress reaches 100%, start the main timer and clear the startup timer interval
       if (progress >= 1) {
-        setIsStartingUp(false)
+        setIsStartingUpTimer(false)
         setDecorativeCircleStyle(undefined)
         canStartMainTimerRef.current = true
 
@@ -144,6 +145,16 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
       onSuccess: sessionId => {
         studySessionIdRef.current = sessionId
         nextHeartBeatMSRef.current = Date.now() + HEARTBEAT_INTERVAL.FIRST
+
+        // Create new sesssion to keep track of in the store
+        const newSession: StudySession = {
+          id: sessionId,
+          studyplan_id: studyplanId,
+          started_at: new Date().toISOString(),
+          last_ping_at: null,
+          ended_at: null
+        }
+        setStudySessions(prev => (prev ? [...prev, newSession] : [newSession]))
       }
     })
   }
@@ -155,6 +166,23 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
         sessionId: studySessionIdRef.current!,
         clientTimezone: getClientTimezone()
       }
+
+      // Update the session in the store
+      setStudySessions(
+        prev =>
+          prev?.map(session => {
+            if (session.id !== studySessionIdRef.current) return session
+
+            const now = new Date().toISOString()
+            return {
+              ...session,
+              last_ping_at: method === 'PATCH' ? now : session.last_ping_at,
+              ended_at: method === 'PUT' ? now : session.ended_at
+            }
+          }) || null
+      )
+
+      // Send the update to the server
       return dataFetch<string | undefined>({
         url: '/api/study_sessions',
         options: {
@@ -173,11 +201,11 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   // Handle main state changes
   useEffect(() => {
     // -- Set up visibility change listener to handle user switching tabs or minimizing the window --
-    if (isStartingUp) {
+    if (isStartingUpTimer) {
       document.addEventListener('visibilitychange', visibilityChangeHandler)
 
       if (document.visibilityState !== 'visible') {
-        setIsStartingUp(false)
+        setIsStartingUpTimer(false)
         return
       }
 
@@ -191,7 +219,7 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
     return () => {
       document.removeEventListener('visibilitychange', visibilityChangeHandler)
     }
-  }, [isStartingUp])
+  }, [isStartingUpTimer])
 
   const getElapsedMS = () => {
     const elapsedMs = Date.now() - startedAtMsRef.current
@@ -200,11 +228,11 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
 
   const visibilityChangeHandler = useCallback(() => {
     if (document.visibilityState === 'hidden') {
-      setIsStartingUp(false)
+      setIsStartingUpTimer(false)
       setDecorativeCircleStyle(undefined)
       startingUpIntervalRef.current && clearInterval(startingUpIntervalRef.current)
     } else {
-      setIsStartingUp(true)
+      setIsStartingUpTimer(true)
     }
   }, [])
 
@@ -245,7 +273,6 @@ export const useFocusTimer = ({ studyplanId }: Params) => {
   return {
     displayTimer,
     secondsFocusedToday,
-    isStartingUp,
     decorativeCircleStyle
   }
 }

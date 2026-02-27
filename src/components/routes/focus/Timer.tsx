@@ -1,20 +1,21 @@
+import { FocusPageContext } from '@/lib/context/FocusPageContext'
 import { FONTS } from '@consts'
 import { useFocusTimer } from '@hooks/useFocusTimer'
+import { useContext } from 'react'
 
 interface Props {
   studyplanId: string
 }
 
 export const Timer = ({ studyplanId }: Props) => {
-  const { displayTimer, isStartingUp, decorativeCircleStyle } = useFocusTimer({ studyplanId })
-
-  // TODO: Show encouraging messages under the timer
+  const { displayTimer, decorativeCircleStyle } = useFocusTimer({ studyplanId })
+  const { isStartingUpTimer } = useContext(FocusPageContext)
 
   return (
     <div className='relative size-full'>
       <span className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
         {/* Text timer */}
-        {!isStartingUp && (
+        {!isStartingUpTimer && (
           <span
             className={`text-white/85 xl:text-9xl sm:text-8xl text-6xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-fade-in-fast [&>span]:${FONTS.AZERET_MONO}}`}
             style={{
@@ -22,29 +23,16 @@ export const Timer = ({ studyplanId }: Props) => {
               animationDuration: '600ms'
             }}
           >
-            <span>{displayTimer.h}</span>:<span>{displayTimer.m}</span>:<span>{displayTimer.s}</span>
+            <span>{displayTimer.h}</span>:<span>{displayTimer.m}</span>:
+            <span className='opacity-65'>{displayTimer.s}</span>
           </span>
         )}
 
         {/* Decorative Circle */}
         <div
-          className='absolute md:size-64 xs:size-48 size-32 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle-shape shadow-blue-10/15 animate-pulse transition'
+          className='absolute md:size-72 xs:size-48 size-40 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full shadow-circle-shape shadow-blue-10/15 animate-pulse transition'
           style={decorativeCircleStyle}
         />
-        {isStartingUp && (
-          <div className={`flex flex-col items-center sm:gap-2 gap-1 z-50 text-nowrap ${FONTS.POPPINS}`}>
-            <span className='text-xl text-white/50 font-semibold animate-pulse'>Starting to focus...</span>
-            <span
-              className='md:text-3xl xs:text-2xl text-xl  animate-bounce-once'
-              style={{
-                animationDelay: '200ms',
-                animationDuration: '800ms'
-              }}
-            >
-              Don't leave this screen yet!
-            </span>
-          </div>
-        )}
       </span>
     </div>
   )

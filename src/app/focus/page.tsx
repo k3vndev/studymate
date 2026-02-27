@@ -10,18 +10,20 @@ import { MagicWandIcon } from '@@/icons'
 import { CurrentTask } from '@@/routes/focus/CurrentTask'
 import { InfoHeader } from '@@/routes/focus/InfoHeader'
 import { Timer } from '@@/routes/focus/Timer'
+import { FocusPageContext } from '@context/FocusPageContext'
 import { useUserData } from '@hooks/useUserData'
 import { useUserPrompts } from '@hooks/useUserPrompts'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
+import { useState } from 'react'
 
 export default function FocusPage() {
   const { userStudyplan, isLoading, currentDay } = useUserStudyplan()
   const prompts = useUserPrompts()
-
+  const [isStartingUpTimer, setIsStartingUpTimer] = useState(true)
   useUserData()
 
   return (
-    <>
+    <FocusPageContext.Provider value={{ userStudyplan, isStartingUpTimer, setIsStartingUpTimer }}>
       <Main className='gap-12 max-h-full min-h-full relative sm:pb-8 pb-4'>
         <Loadable isLoading={isLoading}>
           {userStudyplan ? (
@@ -52,6 +54,6 @@ export default function FocusPage() {
         <Glow className='bg-[#6308f6]/25' pos='left-top' />
         <Glow className='bg-[#5f25fe]/25' pos='right-bottom' />
       </Background>
-    </>
+    </FocusPageContext.Provider>
   )
 }

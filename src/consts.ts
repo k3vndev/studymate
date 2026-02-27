@@ -153,7 +153,7 @@ export const STUDY_SESSIONS = {
     FIRST: 60 * 1000, // First heartbeat after 1 minute
     REGULAR: 5 * 60 * 1000 // Subsequent heartbeats every 5 minutes
   },
-  STARTING_UP: 15 * 1000
+  STARTING_UP: 10 * 1000
 }
 
 export const DB_ERROR_CODES = {
