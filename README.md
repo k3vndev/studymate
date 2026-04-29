@@ -1,134 +1,137 @@
 # Studymate
 
-A modern web application to enhance self-learning with AI. Create, follow, and complete Studyplans, track your progress, earn achievements to flex on your profile, and chat with Mate — your virtual assistant.
+A modern web app designed to enhance self-learning with AI.
 
-🚀 Built using Next.js, TypeScript, Zustand, Supabase, Zod, and TailwindCSS.
+Create, follow, and complete Studyplans, track your progress, earn achievements to flex on your profile, and chat with Mate — your virtual assistant.
 
+🚀 Built with **Next.js, TypeScript, Zustand, Supabase, Zod, and TailwindCSS**
 
-## Table of Contents
+## 💻 Features
 
-- [Features](#features)
-    - [/dashboard](#dashboard)
-    - [/chat](#chat)
-    - [/studyplan](#studyplan)
-    - [/studyplan/tasks](#studyplan/tasks)
-    - [/studyplan/focus](#studyplan/focus)
-    - [/profile](#profile)
-- [How it works](#how-it-works)
-- [Local Setup](#local-setup)
-- [Future Additions](#future-additions)
-- [Can I Use This?](#can-i-use-this)
-- [Special Thanks](#special-thanks)
+### Dashboard
 
-## Features
+Your entry point after logging in.
 
-### /dashboard
-If you don’t have a Studyplan selected, Mate will be there to greet you 🤖<br>
-Clicking its card takes you straight into the [chat](#chat) — and if you hit the button directly, it throws in a precooked prompt.
+* View your current Studyplan
+* Start a new one
+* Chat with Mate instantly
 
-You'll also see a list of Studyplans you can pick from or save any of them for later.
+If no Studyplan is selected, Mate greets you and suggests options.
+You can also browse and save Studyplans for later.
 
-![The dashboard of the application, showing mate greeting you and a list of Studyplans](/public/screenshots/dashboard.webp)
+![Dashboard preview](/public/screenshots/dashboard.webp)
 
+### Chat
 
-### /chat
-Here you will be interacting with Mate, your helpful and friendly virtual assistant 👾<br>
-Ask him—in a polite way—to create a new Studyplan for you, help you with your tasks, give you study tips or just chat with him.
+Here you will be interacting with Mate, your helpful and friendly virtual assistant   👾
 
-He knows what's your current Studyplan, which day you're on and what's your progress so feel free to ask him how to continue with your Studyplan or how to complete your tasks 🪄
+* Generate new Studyplans
+* Get help with tasks
+* Ask for explanations or study tips
+* Track your progress in real time
 
-![The chat interface, showing mate creating a new studyplan for the user](/public/screenshots/chat.webp)
+Mate knows your current Studyplan, which day you're on, and your progress. Feel free to ask how to continue or complete tasks 🪄
 
+![Chat preview](/public/screenshots/chat.webp)
 
-### /studyplan
-This is what Studymate is all about. Here you can start, manage and complete your Studyplans.
+### 📚 Studyplan
 
-Studyplans are the core of Studymate. They are created by Mate, and you can ask him to create a new one for you.
-They are a list of lessons, one for each day of its duration.
-Each one of these lessons has a list of tasks which you will have to complete every day in order to complete the Studyplan 🎉
+The core of Studymate. Start, manage, and complete your Studyplans here.
 
 There's a card for the current day's lesson, and a list of all the lessons and tasks of the Studyplan regardless of the day so you know what's to come.
 
-![The studyplan interface, showing the user's Studyplan and tasks](/public/screenshots/studyplan.webp)
-<small>📜 Remember that you can ask Mate to create a new Studyplan for you, or just select an existing one in the [dashboard](#dashboard).</small>
+![Studyplan preview](/public/screenshots/studyplan.webp)
+
+> 📜 You can create new Studyplans via chat or select existing ones from the dashboard.
+
+### Studyplan Tasks
+
+Your daily execution layer.
+
+* View the day’s goal
+* Complete structured tasks
+* Ask Mate for help or hints
+
+Finish all tasks → get rewarded → rest guilt-free 🎉
+
+![Tasks preview](/public/screenshots/studyplan-tasks.webp)
+
+> 🎯 Access via the “Today’s Lesson” card in the Studyplan page.
+
+### Focus Mode
+
+Designed for deep work.
+
+* Built-in timer
+* Task list for the day
+* Quick task switching
+
+Stay locked in. No excuses.
+
+![Focus preview](/public/screenshots/focus.webp)
+
+### Profile
+
+Track your grind. Build streaks. Flex consistency.
+
+* Stats & progress
+* Achievements & trophies 🏆
+* Saved & completed Studyplans
 
 
-### /studyplan/tasks
-
-Here you can see the general goal of the day and a list of tasks to complete. Click on any of them to start working on it.
-
-Mate will also be there to help you with your tasks, you can ask him to explain the task or just give you a hint.
-
-Once you have completed all the tasks, Mate will congratulate you and you'd be free to enjoy your well deserved rest 🎉
-
-![The tasks page, showing the user's tasks for the current day](/public/screenshots/studyplan-tasks.webp)
-<small>🎯 You can access this page by clicking on the "Today's Lesson" card in the [Studyplan](#studyplan) page.</small>
-
-### /studyplan/focus
-
-This page is meant for you to *focus* and complete your tasks. There's a timer to help you stay focused and a list of tasks to complete.
-
-On the bottom of the page you'll find a card with swapable tasks, here you can mark your task as done or swap it if you want to complete another one first 😌
+![Profile preview](/public/screenshots/profile.webp)
 
 
-![The focus page, showing the user's tasks for the current day](/public/screenshots/focus.webp)
-<small>⚠️ This page is still under development. You can complete your tasks, but the timer and settings menu are not functional yet.</small>
+## ⚙️ How It Works
+
+### Studyplans Lifecycle
+
+1. **Created privately** inside your chat with Mate
+2. **Saved or started → becomes public (anonymously)**
+3. Other users can **discover it in their dashboards**
+4. Starting a Studyplan creates a **personal copy**
+
+> Studymate is **not a social network** — interaction is indirect via shared Studyplans.
 
 
-### /profile
-Here you can see your info, statistics and achievements. You'll also find lists of your saved and completed Studyplans.
+## 🛠️ Local Setup
 
-Reach a high streak, collect trophies 🏆 and flex your grind
+To run locally, you’ll need:
 
-![The profile page, showing the user's info, achievements and lists of saved and completed Studyplans](/public/screenshots/profile.webp)
+* A **Supabase instance**
+* An **OpenAI API key**
 
-<small>⚠️ This page is still under development. The achievements, statistics and streak are not fully implemented yet.</small>
-
-
-## How it works
-
-### Studyplans
-
-Every Studyplan is created by Mate, which means that they start being private inside your chat.
-If you choose to start or save it, it will become anonymously public and other users will be able to see it in their [dashboards](#dashboard).
-
-When you start a Studyplan, you actually get a copy of the Studyplan in your [Studyplan](#studyplan) page, so the public Studyplan remains intact.
-
-Studymate is not a social media, so this is the only interaction you'll have with other users.
-
-
-## Local Setup
-
-1. Install dependencies:
+### 1. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-2. Create your local env file from the template:
+### 2. Create environment file
 
-```powershell
-Copy-Item .env.example .env.local # Windows
-cp .env.example .env.local # Unix
+```bash
+cp .env.example .env.local
+# or on Windows:
+Copy-Item .env.example .env.local
 ```
 
-3. Fill in your own keys in `.env.local`:
+### 3. Fill in your keys
 
-```dotenv
+```env
 OPENAI_API_KEY=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SUPABASE_URL=
 ```
 
-4. Run the development server:
+### 4. Start the dev server
 
 ```bash
 pnpm dev
 ```
 
-## Future Additions
+## 🚧 Roadmap
 
-StudyMate is still in development and will keep getting updates — all of its content will still be free, of course.
+Studymate is actively evolving.
 
 📃 Planned features include:
 - User profiles [✓]
@@ -142,7 +145,8 @@ StudyMate is still in development and will keep getting updates — all of its c
 
 ...and more cool stuff along the way.
 
+## 🙌 Special Thanks
 
-### Special Thanks
-- [Tabler Icons](https://tabler.io/icons) and [Heroicons](https://heroicons.com).
-- Mate.
+* [Tabler Icons](https://tabler.io/icons)
+* [Heroicons](https://heroicons.com)
+* Mate (obviously)
