@@ -11,7 +11,7 @@ export const StudySessionsChart = ({ data }: Props) => {
 
   const blue20Color = '#6168E8'
 
-  const chatConfig = {
+  const chartConfig = {
     hours: {
       label: 'Hours',
       color: blue20Color
@@ -34,7 +34,7 @@ export const StudySessionsChart = ({ data }: Props) => {
 
   return (
     <div className='w-full bg-black/25 border border-gray-30 rounded-xl p-5 pl-0'>
-      <ChartContainer config={chatConfig} className='max-h-56 min-h-32 w-full'>
+      <ChartContainer config={chartConfig} className='max-h-56 min-h-32 w-full'>
         <BarChart data={data}>
           <CartesianGrid vertical={false} className='opacity-15' />
           <Bar

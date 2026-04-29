@@ -11,14 +11,17 @@ export const useOnDayChange = (onDayChange?: () => void, dependencies: Dependenc
   const onDayChangeRef = useRef(onDayChange)
   const [onDayChangeToggle, setOnDayChangeToggle] = useState(false)
 
-  useEffect(() => {
-    // Update the ref to the latest onDayChange function whenever it changes
-    onDayChangeRef.current = onDayChange
-    if (!onDayChangeRef.current) {
-      timeoutRef.current && clearTimeout(timeoutRef.current)
-      return
-    }
+  const calculateNextDayChange = () => {
+    const now = new Date()
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    return nextDay.getTime()
+  }
 
+  useEffect(() => {
+    onDayChangeRef.current = onDayChange
+  }, [onDayChange])
+
+  useEffect(() => {
     // Schedule the next run of the onDayChange callback at the next day change
     const scheduleNextRun = () => {
       timeoutRef.current && clearTimeout(timeoutRef.current)
@@ -27,10 +30,14 @@ export const useOnDayChange = (onDayChange?: () => void, dependencies: Dependenc
       const msUntilNextDay = Math.max(nextDayMS - Date.now(), 0)
 
       timeoutRef.current = setTimeout(() => {
-        onDayChangeRef.current?.()
-        setOnDayChangeToggle(prev => !prev)
+        requestAnimationFrame(() => {
+          // Call the onDayChange callback if it exists and toggle the state to trigger re-renders
+          onDayChangeRef.current?.()
+          setOnDayChangeToggle(prev => !prev)
 
-        scheduleNextRun()
+          // Schedule the next run for the following day
+          scheduleNextRun()
+        })
       }, msUntilNextDay)
     }
     scheduleNextRun()
@@ -38,13 +45,7 @@ export const useOnDayChange = (onDayChange?: () => void, dependencies: Dependenc
     return () => {
       timeoutRef.current && clearTimeout(timeoutRef.current)
     }
-  }, [Boolean(onDayChange), ...dependencies])
-
-  const calculateNextDayChange = () => {
-    const now = new Date()
-    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
-    return nextDay.getTime()
-  }
+  }, [...dependencies])
 
   return onDayChangeToggle
 }
