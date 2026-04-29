@@ -20,7 +20,7 @@ export const UserImage = ({ profile }: Props) => {
       alt='The profile avatar of the user'
       width={imageSize}
       height={imageSize}
-      className='rounded-full'
+      className='rounded-full aspect-square object-cover sm:max-w-32 max-w-24 sm:max-h-32 max-h-24'
       style={cssSize}
     />
   )

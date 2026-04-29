@@ -36,8 +36,8 @@ export default function FocusPage() {
             <ErrorCard className='self-center'>
               <Gigant>No Studyplan?</Gigant>
               <Message>
-                It seems you don't have a studyplan yet. Let's create one to get started on your focus
-                journey!
+                It seems you don't have a studyplan to focus on yet. Let's create one to get your journey
+                started!
               </Message>
               <Button onClick={prompts.createStudyplan}>
                 <MagicWandIcon />
