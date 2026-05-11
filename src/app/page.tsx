@@ -1,3 +1,4 @@
+import { Bullet } from '@/components/routes/landing/Bullet'
 import { Button } from '@/components/routes/landing/Button'
 import { FONTS } from '@/consts'
 import { Background } from '@@/Background/Background'
@@ -14,11 +15,28 @@ export default async function Home() {
 
   if (user !== null) redirect('/dashboard')
 
+  const bullets = [
+    {
+      header: 'Random Tutorials',
+      kicker: 'Consuming content ≠ making progress.'
+    },
+    {
+      header: 'No Structure',
+      kicker: 'Learning feels impossible when every path is improvised.'
+    },
+    {
+      header: 'No accountability',
+      kicker: 'Without progress tracking, motivation disappears fast.'
+    }
+  ]
+
   return (
     <>
-      <main className='w-full h-full flex flex-col items-center py-20 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-16'>
+      <main
+        className={`w-full flex flex-col items-center pt-20 pb-32 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-28 ${FONTS.POPPINS}`}
+      >
         <section>
-          <div className={`text-center mt-8 ${FONTS.POPPINS}`}>
+          <div className='text-center mt-8'>
             <h1 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold text-7xl py-4 mb-4'>
               Stop just trying to study. Start finishing Studyplans.
             </h1>
@@ -31,10 +49,10 @@ export default async function Home() {
           <div className='relative w-full'>
             <Image
               src='/screenshots/chat.webp'
-              alt='Chat screenshot'
+              alt='Screenshot of the Studymate chat interface, showing a conversation with Mate, the study assistant and a Studyplan being generated'
               width={1200}
               height={700}
-              className='border border-gray-30 rounded-[2rem] border-t-white/20 border-t-2 h-96 w-full'
+              className='border border-gray-30 rounded-[2rem] border-t-white/20 border-t-2 h-96 w-full object-cover'
               style={{ maskImage: 'linear-gradient(to bottom, white, transparent)' }}
               draggable={false}
             />
@@ -44,6 +62,27 @@ export default async function Home() {
               <Button>Just Looking Around?</Button>
             </div>
           </div>
+        </section>
+
+        <section>
+          <h3 className='text-5xl font-bold text-white'>Why Most Self-Learning Fails?</h3>
+
+          <article className='flex items-center gap-8 bg-gradient-to-b from-purple-700/10 to-white/[0.025] px-32 py-16 border border-white/10 rounded-[2rem]'>
+            <Image
+              src='/mate/sitting.webp'
+              alt='Mate sitting in the floor, looking away thoughtfully'
+              width={512}
+              height={512}
+              draggable={false}
+              className='size-64 saturate-[25%]'
+            />
+
+            <ul className='flex flex-col gap-6'>
+              {bullets.map(bullet => (
+                <Bullet key={bullet.header} header={bullet.header} kicker={bullet.kicker} />
+              ))}
+            </ul>
+          </article>
         </section>
       </main>
 
