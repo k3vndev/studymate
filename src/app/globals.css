@@ -70,6 +70,10 @@ body[data-scroll-locked] {
   @apply bg-error/15 border border-error/45 text-error;
 }
 
+.landing-gradient {
+  @apply bg-gradient-to-r from-[#A869FF] via-[#E69DFE] to-[#7178FF];
+}
+
 @keyframes chat-message-bubbles-pounce {
   from {
     transform: translateY(2px);

@@ -1,7 +1,7 @@
-import { AppLogo } from '@@/AppLogo'
+import { Button } from '@/components/routes/landing/Button'
+import { FONTS } from '@/consts'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
-import { LoginButton } from '@@/LoginButton'
 import { supabaseServerClient } from '@utils/supabaseServerClient'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
@@ -16,19 +16,35 @@ export default async function Home() {
 
   return (
     <>
-      <main className='w-full h-full flex flex-col items-center justify-between py-20'>
-        <div className='flex flex-col items-center gap-4'>
-          <Image
-            src='/favicon.ico'
-            alt='App Logo'
-            width={300}
-            height={300}
-            className='size-32'
-            draggable={false}
-          />
-          <AppLogo />
-        </div>
-        <LoginButton />
+      <main className='w-full h-full flex flex-col items-center py-20 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-16'>
+        <section>
+          <div className={`text-center mt-8 ${FONTS.POPPINS}`}>
+            <h1 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold text-7xl py-4 mb-4'>
+              Stop just trying to study. Start finishing Studyplans.
+            </h1>
+            <h2 className='text-3xl text-gray-10 font-semibold'>
+              AI-powered learning paths, progress tracking, focus mode, and a study assistant that actually
+              remembers what you’re doing.
+            </h2>
+          </div>
+
+          <div className='relative w-full'>
+            <Image
+              src='/screenshots/chat.webp'
+              alt='Chat screenshot'
+              width={1200}
+              height={700}
+              className='border border-gray-30 rounded-[2rem] border-t-white/20 border-t-2 h-96 w-full'
+              style={{ maskImage: 'linear-gradient(to bottom, white, transparent)' }}
+              draggable={false}
+            />
+
+            <div className='absolute h-fit w-full left-0 flex justify-center bottom-8 gap-4'>
+              <Button primary>Sign In</Button>
+              <Button>Just Looking Around?</Button>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Background className='bg-black'>
