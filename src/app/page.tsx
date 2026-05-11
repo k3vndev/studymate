@@ -1,8 +1,8 @@
-import { Bullet } from '@/components/routes/landing/Bullet'
-import { Button } from '@/components/routes/landing/Button'
-import { FONTS } from '@/consts'
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
+import { Bullet } from '@@/routes/landing/Bullet'
+import { CTAButtons } from '@@/routes/landing/CTAButtons'
+import { FONTS } from '@consts'
 import { supabaseServerClient } from '@utils/supabaseServerClient'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
@@ -26,7 +26,7 @@ export default async function Home() {
   return (
     <>
       <main
-        className={`w-full flex flex-col items-center py-24 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-28 ${FONTS.POPPINS}`}
+        className={`w-full flex flex-col items-center py-32 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-28 ${FONTS.POPPINS}`}
       >
         <section className='text-center'>
           <div>
@@ -50,10 +50,7 @@ export default async function Home() {
               draggable={false}
             />
 
-            <div className='absolute h-fit w-full left-0 flex justify-center bottom-8 gap-4'>
-              <Button primary>Sign In</Button>
-              <Button>Just Looking Around?</Button>
-            </div>
+            <CTAButtons className='absolute bottom-8 left-0' />
           </div>
         </section>
 
@@ -96,6 +93,13 @@ export default async function Home() {
               />
             ))}
           </div>
+
+          <h4 className='text-3xl text-gray-10 font-semibold'>
+            AI-powered learning paths, progress tracking, focus mode, and a study assistant that actually
+            remembers what you’re doing.
+          </h4>
+
+          <CTAButtons />
         </section>
       </main>
 
