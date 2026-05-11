@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <>
-      <main className='w-full h-full flex flex-col items-center justify-between py-20'>
+      <main className='w-fullh-full flex flex-col items-center justify-between py-20'>
         <div className='flex flex-col items-center gap-4'>
           <Image
             src='/favicon.ico'

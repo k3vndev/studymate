@@ -5,7 +5,7 @@ import { Alert } from '@@/Alert'
 export const metadata: Metadata = {
   title: 'Studymate — Enhance your learning with AI',
   description:
-    'Enhance your learning with AI. Mate, your virtual assistant, will help you create, follow and complete personalized study plans.'
+    'AI-powered learning platform that generates and manages personalized Studyplans. Users can track progress, complete structured learning paths, and interact with an AI assistant designed to guide their studies in real time.'
 }
 
 export default function RootLayout({
@@ -18,11 +18,10 @@ export default function RootLayout({
       <body className='min-h-dvh bg-black'>
         <div
           id='app-shell'
-          className={`
-            min-h-dvh 3xl:px-48 2xl:px-32 xl:px-16 lg:px-32 sm:px-4 grid sm:py-6
-          `}
+          className='min-h-dvh grid sm:py-6 px-[var(--app-padding-x)] xl:pl-[calc(var(--app-padding-x)+var(--sidebar-width)+var(--sidebar-gap))]'
         >
           {children}
+
           <Alert />
         </div>
       </body>
