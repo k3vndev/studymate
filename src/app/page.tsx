@@ -26,7 +26,7 @@ export default async function Home() {
   return (
     <>
       <main
-        className={`w-full flex flex-col items-center py-32 max-w-5xl mx-auto lg:px-0 sm:px-[var(--app-padding-x)] px-4 [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-8 [&>section]:animate-slide-in-bottom gap-32 ${FONTS.POPPINS}`}
+        className={`w-full flex flex-col items-center py-32 max-w-5xl mx-auto lg:px-0 sm:px-[var(--app-padding-x)] px-4 [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 [&>section]:animate-slide-in-bottom gap-48 ${FONTS.POPPINS}`}
       >
         <section className='text-center'>
           <div>
