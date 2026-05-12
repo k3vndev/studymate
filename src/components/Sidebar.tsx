@@ -16,13 +16,15 @@ export const Sidebar = () => (
       z-50
     `}
   >
-    <h1 className={`text-white text-3xl xl:flex hidden gap-5 items-center ml-4 ${FONTS.POPPINS}`}>
-      <AppIcon width={40} height={40} className='size-10' />
-      <div>
-        <span className='font-semibold'>STUDY</span>
-        <span className='italic'>MATE</span>
-      </div>
-    </h1>
+    <Link href='/' className='ml-4' draggable={false}>
+      <h1 className={`text-white text-3xl xl:flex hidden gap-5 items-center ${FONTS.POPPINS}`}>
+        <AppIcon width={40} height={40} className='size-10' />
+        <div>
+          <span className='font-semibold'>STUDY</span>
+          <span className='italic'>MATE</span>
+        </div>
+      </h1>
+    </Link>
 
     <ul className='flex xl:flex-col items-start xl:gap-4 sm:gap-6 gap-1'>
       {PATHS.map(({ name, icon }, i) => (

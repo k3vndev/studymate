@@ -74,7 +74,8 @@ const config: Config = {
         appear: 'fade-and-scale 250ms ease both',
         disappear: 'fade-and-scale 250ms ease reverse both',
         'weak-pulse': 'weak-pulse 4s ease both infinite',
-        'glow-scale': 'glow-scale 2s ease-in-out infinite alternate'
+        'glow-scale': 'glow-scale 2s ease-in-out infinite alternate',
+        'slide-in-bottom': 'slide-in-bottom 500ms ease-out both'
       },
       keyframes: {
         'spin-pulse': {
@@ -131,6 +132,13 @@ const config: Config = {
           },
           '100%': {
             scale: '1.05'
+          }
+        },
+        'slide-in-bottom': {
+          '0%': {
+            transform: 'translateY(8rem)',
+            opacity: '0',
+            filter: 'blur(16px)'
           }
         }
       },

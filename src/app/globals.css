@@ -6,6 +6,8 @@
   --studyplan-tile-height: 15rem;
   --sidebar-width: clamp(16rem, 22vw, 22rem);
   --sidebar-gap: 4rem;
+
+  --app-padding-x: 0rem;
 }
 
 html,
@@ -17,21 +19,33 @@ body {
   overflow: clip scroll;
 }
 
+@media (min-width: 640px) {
+  :root {
+    --app-padding-x: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --app-padding-x: 2rem;
+  }
+}
+
 @media (min-width: 1280px) {
-  #app-shell {
-    padding-left: calc(4rem + var(--sidebar-width) + var(--sidebar-gap));
+  :root {
+    --app-padding-x: 4rem;
   }
 }
 
 @media (min-width: 1536px) {
-  #app-shell {
-    padding-left: calc(8rem + var(--sidebar-width) + var(--sidebar-gap));
+  :root {
+    --app-padding-x: 8rem;
   }
 }
 
 @media (min-width: 1792px) {
-  #app-shell {
-    padding-left: calc(12rem + var(--sidebar-width) + var(--sidebar-gap));
+  :root {
+    --app-padding-x: 12rem;
   }
 }
 
@@ -41,7 +55,7 @@ body[data-scroll-locked] {
 }
 
 * {
-  color-scheme: dark;  
+  color-scheme: dark;
 }
 
 .button {
@@ -54,6 +68,10 @@ body[data-scroll-locked] {
 
 .error {
   @apply bg-error/15 border border-error/45 text-error;
+}
+
+.landing-gradient {
+  @apply bg-gradient-to-r from-[#A869FF] via-[#E69DFE] to-[#7178FF];
 }
 
 @keyframes chat-message-bubbles-pounce {
@@ -87,8 +105,9 @@ nextjs-portal {
   ul li {
     @apply list-disc;
   }
- 
-  ol, ul {
+
+  ol,
+  ul {
     @apply flex flex-col gap-2;
   }
 
@@ -109,14 +128,17 @@ nextjs-portal {
     @apply text-lg font-bold;
   }
 
-  h3, h4, h5, h6 {
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply text-base font-bold;
   }
 }
 
 /* Adds a tiny square at the end while the message is generating */
 .assistant-message-streaming > *:last-child::after {
-  content: "";
+  content: '';
   @apply size-3 bg-white inline-block ml-1.5 rounded-sm animate-pulse rotate-45;
 }
 
