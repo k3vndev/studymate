@@ -26,14 +26,14 @@ export default async function Home() {
   return (
     <>
       <main
-        className={`w-full flex flex-col items-center py-32 max-w-5xl mx-auto [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-10 gap-28 ${FONTS.POPPINS}`}
+        className={`w-full flex flex-col items-center py-32 max-w-5xl mx-auto lg:px-0 sm:px-[var(--app-padding-x)] px-4 [&>section]:w-full [&>section]:flex [&>section]:flex-col [&>section]:items-center [&>section]:justify-center [&>section]:gap-8 [&>section]:animate-slide-in-bottom gap-32 ${FONTS.POPPINS}`}
       >
         <section className='text-center'>
           <div>
-            <h1 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold text-7xl pb-2 mb-4'>
+            <h1 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold lg:text-7xl text-5xl pb-2 mb-4 text-pretty'>
               Stop just trying to study. Start finishing Studyplans.
             </h1>
-            <h2 className='text-3xl text-gray-10 font-semibold'>
+            <h2 className='lg:text-3xl text-2xl text-gray-10 font-semibold'>
               AI-powered learning paths, progress tracking, focus mode, and a study assistant that actually
               remembers what you’re doing.
             </h2>
@@ -54,10 +54,12 @@ export default async function Home() {
           </div>
         </section>
 
-        <section>
-          <h3 className='text-5xl font-bold text-white'>Why Most Self-Learning Fails?</h3>
+        <section style={{ animationDelay: '400ms' }}>
+          <h3 className='lg:text-5xl text-4xl font-bold text-white text-center text-pretty'>
+            Why Most Self-Learning Fails?
+          </h3>
 
-          <article className='flex items-center gap-8 bg-gradient-to-b from-purple-700/10 to-white/[0.025] px-32 py-16 border border-white/10 rounded-[2rem] border-t-white/15 border-t-2'>
+          <article className='flex lg:flex-row flex-col items-center gap-8 bg-gradient-to-b from-purple-700/10 to-white/[0.025] lg:px-32 sm:px-16 px-4 py-16 border w-full border-white/10 rounded-[2rem] border-t-white/15 border-t-2'>
             <Image
               src='/mate/sitting.webp'
               alt='Mate sitting in the floor, looking away thoughtfully'
@@ -75,12 +77,12 @@ export default async function Home() {
           </article>
         </section>
 
-        <section className='text-center'>
-          <h2 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold text-5xl max-w-[55rem] pb-1 text-center'>
+        <section className='text-center' style={{ animationDelay: '800ms' }}>
+          <h2 className='landing-gradient bg-clip-text text-transparent leading-[1.15] font-extrabold lg:text-5xl sm:text-4xl text-3xl max-w-[55rem] pb-1 text-center text-pretty'>
             Studymate turns chaotic learning into guided progression.
           </h2>
 
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid sm:grid-cols-2 gap-4'>
             {gridImages.map(image => (
               <Image
                 key={image}
@@ -89,12 +91,12 @@ export default async function Home() {
                 draggable={false}
                 width={1080}
                 height={1080}
-                className='first:row-span-2 size-full object-cover border border-white/10 rounded-xl first:rounded-l-[2rem] last:rounded-br-[2rem] [&:nth-child(2)]:rounded-tr-[2rem]'
+                className='first:row-span-2 size-full object-cover border border-white/10 rounded-xl sm:first:rounded-l-[2rem] sm:last:rounded-br-[2rem] sm:[&:nth-child(2)]:rounded-tr-[2rem]'
               />
             ))}
           </div>
 
-          <h4 className='text-3xl text-gray-10 font-semibold'>
+          <h4 className='lg:text-3xl sm:text-2xl text-xl text-gray-10 font-semibold'>
             AI-powered learning paths, progress tracking, focus mode, and a study assistant that actually
             remembers what you’re doing.
           </h4>

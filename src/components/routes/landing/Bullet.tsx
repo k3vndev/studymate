@@ -1,4 +1,4 @@
-import { FONTS } from '@/consts'
+import { FONTS } from '@consts'
 import { XIcon } from 'lucide-react'
 
 interface Props {
@@ -13,10 +13,12 @@ export const Bullet = ({ header, kicker }: Props) => (
     </div>
 
     <div className='flex flex-col gap-1'>
-      <h4 className={`text-3xl font-bold text-transparent bg-clip-text landing-gradient ${FONTS.POPPINS}`}>
+      <h4
+        className={`sm:text-3xl text-2xl font-bold text-transparent bg-clip-text landing-gradient ${FONTS.POPPINS}`}
+      >
         {header}
       </h4>
-      <p className={`text-xl text-gray-10 ${FONTS.INTER}`}>{kicker}</p>
+      <p className={`sm:text-xl text-lg text-gray-10 ${FONTS.INTER}`}>{kicker}</p>
     </div>
   </li>
 )
