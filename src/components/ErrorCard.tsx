@@ -3,66 +3,81 @@ import Image from 'next/image'
 import { twMerge } from 'tailwind-merge'
 
 interface Props {
-  children?: React.ReactNode
   className?: string
+  title?: string
+  paragraph?: string
+
+  button?: {
+    icon?: React.ReactNode
+    text: string
+    onClick: () => void
+  }
 }
 
-export const ErrorCard = ({ children, className = '' }: Props) => (
-  <div
-    className={twMerge(
-      `absolute top-1/2 -translate-y-1/2 flex flex-col items-center sm:gap-7 gap-5 animate-fade-in-fast ${className}`
-    )}
-  >
-    <Image
-      src='/mate/sitting.webp'
-      alt={MATE_IMAGES_ALT.SITTING}
-      width={172}
-      height={172}
-      draggable={false}
-      className='saturate-[15%]'
-    />
+export const ErrorCard = ({
+  title = 'Oops...',
+  paragraph = 'Sorry, there was an error',
+  button,
+  className
+}: Props) => {
+  const imgSize = 172
 
-    {children}
-  </div>
-)
+  return (
+    <div
+      className={twMerge(
+        'flex flex-col items-center sm:gap-7 gap-5 animate-fade-in-fast m-auto -translate-y-8',
+        className
+      )}
+    >
+      <Image
+        src='/mate/sitting.webp'
+        alt={MATE_IMAGES_ALT.SITTING}
+        width={imgSize}
+        height={imgSize}
+        draggable={false}
+        className='saturate-[15%]'
+      />
 
-interface MessageProps {
-  className?: string
-  children?: React.ReactNode
+      {title && <Gigant>{title}</Gigant>}
+      {paragraph && <Message>{paragraph}</Message>}
+
+      {button && (
+        <Button onClick={button.onClick}>
+          {button.icon}
+          {button.text}
+        </Button>
+      )}
+    </div>
+  )
+}
+interface TextProps {
+  children: string
 }
 
-export const Gigant = ({ className = '', children = 'Ooops...' }: MessageProps) => (
+const Gigant = ({ children }: TextProps) => (
   <span
-    className={twMerge(
-      `${FONTS.POPPINS} sm:text-5xl text-4xl font-bold text-center text-balance text-white ${className}`
-    )}
+    className={twMerge('sm:text-5xl text-4xl font-bold text-center text-balance text-white', FONTS.POPPINS)}
   >
     {children}
   </span>
 )
 
-export const Message = ({ className = '', children = 'Sorry, there was an error' }: MessageProps) => (
-  <span
-    className={twMerge(
-      `${FONTS.POPPINS} sm:text-2xl text-xl text-gray-10 text-balance text-center ${className}`
-    )}
-  >
+const Message = ({ children }: TextProps) => (
+  <span className={twMerge('sm:text-2xl text-xl text-gray-10 text-balance text-center', FONTS.POPPINS)}>
     {children}
   </span>
 )
 
 interface ButtonProps {
-  className?: string
   onClick?: () => void
   children: React.ReactNode
 }
 
-export const Button = ({ className = '', children, onClick = () => {} }: ButtonProps) => (
+const Button = ({ children, onClick = () => {} }: ButtonProps) => (
   <button
-    className={twMerge(`
-      border border-gray-20 bg-gray-30/25 px-5 py-2 group w-fit text-nowrap
-      text-gray-10 text-xl flex gap-2 rounded-lg button items-center ${className}
-    `)}
+    className={twMerge(
+      'border border-gray-20 bg-gray-30/25 px-5 py-2 group w-fit text-nowrap text-gray-10 text-xl flex gap-2 rounded-lg button items-center'
+    )}
     {...{ onClick }}
   >
     {children}

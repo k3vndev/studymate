@@ -16,9 +16,19 @@ export const CTAButtons = ({ className = '' }) => {
   const signIn = async () => {
     const supabase = supabaseBrowserClient()
 
+    // Handle redirect
+    const searchParams = new URLSearchParams(window.location.search)
+    const redirect = searchParams.get('redirect')
+
+    let redirectTo = `${window.location.origin}/auth/callback`
+    if (redirect) {
+      redirectTo += `?redirect=${redirect}`
+    }
+
+    // Sign in with GitHub
     await supabase.auth.signInWithOAuth({
       provider: 'github',
-      options: { redirectTo: `${window.location.origin}/auth/callback` }
+      options: { redirectTo }
     })
   }
 

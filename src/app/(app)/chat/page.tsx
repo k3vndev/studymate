@@ -1,6 +1,8 @@
 'use client'
 
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { useLoginRedirect } from '@/hooks/useLoginRedirect'
+import { useUserData } from '@/hooks/useUserData'
+import { ErrorCard } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { ScrollHelper } from '@@/routes/chat/ScrollHelper'
@@ -10,7 +12,7 @@ import { ChatContext } from '@context/ChatContext'
 import { useChatCustomScroll } from '@hooks/useChatCustomScroll'
 import { useChatMessages } from '@hooks/useChatMessages'
 import { useUserStudyplan } from '@hooks/useUserStudyplan'
-import { ReloadIcon } from '@icons'
+import { ArrowIcon, ReloadIcon } from '@icons'
 import { useChatStore } from '@store/useChatStore'
 import { useState } from 'react'
 
@@ -18,6 +20,8 @@ export default function ChatPage() {
   const [inputElementHeight, setInputElementHeight] = useState(0)
   useUserStudyplan()
   const messages = useChatStore(s => s.messages)
+  const { isLoggedIn } = useUserData()
+  const loginRedirect = useLoginRedirect('/chat')
 
   const chatMessagesValues = useChatMessages()
   const { isWaitingResponse, isOnChatError, isOnLoadingError } = chatMessagesValues
@@ -51,15 +55,26 @@ export default function ChatPage() {
           <Loadable isLoading={!messages}>
             {messages?.length ? <MessagesScreen /> : <NoMessagesScreen />}
           </Loadable>
+        ) : isLoggedIn ? (
+          <ErrorCard
+            title='Ooops...'
+            paragraph="Sorry, couldn't load your messages"
+            button={{
+              icon: <ReloadIcon className='group-active:rotate-90 transition' />,
+              onClick: chatMessagesValues.loadPreviousMessages,
+              text: 'Try again'
+            }}
+          />
         ) : (
-          <ErrorCard>
-            <Gigant>Ooops...</Gigant>
-            <Message>Sorry, couldn't load your messages</Message>
-            <Button onClick={chatMessagesValues.loadPreviousMessages}>
-              <ReloadIcon className='size-7 group-active:rotate-90 transition' />
-              Try again
-            </Button>
-          </ErrorCard>
+          <ErrorCard
+            title='Whoops...'
+            paragraph="It seems you're not logged in, please log in to chat with Mate"
+            button={{
+              icon: <ArrowIcon className='-rotate-90' />,
+              onClick: loginRedirect,
+              text: 'Log in to Studymate'
+            }}
+          />
         )}
       </Main>
 

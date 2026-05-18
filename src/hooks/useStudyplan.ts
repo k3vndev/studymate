@@ -1,7 +1,7 @@
 import { useStudyplansStore } from '@store/useStudyplansStore'
 import { useUserStore } from '@store/useUserStore'
 import type { StudyplanUnion } from '@types'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useUserData } from './useUserData'
 import { useUserStudyplan } from './useUserStudyplan'
 
@@ -13,24 +13,10 @@ interface Params {
 export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
   const { completed } = useUserStore(s => s.studyplansLists)
   const { lists } = useUserData()
-  const [isLoadingUserData, setIsLoadingUserData] = useState(true)
-
   const userStudyplan = useUserStudyplan()
 
   const setStateStudyplan = useStudyplansStore(s => s.setStudyplan)
   useEffect(() => setStateStudyplan(studyplan), [])
-
-  // Handle isLoadingUserData value
-  useEffect(() => {
-    if (isLoadingUserData) {
-      const objList = Object.entries(lists)
-      const userListsWereLoaded = objList.every(l => l[1])
-
-      if (userListsWereLoaded && !userStudyplan.isLoading) {
-        setIsLoadingUserData(false)
-      }
-    }
-  }, [lists, userStudyplan.isLoading])
 
   // Set variables for context
   const isCompleted = useMemo(
@@ -59,7 +45,6 @@ export const useStudyplan = ({ studyplan, usersCurrent }: Params) => {
     context: {
       studyplan,
       usersCurrent,
-      isLoadingUserData,
 
       isCompleted,
       readyToComplete,

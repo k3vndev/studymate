@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { ErrorCard } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
@@ -12,7 +12,6 @@ import { useUserData } from '@hooks/useUserData'
 import { useStudyplansStore } from '@store/useStudyplansStore'
 import type { PublicStudyplan } from '@types'
 import { dataFetch } from '@utils/dataFetch'
-import { supabaseBrowserClient } from '@utils/supabaseBrowserClient'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -20,7 +19,6 @@ export default function PublicStudyplanPage() {
   const studyplan = useStudyplansStore(s => s.studyplan)
   const setStateStudyplan = useStudyplansStore(s => s.setStudyplan)
   const addStudyplans = useStudyplansStore(s => s.addStudyplans)
-  const [hasSession, setHasSession] = useState<boolean | undefined>(undefined)
 
   const [isOnError, setIsOnError] = useState(false)
 
@@ -29,13 +27,6 @@ export default function PublicStudyplanPage() {
 
   const { searchStudyplan } = useSearchStudyplan()
   useUserData()
-
-  const checkSession = async () => {
-    const supabase = supabaseBrowserClient()
-    const { data } = await supabase.auth.getSession()
-
-    setHasSession(data.session !== null)
-  }
 
   const handleStudyplanLoad = () => {
     // Don't proceed if the id is not a string and redirect to the dashboard if the studyplan is null
@@ -85,36 +76,35 @@ export default function PublicStudyplanPage() {
       return
     }
 
-    checkSession()
     handleStudyplanLoad()
   }, [])
 
-  const justifySelf = !hasSession ? 'justify-self-center xl:justify-self-center' : ''
+  // const justifySelf = !hasSession ? 'justify-self-center xl:justify-self-center' : ''
 
   const backToDashboard = () => router.replace('/dashboard')
 
-  if (hasSession === undefined) {
-    return null
-  }
-
   return (
     <>
-      <Main className={`${justifySelf} gap-12 h-full relative`}>
+      <Main className='gap-12 h-full relative'>
         {!isOnError ? (
           <Loadable isLoading={!studyplan}>{studyplan && <Studyplan {...{ studyplan }} />}</Loadable>
         ) : (
-          <ErrorCard className='self-center'>
-            <Gigant>Uh oh... 404</Gigant>
-            <Message>That studyplan does not exist :(</Message>
-            <Button onClick={backToDashboard}>
-              <ArrowIcon className='rotate-90 group-active:-translate-x-1.5 transition size-6 min-w-6' />
-              Go to dashboard
-            </Button>
-          </ErrorCard>
+          <ErrorCard
+            className='self-center'
+            title='Uh oh... 404'
+            paragraph='That studyplan does not exist :('
+            button={{
+              icon: (
+                <ArrowIcon className='rotate-90 group-active:-translate-x-1.5 transition size-6 min-w-6' />
+              ),
+              onClick: backToDashboard,
+              text: 'Go to dashboard'
+            }}
+          />
         )}
       </Main>
 
-      {hasSession && <Sidebar />}
+      <Sidebar />
     </>
   )
 }

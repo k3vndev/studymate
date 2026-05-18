@@ -45,11 +45,9 @@ export const MaxStreak = () => {
 
     // Start from the first session date and check for consecutive days
     const differenceInDays = Math.ceil(DateTime.local().diff(firstSessionDate, 'days').days)
-    console.log(`Checking a range of ${differenceInDays} days...`)
 
     for (let i = 0; i < differenceInDays; i++) {
       const dateToCheck = firstSessionDate.plus({ days: i }).toFormat('yyyy-MM-dd')
-      console.log(`Checking ${dateToCheck}`)
 
       if (sessionDatesSet.has(dateToCheck)) {
         currentStreak++

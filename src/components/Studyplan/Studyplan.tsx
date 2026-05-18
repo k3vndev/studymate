@@ -23,10 +23,10 @@ export const Studyplan = ({ studyplan, usersCurrent = false }: Props) => {
     <StudyplanContext.Provider value={context}>
       <section className='flex flex-col gap-9 animate-fade-in-very-fast'>
         <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-3 relative'>
+          <div className='flex flex-col gap-3 relative w-full'>
             <Badge>STUDYPLAN</Badge>
             <Header size={3}>{name}</Header>
-            <Paragraph className='xl:w-5/6 w-[95%]'>{desc}</Paragraph>
+            <Paragraph className='xl:w-5/6 w-full'>{desc}</Paragraph>
           </div>
 
           <OptionsButton />

@@ -83,21 +83,23 @@ export const DailyStreakSection = () => {
 
       <div className='flex justify-between items-center flex-wrap gap-4'>
         {weeklyData ? (
-          <div className={`${FONTS.POPPINS} text-nowrap`}>
-            <h3 className='text-2xl font-semibold flex items-center gap-1'>
-              <FireIcon className={`size-8 ${streakIconColor}`} />
-              <span>{displayText[0]}</span>
-            </h3>
-            <span className='text-lg text-gray-10'>{displayText[1]}</span>
-          </div>
+          <>
+            <div className={`${FONTS.POPPINS} text-nowrap`}>
+              <h3 className='text-2xl font-semibold flex items-center gap-1'>
+                <FireIcon className={`size-8 ${streakIconColor}`} />
+                <span>{displayText[0]}</span>
+              </h3>
+              <span className='text-lg text-gray-10'>{displayText[1]}</span>
+            </div>
+
+            <ChipButton className='animate-fade-in-fast' onClick={handleClick} empty>
+              <RocketIcon />
+              Let's focus!
+            </ChipButton>
+          </>
         ) : (
           <FallbackBox className='w-48 h-12 bg-zinc-700' />
         )}
-
-        <ChipButton className='animate-fade-in-fast' onClick={handleClick} empty>
-          <RocketIcon />
-          Let's focus!
-        </ChipButton>
       </div>
     </section>
   )
