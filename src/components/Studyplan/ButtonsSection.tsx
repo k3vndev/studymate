@@ -1,8 +1,11 @@
+import { useUserData } from '@/hooks/useUserData'
 import { StudyplanContext } from '@context/StudyplanContext'
-import { LoadingIcon } from '@icons'
+import { LoadingIcon, RocketIcon } from '@icons'
 import { useStudyplansStore } from '@store/useStudyplansStore'
 import { throwConfetti } from '@utils/throwConfetti'
+import { useRouter } from 'next/navigation'
 import { useContext, useEffect, useRef } from 'react'
+import { ChipButton } from '../ChipButton'
 import { CompleteButton } from './CompleteButton'
 import { CompletedBadge } from './CompletedBadge'
 import { SaveButton } from './SaveButton'
@@ -10,9 +13,9 @@ import { StartButton } from './StartButton'
 
 export const ButtonsSection = () => {
   const ref = useRef<HTMLDivElement>(null)
-
-  const { usersCurrent, isCompleted, readyToComplete, userHasAnotherStudyplan, isLoadingUserData } =
-    useContext(StudyplanContext)
+  const { usersCurrent, isCompleted, readyToComplete, userHasAnotherStudyplan } = useContext(StudyplanContext)
+  const { isLoggedIn } = useUserData()
+  const router = useRouter()
 
   // Handle buttons responsiveness
   useEffect(() => {
@@ -50,9 +53,22 @@ export const ButtonsSection = () => {
     }
   }, [isCompleted])
 
+  const handleLoginStartButton = () => {
+    router.push('/')
+  }
+
   // Render a loading icon when it's still loading the user data
-  if (isLoadingUserData) {
+  if (isLoggedIn === undefined) {
     return <LoadingIcon className='h-full aspect-square text-gray-10/50 animate-spin [scale:1.2]' />
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <ChipButton onClick={handleLoginStartButton}>
+        <RocketIcon />
+        Log in to start this Studyplan
+      </ChipButton>
+    )
   }
 
   return (

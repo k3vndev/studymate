@@ -20,7 +20,6 @@ export default function PublicStudyplanPage() {
   const studyplan = useStudyplansStore(s => s.studyplan)
   const setStateStudyplan = useStudyplansStore(s => s.setStudyplan)
   const addStudyplans = useStudyplansStore(s => s.addStudyplans)
-  const [hasSession, setHasSession] = useState<boolean | undefined>(undefined)
 
   const [isOnError, setIsOnError] = useState(false)
 
@@ -29,13 +28,6 @@ export default function PublicStudyplanPage() {
 
   const { searchStudyplan } = useSearchStudyplan()
   useUserData()
-
-  const checkSession = async () => {
-    const supabase = supabaseBrowserClient()
-    const { data } = await supabase.auth.getSession()
-
-    setHasSession(data.session !== null)
-  }
 
   const handleStudyplanLoad = () => {
     // Don't proceed if the id is not a string and redirect to the dashboard if the studyplan is null
@@ -85,21 +77,16 @@ export default function PublicStudyplanPage() {
       return
     }
 
-    checkSession()
     handleStudyplanLoad()
   }, [])
 
-  const justifySelf = !hasSession ? 'justify-self-center xl:justify-self-center' : ''
+  // const justifySelf = !hasSession ? 'justify-self-center xl:justify-self-center' : ''
 
   const backToDashboard = () => router.replace('/dashboard')
 
-  if (hasSession === undefined) {
-    return null
-  }
-
   return (
     <>
-      <Main className={`${justifySelf} gap-12 h-full relative`}>
+      <Main className='gap-12 h-full relative'>
         {!isOnError ? (
           <Loadable isLoading={!studyplan}>{studyplan && <Studyplan {...{ studyplan }} />}</Loadable>
         ) : (
@@ -114,7 +101,7 @@ export default function PublicStudyplanPage() {
         )}
       </Main>
 
-      {hasSession && <Sidebar />}
+      <Sidebar />
     </>
   )
 }

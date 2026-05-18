@@ -24,11 +24,15 @@ export default function DashboardPage() {
   useEffect(() => {
     if (isLoggedIn !== false) return
 
+    const apiLimit = 15
+    const shownStudyplans = 6
+
     dataFetch<PublicStudyplan[]>({
-      url: '/api/studyplans?limit=15',
+      url: `/api/studyplans?limit=${apiLimit}`,
       onSuccess: data => {
-        addStudyplans(...data)
-        setRandomStudyplansIds(data.map(s => s.id))
+        const parsedData = data.toSorted(() => Math.random() - 0.5).slice(0, shownStudyplans)
+        addStudyplans(...parsedData)
+        setRandomStudyplansIds(parsedData.map(s => s.id))
       }
     })
   }, [isLoggedIn])
