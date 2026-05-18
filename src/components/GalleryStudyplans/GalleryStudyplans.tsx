@@ -8,45 +8,53 @@ import { useStudyplansStore } from '@store/useStudyplansStore'
 import type { UserStore } from '@store/useUserStore'
 import type { PublicStudyplan } from '@types'
 import { dataFetch } from '@utils/dataFetch'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import { CarouselGalleryStudyplans } from './CarouselGalleryStudyplans'
 import { EmptyGalleryStudyplans } from './EmptyGalleryStudyplans'
 import { RowsGalleryStudyplans } from './RowsGalleryStudyplans'
 
 interface Props {
   title: string
-  storeKey: keyof UserStore['studyplansLists']
+  storeKey?: keyof UserStore['studyplansLists']
   carousel?: boolean
   emptyMessage?: string
+  customStudyplansListIds?: string[]
 }
 
 /**
- * A component that renders a gallery of studyplans.
+ * A component that renders a gallery of Studyplans.
  *
- * It already handles the fetching of the studyplans data from the server.
+ * It already handles the fetching of the Studyplans data from the server.
  *
- * It allows to render the studyplans in a carousel or in a 2 rows layout.
+ * It allows to render the Studyplans in a carousel or in a 2 rows layout.
  *
  * @param {Props} props - The props for the GalleryStudyplans component.
  * @param {string} props.title - The title of the gallery.
- * @param {keyof UserStore['studyplansLists']} props.storeKey - The key of the studyplans list in the user store.
- * @param {boolean} [props.carousel=false] - Whether to render the studyplans in a carousel or not.
- * @param {string} [props.emptyMessage='No studyplans found'] - The message to display when the studyplans list is empty.
+ * @param {keyof UserStore['studyplansLists']} [props.storeKey] - The key of the Studyplans list in the user store.
+ * @param {boolean} [props.carousel=false] - Whether to render the Studyplans in a carousel or not.
+ * @param {string} [props.emptyMessage='No studyplans found'] - The message to display when the Studyplans list is empty.
+ * @param {string[]} [props.customStudyplansListIds=[]] - An array of custom Studyplan IDs to display.
  */
 export const GalleryStudyplans = ({
   title,
   storeKey,
   carousel = false,
-  emptyMessage = 'No studyplans found'
+  emptyMessage = 'No studyplans found',
+  customStudyplansListIds
 }: Props) => {
   const addStudyplans = useStudyplansStore(s => s.addStudyplans)
   const { lists: studyplansLists } = useUserData()
+  const hasFetchedRef = useRef(false)
 
-  const studyplansList = studyplansLists[storeKey]
+  const studyplansList = useMemo(
+    () => (storeKey ? studyplansLists[storeKey] : undefined),
+    [studyplansLists, storeKey]
+  )
   const gap = 16
 
   useEffect(() => {
-    if (!studyplansList) return
+    if (!studyplansList || customStudyplansListIds || hasFetchedRef.current) return
+    hasFetchedRef.current = true
 
     dataFetch<PublicStudyplan[]>({
       url: '/api/studyplans',
@@ -57,12 +65,20 @@ export const GalleryStudyplans = ({
       },
       onSuccess: data => addStudyplans(...data)
     })
-  }, [studyplansList])
+  }, [studyplansList, customStudyplansListIds])
 
   const isEmpty = studyplansList?.length === 0
 
   return (
-    <GalleryStudyplansContext.Provider value={{ studyplansList, carousel, gap, emptyMessage, title }}>
+    <GalleryStudyplansContext.Provider
+      value={{
+        studyplansList: customStudyplansListIds ?? studyplansList,
+        carousel,
+        gap,
+        emptyMessage,
+        title
+      }}
+    >
       <section className='flex flex-col animate-fade-in-fast' style={{ gap: `${gap}px` }}>
         <GalleryHeader />
 

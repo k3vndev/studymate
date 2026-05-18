@@ -12,8 +12,8 @@ export interface UserStore {
   studyplan: UserStudyplan | null | undefined
   setStudyplan: (studyplan: UserStudyplan | null) => void
 
-  isLoadingData: boolean
-  setIsLoadingData: (isLoading: boolean) => void
+  loadingDataId: string | null
+  setLoadingDataId: (id: string | null) => void
 
   setTaskDone: (index: number, value: string, currentDay: number) => void
 
@@ -49,8 +49,8 @@ export const useUserStore = create<UserStore>(set => ({
   studyplan: undefined,
   setStudyplan: value => set(() => ({ studyplan: value })),
 
-  isLoadingData: false,
-  setIsLoadingData: isLoading => set(() => ({ isLoadingData: isLoading })),
+  loadingDataId: null,
+  setLoadingDataId: id => set(() => ({ loadingDataId: id })),
 
   setTaskDone: (index, value, currentDay) =>
     set(({ studyplan }) => {
