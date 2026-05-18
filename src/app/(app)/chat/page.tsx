@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { ErrorCard } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { ScrollHelper } from '@@/routes/chat/ScrollHelper'
@@ -52,14 +52,15 @@ export default function ChatPage() {
             {messages?.length ? <MessagesScreen /> : <NoMessagesScreen />}
           </Loadable>
         ) : (
-          <ErrorCard>
-            <Gigant>Ooops...</Gigant>
-            <Message>Sorry, couldn't load your messages</Message>
-            <Button onClick={chatMessagesValues.loadPreviousMessages}>
-              <ReloadIcon className='size-7 group-active:rotate-90 transition' />
-              Try again
-            </Button>
-          </ErrorCard>
+          <ErrorCard
+            title='Ooops...'
+            paragraph="Sorry, couldn't load your messages"
+            button={{
+              icon: <ReloadIcon className='size-7 group-active:rotate-90 transition' />,
+              onClick: chatMessagesValues.loadPreviousMessages,
+              text: 'Try again'
+            }}
+          />
         )}
       </Main>
 

@@ -2,28 +2,30 @@
 
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { ErrorCard } from '@@/ErrorCard'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
 import { ArrowIcon } from '@@/icons'
+import { useRouter } from 'next/navigation'
 
 export default function NotFoundPage() {
+  const router = useRouter()
+  const handleGoBack = () => {
+    router.push('/dashboard')
+  }
+
   return (
     <>
       <Main className='gap-12 h-full flex items-center justify-center relative'>
-        <ErrorCard className=''>
-          <Gigant>404, Not Found</Gigant>
-          <Message>
-            The page you are looking for does not exist. It might have been removed or you may have mistyped
-            the URL.
-          </Message>
-          <Button>
-            <ArrowIcon className='rotate-90' />
-            <a href='/' className='w-full h-full'>
-              Go back to Dashboard
-            </a>
-          </Button>
-        </ErrorCard>
+        <ErrorCard
+          title='404, Not Found'
+          paragraph='The page you are looking for does not exist. It might have been removed or you may have mistyped the URL.'
+          button={{
+            icon: <ArrowIcon className='rotate-90' />,
+            onClick: handleGoBack,
+            text: 'Go back to Dashboard'
+          }}
+        />
       </Main>
       <Sidebar />
 

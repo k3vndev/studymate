@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { ErrorCard } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
@@ -20,16 +20,15 @@ export default function UserStudyplanPage() {
           {userStudyplan ? (
             <Studyplan studyplan={userStudyplan} usersCurrent />
           ) : (
-            <ErrorCard className='left-1/2 -translate-x-1/2'>
-              <Gigant>We hear crickets...</Gigant>
-              <Message>
-                You currently don't have a Studyplan. Create one to start your learning journey!
-              </Message>
-              <Button onClick={prompts.createStudyplan}>
-                <MagicWandIcon />
-                Create Studyplan
-              </Button>
-            </ErrorCard>
+            <ErrorCard
+              title='We hear crickets...'
+              paragraph="You currently don't have a Studyplan. Create one to start your learning journey!"
+              button={{
+                icon: <MagicWandIcon />,
+                onClick: prompts.createStudyplan,
+                text: 'Create Studyplan'
+              }}
+            />
           )}
         </Loadable>
       </Main>

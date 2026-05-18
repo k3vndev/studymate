@@ -2,7 +2,7 @@
 
 import { Background } from '@@/Background/Background'
 import { Glow } from '@@/Background/Glow'
-import { Button, ErrorCard, Gigant, Message } from '@@/ErrorCard'
+import { ErrorCard } from '@@/ErrorCard'
 import { Loadable } from '@@/Loadable'
 import { Main } from '@@/Main'
 import { Sidebar } from '@@/Sidebar'
@@ -33,17 +33,15 @@ export default function FocusPage() {
               <CurrentTask />
             </div>
           ) : (
-            <ErrorCard className='self-center'>
-              <Gigant>No Studyplan?</Gigant>
-              <Message>
-                It seems you don't have a studyplan to focus on yet. Let's create one to get your journey
-                started!
-              </Message>
-              <Button onClick={prompts.createStudyplan}>
-                <MagicWandIcon />
-                Create Studyplan
-              </Button>
-            </ErrorCard>
+            <ErrorCard
+              title='No Studyplan?'
+              paragraph="It seems you don't have a studyplan to focus on yet. Let's create one to get your journey started!"
+              button={{
+                icon: <MagicWandIcon />,
+                onClick: prompts.createStudyplan,
+                text: 'Create Studyplan'
+              }}
+            />
           )}
         </Loadable>
       </Main>
