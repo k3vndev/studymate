@@ -11,8 +11,6 @@ export const StudyplanMessage = ({ studyplan }: Props) => {
   const userStudyplan = useUserStore(s => s.studyplan)
 
   const isUsersCurrent = useMemo(() => {
-    console.log('User original id', userStudyplan?.original_id, 'Current original id', studyplan.original_id)
-
     if (!userStudyplan?.original_id) return false
     return studyplan.original_id === userStudyplan.original_id
   }, [studyplan.original_id, userStudyplan?.original_id])

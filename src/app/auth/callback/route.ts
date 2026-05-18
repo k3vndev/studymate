@@ -3,11 +3,14 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
+  const codeFromURL = requestUrl.searchParams.get('code')
+  const redirectFromURL = requestUrl.searchParams.get('redirect') ?? '/'
 
-  if (code !== null) {
+  if (codeFromURL !== null) {
     const supabase = await supabaseServerClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    await supabase.auth.exchangeCodeForSession(codeFromURL)
   }
-  return NextResponse.redirect(requestUrl.origin)
+
+  // Redirect to the original page or to the homepage if no redirect query param was provided
+  return NextResponse.redirect(`${requestUrl.origin}${redirectFromURL}`)
 }

@@ -13,7 +13,8 @@ import { StartButton } from './StartButton'
 
 export const ButtonsSection = () => {
   const ref = useRef<HTMLDivElement>(null)
-  const { usersCurrent, isCompleted, readyToComplete, userHasAnotherStudyplan } = useContext(StudyplanContext)
+  const { usersCurrent, isCompleted, readyToComplete, userHasAnotherStudyplan, publicId } =
+    useContext(StudyplanContext)
   const { isLoggedIn } = useUserData()
   const router = useRouter()
 
@@ -54,7 +55,11 @@ export const ButtonsSection = () => {
   }, [isCompleted])
 
   const handleLoginStartButton = () => {
-    router.push('/')
+    if (!publicId) {
+      router.push('/')
+      return
+    }
+    router.push(`/?redirect=/studyplan/${publicId}`)
   }
 
   // Render a loading icon when it's still loading the user data
