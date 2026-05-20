@@ -23,13 +23,17 @@ export const StudySessionsChart = ({ data }: Props) => {
     return date.toFormat('MMM d')
   }
 
-  const tooltipValueFormatter = (value: number | string) => {
+  // Format tooltip values to show as hourly format, e.g. 1.5 => "1h 30m"
+  const tooltipValueFormatter = (value: string | number) => {
     const numericValue = typeof value === 'number' ? value : Number(value)
 
-    if (Number.isFinite(numericValue)) {
-      return numericValue.toFixed(2)
-    }
-    return String(value)
+    const hours = Math.floor(numericValue)
+    const minutes = Math.round((numericValue - hours) * 60)
+
+    let result = ''
+    if (hours > 0) result += `${hours}h`
+    if (minutes > 0) result += ` ${minutes}m`
+    return result || '0h'
   }
 
   return (
@@ -54,7 +58,7 @@ export const StudySessionsChart = ({ data }: Props) => {
                     <div className='size-3 bg-blue-20 rounded-sm' />
                     <span className='text-gray-10/80'>{name}</span>
                     <span className='font-mono font-medium tabular-nums  text-gray-10'>
-                      {tooltipValueFormatter(value as number | string)}
+                      {tooltipValueFormatter(value as string | number)}
                     </span>
                   </>
                 )}

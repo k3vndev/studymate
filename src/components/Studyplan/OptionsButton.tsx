@@ -38,12 +38,12 @@ export const OptionsButton = () => {
     }
 
     showAlert({
-      header: 'Overwite your studyplan?',
+      header: 'Overwrite your studyplan?',
       message:
         'You already have an active study plan. Starting a new one will erase all your current progress!',
       acceptButton: {
         onClick: startStudyplan,
-        text: 'Overwite studyplan',
+        text: 'Overwrite studyplan',
         icon: <RocketIcon />
       }
     })

@@ -70,12 +70,14 @@ export const DailyStreakSection = () => {
     router.push('/focus')
   }
 
-  const displayText =
+  const [streakTitle, streakMessage] =
     streak > 0
       ? [`${streak}-day streak!`, 'Keep it up!']
       : ['No streak yet', 'Start focusing to build your streak!']
 
   const streakIconColor = streak > 0 ? 'text-blue-20' : 'text-gray-10'
+
+  console.log(weeklyData)
 
   return (
     <section className='flex flex-col justify-center gap-4 w-full'>
@@ -87,9 +89,9 @@ export const DailyStreakSection = () => {
             <div className={`${FONTS.POPPINS} text-nowrap`}>
               <h3 className='text-2xl font-semibold flex items-center gap-1'>
                 <FireIcon className={`size-8 ${streakIconColor}`} />
-                <span>{displayText[0]}</span>
+                <span>{streakTitle}</span>
               </h3>
-              <span className='text-lg text-gray-10'>{displayText[1]}</span>
+              <span className='text-lg text-gray-10'>{streakMessage}</span>
             </div>
 
             <ChipButton className='animate-fade-in-fast' onClick={handleClick} empty>
